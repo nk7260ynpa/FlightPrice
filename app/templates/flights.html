@@ -8,32 +8,41 @@
 <div class="card mb-4">
     <div class="card-header">新增追蹤班機</div>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('flights.add_flight') }}">
+        <form method="POST" action="{{ url_for('flights.add_flight') }}" id="addFlightForm">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label for="flight_number" class="form-label">班次編號 *</label>
-                    <input type="text" class="form-control" id="flight_number"
-                           name="flight_number" placeholder="例: CI-100" required>
+                    <label for="flight_number" class="form-label">班次代碼 *</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="flight_number"
+                               name="flight_number" placeholder="例: CI100" required>
+                        <button type="button" class="btn btn-outline-secondary" id="lookupBtn">查詢</button>
+                    </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
+                    <label for="departure_date" class="form-label">出發日期 *</label>
+                    <input type="date" class="form-control" id="departure_date"
+                           name="departure_date" required>
+                </div>
+                <div class="col-md-2">
                     <label for="airline" class="form-label">航空公司 *</label>
                     <input type="text" class="form-control" id="airline"
-                           name="airline" placeholder="例: 中華航空" required>
+                           name="airline" placeholder="自動帶入" required>
                 </div>
                 <div class="col-md-2">
                     <label for="origin" class="form-label">出發地 *</label>
                     <input type="text" class="form-control" id="origin"
-                           name="origin" placeholder="例: TPE" required>
+                           name="origin" placeholder="自動帶入" required>
                 </div>
                 <div class="col-md-2">
                     <label for="destination" class="form-label">抵達地 *</label>
                     <input type="text" class="form-control" id="destination"
-                           name="destination" placeholder="例: NRT" required>
+                           name="destination" placeholder="自動帶入" required>
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
+                <div class="col-md-1 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">新增</button>
                 </div>
             </div>
+            <div id="lookupMessage" class="mt-2" style="display: none;"></div>
         </form>
     </div>
 </div>
@@ -45,10 +54,11 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>班次編號</th>
+                    <th>班次代碼</th>
                     <th>航空公司</th>
                     <th>出發地</th>
                     <th>抵達地</th>
+                    <th>出發日期</th>
                     <th>狀態</th>
                     <th>操作</th>
                 </tr>
@@ -60,6 +70,7 @@
                     <td>{{ flight.airline }}</td>
                     <td>{{ flight.origin }}</td>
                     <td>{{ flight.destination }}</td>
+                    <td>{{ flight.departure_date.strftime('%Y-%m-%d') if flight.departure_date else '-' }}</td>
                     <td>
                         {% if flight.is_active %}
                             <span class="badge bg-success">啟用</span>
@@ -87,4 +98,49 @@
 {% else %}
 <div class="alert alert-info">尚無追蹤班機，請使用上方表單新增。</div>
 {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('lookupBtn').addEventListener('click', function() {
+    const flightNumber = document.getElementById('flight_number').value.trim();
+    const msgDiv = document.getElementById('lookupMessage');
+
+    if (!flightNumber) {
+        msgDiv.innerHTML = '<span class="text-danger">請先輸入班次代碼</span>';
+        msgDiv.style.display = 'block';
+        return;
+    }
+
+    msgDiv.innerHTML = '<span class="text-muted">查詢中...</span>';
+    msgDiv.style.display = 'block';
+
+    fetch('{{ url_for("flights.lookup") }}?flight_number=' + encodeURIComponent(flightNumber))
+        .then(response => response.json().then(data => ({ok: response.ok, data})))
+        .then(({ok, data}) => {
+            if (ok) {
+                if (data.airline) document.getElementById('airline').value = data.airline;
+                if (data.origin) document.getElementById('origin').value = data.origin;
+                if (data.destination) document.getElementById('destination').value = data.destination;
+                msgDiv.innerHTML = '<span class="text-success">已自動帶入航班資訊</span>';
+                if (!data.origin || !data.destination) {
+                    msgDiv.innerHTML = '<span class="text-warning">僅找到航空公司，出發地與抵達地請手動輸入</span>';
+                }
+            } else {
+                msgDiv.innerHTML = '<span class="text-warning">' + data.error + '</span>';
+            }
+        })
+        .catch(() => {
+            msgDiv.innerHTML = '<span class="text-danger">查詢失敗，請手動輸入</span>';
+        });
+});
+
+// 輸入班次代碼後按 Enter 也觸發查詢
+document.getElementById('flight_number').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('lookupBtn').click();
+    }
+});
+</script>
 {% endblock %}

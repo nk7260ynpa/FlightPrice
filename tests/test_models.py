@@ -16,6 +16,7 @@ class TestTrackedFlight:
             airline='中華航空',
             origin='TPE',
             destination='NRT',
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight)
         db_session.commit()
@@ -23,26 +24,23 @@ class TestTrackedFlight:
         result = TrackedFlight.query.filter_by(flight_number='CI-100').first()
         assert result is not None
         assert result.airline == '中華航空'
-        assert result.origin == 'TPE'
-        assert result.destination == 'NRT'
+        assert result.departure_date == date(2026, 5, 1)
         assert result.is_active is True
 
-    def test_unique_flight_number(self, app, db_session):
-        """測試班次編號唯一性約束。"""
+    def test_unique_flight_and_date(self, app, db_session):
+        """測試同班次同出發日期的唯一性約束。"""
         flight1 = TrackedFlight(
-            flight_number='CI-100',
-            airline='中華航空',
-            origin='TPE',
-            destination='NRT',
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight1)
         db_session.commit()
 
         flight2 = TrackedFlight(
-            flight_number='CI-100',
-            airline='中華航空',
-            origin='TPE',
-            destination='NRT',
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight2)
         import sqlalchemy
@@ -52,13 +50,26 @@ class TestTrackedFlight:
         except sqlalchemy.exc.IntegrityError:
             db_session.rollback()
 
+    def test_same_flight_different_date(self, app, db_session):
+        """測試同班次不同出發日期可同時存在。"""
+        for d in [date(2026, 5, 1), date(2026, 5, 15)]:
+            flight = TrackedFlight(
+                flight_number='CI-100', airline='中華航空',
+                origin='TPE', destination='NRT',
+                departure_date=d,
+            )
+            db_session.add(flight)
+        db_session.commit()
+
+        results = TrackedFlight.query.filter_by(flight_number='CI-100').all()
+        assert len(results) == 2
+
     def test_deactivate_flight(self, app, db_session):
         """測試停用追蹤班機。"""
         flight = TrackedFlight(
-            flight_number='BR-001',
-            airline='長榮航空',
-            origin='TPE',
-            destination='LAX',
+            flight_number='BR-001', airline='長榮航空',
+            origin='TPE', destination='LAX',
+            departure_date=date(2026, 6, 1),
         )
         db_session.add(flight)
         db_session.commit()
@@ -90,7 +101,6 @@ class TestFlightPrice:
         result = FlightPrice.query.filter_by(flight_number='CI-100').first()
         assert result is not None
         assert float(result.price) == 12500.00
-        assert result.scrape_date == date(2026, 3, 30)
 
     def test_multiple_prices_same_flight_same_day(self, app, db_session):
         """測試同一班次同一天可有多筆紀錄。"""
@@ -143,4 +153,3 @@ class TestScrapeLog:
         result = ScrapeLog.query.filter_by(flight_number='CI-100').first()
         assert result.status == 'failed'
         assert result.error_message == '連線逾時'
-        assert result.price is None

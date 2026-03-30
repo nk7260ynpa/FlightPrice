@@ -1,5 +1,7 @@
 """抓取狀態路由單元測試。"""
 
+from datetime import date
+
 from app import db
 from app.models import ScrapeLog, TrackedFlight
 
@@ -18,6 +20,7 @@ class TestStatusIndex:
         flight = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT', is_active=True,
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight)
         db_session.commit()
@@ -54,6 +57,7 @@ class TestStatusIndex:
             flight = TrackedFlight(
                 flight_number=f'CI-{i}', airline='中華航空',
                 origin='TPE', destination='NRT', is_active=True,
+                departure_date=date(2026, 5, 1),
             )
             db_session.add(flight)
         db_session.commit()

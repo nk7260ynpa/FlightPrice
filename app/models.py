@@ -11,17 +11,23 @@ class TrackedFlight(db.Model):
     __tablename__ = 'tracked_flights'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    flight_number = db.Column(db.String(20), unique=True, nullable=False)
+    flight_number = db.Column(db.String(20), nullable=False)
     airline = db.Column(db.String(100), nullable=False)
     origin = db.Column(db.String(100), nullable=False)
     destination = db.Column(db.String(100), nullable=False)
+    departure_date = db.Column(db.Date, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+
+    # 同班次 + 同出發日期唯一
+    __table_args__ = (
+        db.UniqueConstraint('flight_number', 'departure_date', name='uq_flight_date'),
+    )
 
     prices = db.relationship('FlightPrice', backref='tracked_flight', lazy=True)
 
     def __repr__(self):
-        return f'<TrackedFlight {self.flight_number}>'
+        return f'<TrackedFlight {self.flight_number} {self.departure_date}>'
 
 
 class FlightPrice(db.Model):

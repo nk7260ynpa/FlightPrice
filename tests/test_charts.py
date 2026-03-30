@@ -21,6 +21,7 @@ class TestChartsIndex:
         flight = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight)
         db_session.commit()
@@ -39,6 +40,7 @@ class TestChartDataAPI:
         flight = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight)
         db_session.commit()
@@ -75,6 +77,7 @@ class TestChartDataAPI:
         flight = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
         )
         db_session.add(flight)
         db_session.commit()
