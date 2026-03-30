@@ -5,6 +5,10 @@ plan/
 
 # Log files
 *.log
+logs/*.log
+
+# Environment
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
