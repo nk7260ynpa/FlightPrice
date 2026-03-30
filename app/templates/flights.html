@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}班機管理 - FlightPrice{% endblock %}
+
+{% block content %}
+<h2>追蹤班機管理</h2>
+
+<div class="card mb-4">
+    <div class="card-header">新增追蹤班機</div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('flights.add_flight') }}">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="flight_number" class="form-label">班次編號 *</label>
+                    <input type="text" class="form-control" id="flight_number"
+                           name="flight_number" placeholder="例: CI-100" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="airline" class="form-label">航空公司 *</label>
+                    <input type="text" class="form-control" id="airline"
+                           name="airline" placeholder="例: 中華航空" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="origin" class="form-label">出發地 *</label>
+                    <input type="text" class="form-control" id="origin"
+                           name="origin" placeholder="例: TPE" required>
+                </div>
+                <div class="col-md-2">
+                    <label for="destination" class="form-label">抵達地 *</label>
+                    <input type="text" class="form-control" id="destination"
+                           name="destination" placeholder="例: NRT" required>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">新增</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if flights %}
+<div class="card">
+    <div class="card-header">追蹤清單</div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>班次編號</th>
+                    <th>航空公司</th>
+                    <th>出發地</th>
+                    <th>抵達地</th>
+                    <th>狀態</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for flight in flights %}
+                <tr>
+                    <td>{{ flight.flight_number }}</td>
+                    <td>{{ flight.airline }}</td>
+                    <td>{{ flight.origin }}</td>
+                    <td>{{ flight.destination }}</td>
+                    <td>
+                        {% if flight.is_active %}
+                            <span class="badge bg-success">啟用</span>
+                        {% else %}
+                            <span class="badge bg-secondary">停用</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST"
+                              action="{{ url_for('flights.toggle_flight', flight_id=flight.id) }}"
+                              style="display: inline;">
+                            {% if flight.is_active %}
+                                <button type="submit" class="btn btn-sm btn-warning">停用</button>
+                            {% else %}
+                                <button type="submit" class="btn btn-sm btn-success">啟用</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">尚無追蹤班機，請使用上方表單新增。</div>
+{% endif %}
+{% endblock %}
