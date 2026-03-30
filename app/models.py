@@ -1,6 +1,6 @@
 """SQLAlchemy 資料模型定義。"""
 
-from datetime import datetime, timezone
+from datetime import datetime
 
 from app import db
 
@@ -16,7 +16,7 @@ class TrackedFlight(db.Model):
     origin = db.Column(db.String(100), nullable=False)
     destination = db.Column(db.String(100), nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     prices = db.relationship('FlightPrice', backref='tracked_flight', lazy=True)
 
@@ -37,7 +37,7 @@ class FlightPrice(db.Model):
     airline = db.Column(db.String(100), nullable=False)
     origin = db.Column(db.String(100), nullable=False)
     destination = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     tracked_flight_id = db.Column(
         db.Integer, db.ForeignKey('tracked_flights.id'), nullable=True
@@ -57,7 +57,7 @@ class ScrapeLog(db.Model):
     status = db.Column(db.String(10), nullable=False)  # 'success' 或 'failed'
     error_message = db.Column(db.Text, nullable=True)
     price = db.Column(db.Numeric(10, 2), nullable=True)
-    scraped_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    scraped_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __repr__(self):
         return f'<ScrapeLog {self.flight_number} {self.status} {self.scraped_at}>'

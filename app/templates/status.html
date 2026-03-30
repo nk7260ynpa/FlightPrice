@@ -1,6 +1,78 @@
 {% extends "base.html" %}
+
 {% block title %}抓取狀態 - FlightPrice{% endblock %}
+
 {% block content %}
-<h2>抓取狀態</h2>
-<p>功能開發中</p>
+<h2>今日抓取狀態</h2>
+
+{% if has_logs %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">追蹤班機數</h6>
+                <h4 class="card-title">{{ total_tracked }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">成功擷取</h6>
+                <h4 class="card-title text-success">{{ success_count }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">失敗擷取</h6>
+                <h4 class="card-title text-danger">{{ failed_count }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">抓取紀錄</div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>班次編號</th>
+                    <th>狀態</th>
+                    <th>價格</th>
+                    <th>抓取時間</th>
+                    <th>錯誤原因</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log.flight_number }}</td>
+                    <td>
+                        {% if log.status == 'success' %}
+                            <span class="badge bg-success">成功</span>
+                        {% else %}
+                            <span class="badge bg-danger">失敗</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if log.price %}
+                            NT$ {{ "{:,.0f}".format(log.price) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ log.scraped_at.strftime('%H:%M:%S') }}</td>
+                    <td>{{ log.error_message or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-info">今日尚未執行抓取</div>
+{% endif %}
 {% endblock %}
