@@ -1,6 +1,129 @@
 {% extends "base.html" %}
+
 {% block title %}價格圖表 - FlightPrice{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+{% endblock %}
+
 {% block content %}
-<h2>價格圖表</h2>
-<p>功能開發中</p>
+<h2>價格趨勢圖表</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('charts.index') }}" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label for="flight_id" class="form-label">選擇班機</label>
+                <select class="form-select" id="flight_id" name="flight_id" onchange="this.form.submit()">
+                    <option value="">-- 請選擇班機 --</option>
+                    {% for flight in flights %}
+                    <option value="{{ flight.id }}"
+                            {% if selected_id == flight.id %}selected{% endif %}>
+                        {{ flight.flight_number }} ({{ flight.airline }} {{ flight.origin }} → {{ flight.destination }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if selected_id %}
+<div class="card mb-4">
+    <div class="card-body">
+        <canvas id="priceChart" height="100"></canvas>
+    </div>
+</div>
+
+<div id="statsContainer" class="row mb-4" style="display: none;">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">最高價</h6>
+                <h4 id="maxPrice" class="card-title text-danger">-</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">最低價</h6>
+                <h4 id="minPrice" class="card-title text-success">-</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">平均價</h6>
+                <h4 id="avgPrice" class="card-title text-primary">-</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="noDataMessage" class="alert alert-info" style="display: none;">
+    尚無價格資料
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% if selected_id %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('{{ url_for("charts.chart_data", flight_id=selected_id) }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.labels.length === 0) {
+                document.getElementById('noDataMessage').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('statsContainer').style.display = 'flex';
+            document.getElementById('maxPrice').textContent = 'NT$ ' + data.stats.max.toLocaleString();
+            document.getElementById('minPrice').textContent = 'NT$ ' + data.stats.min.toLocaleString();
+            document.getElementById('avgPrice').textContent = 'NT$ ' + data.stats.avg.toLocaleString();
+
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: '票價 (TWD)',
+                        data: data.data,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        fill: true,
+                        tension: 0.1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'NT$ ' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'NT$ ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endif %}
 {% endblock %}
