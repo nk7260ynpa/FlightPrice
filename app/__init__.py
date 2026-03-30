@@ -57,6 +57,11 @@ def create_app(test_config=None):
     # 設定 logging
     _setup_logging(app)
 
+    # 啟動排程器（測試模式下不啟動）
+    if not app.config.get('TESTING'):
+        from app.scheduler import init_scheduler
+        init_scheduler(app)
+
     return app
 
 
