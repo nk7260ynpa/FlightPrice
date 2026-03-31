@@ -21,9 +21,9 @@
 
 ## 4. 智慧排程爬蟲
 
-- [ ] 4.1 修改 scheduler.py：從 cron daily 改為 interval 每 3 小時
-- [ ] 4.2 修改 scraper.py 的 scrape_all_active_flights：新增當日資料檢查
-- [ ] 4.3 已有當日資料的班機跳過，回傳結果增加 skipped 計數
+- [x] 4.1 修改 scheduler.py：從 cron daily 改為 interval 每 3 小時
+- [x] 4.2 修改 scraper.py 的 scrape_all_active_flights：新增當日資料檢查
+- [x] 4.3 已有當日資料的班機跳過，回傳結果增加 skipped 計數
 
 ## 5. 測試與驗證
 

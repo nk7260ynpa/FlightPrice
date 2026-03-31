@@ -76,13 +76,29 @@ def scrape_flight_price(tracked_flight):
 def scrape_all_active_flights():
     """擷取所有啟用追蹤班機的價格。
 
+    先檢查當日是否已有資料，僅對無資料的班機執行爬蟲。
+
     Returns:
-        包含成功與失敗數量的字典。
+        包含成功、失敗、跳過數量的字典。
     """
+    today = date.today()
     active_flights = TrackedFlight.query.filter_by(is_active=True).all()
-    results = {'success': 0, 'failed': 0, 'total': len(active_flights)}
+    results = {
+        'success': 0, 'failed': 0, 'skipped': 0,
+        'total': len(active_flights),
+    }
 
     for flight in active_flights:
+        # 檢查當日是否已有資料
+        existing = FlightPrice.query.filter_by(
+            flight_number=flight.flight_number,
+            scrape_date=today,
+        ).first()
+        if existing:
+            results['skipped'] += 1
+            logger.debug('跳過 %s: 當日已有資料', flight.flight_number)
+            continue
+
         result = scrape_flight_price(flight)
         if result:
             results['success'] += 1
@@ -90,10 +106,11 @@ def scrape_all_active_flights():
             results['failed'] += 1
 
     logger.info(
-        '抓取完成: 共 %d 筆, 成功 %d, 失敗 %d',
+        '抓取完成: 共 %d 筆, 成功 %d, 失敗 %d, 跳過 %d',
         results['total'],
         results['success'],
         results['failed'],
+        results['skipped'],
     )
     return results
 
