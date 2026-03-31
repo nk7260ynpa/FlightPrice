@@ -1,13 +1,21 @@
-## ADDED Requirements
+## MODIFIED Requirements
 
-### Requirement: 強制抓取所有啟用班機
+### Requirement: 從 Skyscanner 擷取航班價格
 
-系統 SHALL 提供強制抓取函式，對所有啟用班機執行價格擷取，不受當日資料檢查限制。
+系統 SHALL 提供後台爬蟲服務，能擷取指定班機的價格資訊。當 SKYSCANNER_API_KEY 已設定時使用 Skyscanner API，未設定時使用 Playwright 爬取 Google Flights。
 
-#### Scenario: 強制抓取成功
-- **WHEN** 呼叫強制抓取函式
-- **THEN** 系統對所有 `is_active = TRUE` 的班機執行價格擷取，不論當日是否已有資料
+#### Scenario: 有 API Key 時使用 Skyscanner API
+- **WHEN** SKYSCANNER_API_KEY 環境變數已設定
+- **THEN** 系統使用 Skyscanner Partners API 擷取價格
 
-#### Scenario: 強制抓取回傳結果
-- **WHEN** 強制抓取完成
-- **THEN** 回傳成功與失敗的數量統計
+#### Scenario: 無 API Key 時使用 Google Flights 網頁爬取
+- **WHEN** SKYSCANNER_API_KEY 環境變數未設定
+- **THEN** 系統使用 Playwright headless browser 開啟 Google Flights 搜尋頁面，以 `[data-gs]` 選擇器擷取所有價格，取最低價寫入資料庫
+
+#### Scenario: 成功擷取價格
+- **WHEN** 爬蟲對 tracked_flights 中的啟用班機執行價格擷取
+- **THEN** 系統取得該航線的最低價格並寫入 `flight_prices` 表
+
+#### Scenario: 網頁爬取失敗處理
+- **WHEN** Playwright 爬取超時或頁面無法載入價格
+- **THEN** 系統記錄錯誤日誌，不中斷其他班機的擷取流程
