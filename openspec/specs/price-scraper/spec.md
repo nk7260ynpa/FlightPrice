@@ -1,21 +1,13 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
-### Requirement: 每日定時執行擷取
+### Requirement: 強制抓取所有啟用班機
 
-系統 SHALL 每 3 小時自動檢查並執行價格擷取，僅對當日尚無價格資料的啟用班機執行爬蟲。
+系統 SHALL 提供強制抓取函式，對所有啟用班機執行價格擷取，不受當日資料檢查限制。
 
-#### Scenario: 定時觸發檢查
-- **WHEN** 每 3 小時排程觸發
-- **THEN** 系統檢查所有 `is_active = TRUE` 的 tracked_flights，查詢 flight_prices 表是否有 `scrape_date = 今日` 的紀錄
+#### Scenario: 強制抓取成功
+- **WHEN** 呼叫強制抓取函式
+- **THEN** 系統對所有 `is_active = TRUE` 的班機執行價格擷取，不論當日是否已有資料
 
-#### Scenario: 當日無資料時執行爬蟲
-- **WHEN** 某啟用班機在 flight_prices 表中無 `scrape_date = 今日` 的紀錄
-- **THEN** 系統對該班機執行價格擷取
-
-#### Scenario: 當日已有資料時跳過
-- **WHEN** 某啟用班機在 flight_prices 表中已有 `scrape_date = 今日` 的紀錄
-- **THEN** 系統跳過該班機，不進行重複擷取
-
-#### Scenario: 僅擷取啟用的班機
-- **WHEN** 某班機的 `is_active` 為 FALSE
-- **THEN** 系統跳過該班機，不進行價格擷取
+#### Scenario: 強制抓取回傳結果
+- **WHEN** 強制抓取完成
+- **THEN** 回傳成功與失敗的數量統計
