@@ -24,17 +24,21 @@ def scrape_flight_price(tracked_flight):
         成功時回傳 FlightPrice 實例，失敗時回傳 None。
     """
     api_key = os.getenv('SKYSCANNER_API_KEY', '')
-    if not api_key:
-        _log_failure(tracked_flight, 'SKYSCANNER_API_KEY 未設定')
-        return None
 
     try:
-        price_data = _fetch_price_from_skyscanner(
-            api_key=api_key,
-            origin=tracked_flight.origin,
-            destination=tracked_flight.destination,
-            flight_number=tracked_flight.flight_number,
-        )
+        if api_key:
+            price_data = _fetch_price_from_skyscanner(
+                api_key=api_key,
+                origin=tracked_flight.origin,
+                destination=tracked_flight.destination,
+                flight_number=tracked_flight.flight_number,
+            )
+        else:
+            price_data = _fetch_price_via_playwright(
+                origin=tracked_flight.origin,
+                destination=tracked_flight.destination,
+                departure_date=tracked_flight.departure_date,
+            )
 
         if price_data is None:
             _log_failure(tracked_flight, '未找到匹配的航班價格資料')
@@ -138,6 +142,88 @@ def force_scrape_all_active_flights():
         results['failed'],
     )
     return results
+
+
+def _fetch_price_via_playwright(origin, destination, departure_date):
+    """使用 Playwright 爬取 Skyscanner 網頁搜尋結果取得價格。
+
+    Args:
+        origin: 出發地 IATA 代碼。
+        destination: 抵達地 IATA 代碼。
+        departure_date: 出發日期（date 物件）。
+
+    Returns:
+        包含 price 與 departure_time 的字典，或 None。
+    """
+    import re as _re
+    from playwright.sync_api import sync_playwright
+
+    # 構造 Skyscanner 搜尋 URL，日期格式為 YYMMDD
+    date_str = departure_date.strftime('%y%m%d')
+    url = (
+        f'https://www.skyscanner.com.tw/transport/flights/'
+        f'{origin.lower()}/{destination.lower()}/{date_str}/'
+        f'?adultsv2=1&cabinclass=economy&rtn=0'
+    )
+
+    logger.info('Playwright 開始爬取: %s', url)
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.set_extra_http_headers({
+                'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8',
+            })
+
+            page.goto(url, timeout=60000)
+
+            # 等待價格元素出現（Skyscanner 的價格通常在搜尋結果卡片中）
+            try:
+                page.wait_for_selector(
+                    '[class*="Price"], [class*="price"], '
+                    '[data-testid*="price"], [class*="BpkText"]',
+                    timeout=30000,
+                )
+            except Exception:
+                logger.warning('Playwright 等待價格元素超時')
+                browser.close()
+                return None
+
+            # 從頁面中擷取所有價格文字
+            content = page.content()
+            browser.close()
+
+        # 解析價格：尋找 TWD 或 NT$ 開頭的數字
+        prices = []
+        # 匹配 "NT$ 12,345" 或 "TWD 12345" 或純數字在價格區塊中
+        for match in _re.finditer(
+            r'(?:NT\$|TWD)\s*([\d,]+)', content
+        ):
+            price_str = match.group(1).replace(',', '')
+            try:
+                price = float(price_str)
+                if price > 0:
+                    prices.append(price)
+            except ValueError:
+                continue
+
+        if prices:
+            min_price = min(prices)
+            logger.info('Playwright 擷取成功，最低價: %s', min_price)
+            return {
+                'price': min_price,
+                'departure_time': datetime.combine(
+                    departure_date, datetime.min.time()
+                ),
+            }
+
+        logger.warning('Playwright 未找到價格資料')
+        return None
+
+    except Exception as e:
+        logger.error('Playwright 爬取失敗: %s', e)
+        return None
 
 
 def _fetch_price_from_skyscanner(api_key, origin, destination, flight_number):

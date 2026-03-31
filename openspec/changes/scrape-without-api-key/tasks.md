@@ -6,9 +6,9 @@
 
 ## 2. 爬取邏輯改寫
 
-- [ ] 2.1 scraper.py 新增 _fetch_price_via_playwright 函式：用 Playwright 爬取 Skyscanner 網頁搜尋結果
-- [ ] 2.2 修改 scrape_flight_price：有 API Key 用 API，無則用 Playwright 爬取
-- [ ] 2.3 構造 Skyscanner 搜尋 URL（origin/destination/date 格式）
+- [x] 2.1 scraper.py 新增 _fetch_price_via_playwright 函式：用 Playwright 爬取 Skyscanner 網頁搜尋結果
+- [x] 2.2 修改 scrape_flight_price：有 API Key 用 API，無則用 Playwright 爬取
+- [x] 2.3 構造 Skyscanner 搜尋 URL（origin/destination/date 格式）
 
 ## 3. 測試與驗證
 
