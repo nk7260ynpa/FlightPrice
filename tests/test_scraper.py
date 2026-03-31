@@ -125,3 +125,51 @@ class TestScrapeAllActiveFlights:
         assert results['total'] == 0
         assert results['success'] == 0
         assert results['failed'] == 0
+        assert results['skipped'] == 0
+
+    @patch('app.scraper._fetch_price_from_skyscanner')
+    def test_skip_flight_with_today_data(self, mock_fetch, app, db_session):
+        """測試當日已有資料的班機被跳過。"""
+        flight = TrackedFlight(
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT', is_active=True,
+            departure_date=date(2026, 5, 1),
+        )
+        db_session.add(flight)
+        db_session.commit()
+
+        # 建立當日已有的價格資料
+        existing_price = FlightPrice(
+            flight_number='CI-100', price=12000,
+            scrape_date=date.today(), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add(existing_price)
+        db_session.commit()
+
+        results = scrape_all_active_flights()
+
+        assert results['total'] == 1
+        assert results['skipped'] == 1
+        assert results['success'] == 0
+        mock_fetch.assert_not_called()
+
+    @patch('app.scraper._fetch_price_from_skyscanner')
+    def test_scrape_flight_without_today_data(self, mock_fetch, app, db_session):
+        """測試當日無資料的班機正常擷取。"""
+        flight = TrackedFlight(
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT', is_active=True,
+            departure_date=date(2026, 5, 1),
+        )
+        db_session.add(flight)
+        db_session.commit()
+
+        mock_fetch.return_value = {'price': 12000, 'departure_time': None}
+
+        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
+            results = scrape_all_active_flights()
+
+        assert results['total'] == 1
+        assert results['success'] == 1
+        assert results['skipped'] == 0

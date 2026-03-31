@@ -213,21 +213,36 @@ class TestFlightLookupAPI:
         assert '請輸入班次代碼' in data['error']
 
     @patch('app.routes.flights.lookup_flight_info')
-    def test_lookup_found(self, mock_lookup, client):
-        """測試成功查詢航班資訊。"""
-        mock_lookup.return_value = {
+    def test_lookup_found_single(self, mock_lookup, client):
+        """測試查詢單段航班回傳 routes 陣列。"""
+        mock_lookup.return_value = [{
             'airline': '中華航空',
             'origin': 'TPE',
             'destination': 'NRT',
-        }
+        }]
 
         response = client.get('/api/flights/lookup?flight_number=CI100')
         data = json.loads(response.data)
 
         assert response.status_code == 200
-        assert data['airline'] == '中華航空'
-        assert data['origin'] == 'TPE'
-        assert data['destination'] == 'NRT'
+        assert len(data['routes']) == 1
+        assert data['routes'][0]['airline'] == '中華航空'
+
+    @patch('app.routes.flights.lookup_flight_info')
+    def test_lookup_found_multi(self, mock_lookup, client):
+        """測試查詢多段航班回傳多個 routes。"""
+        mock_lookup.return_value = [
+            {'airline': '酷航', 'origin': 'SIN', 'destination': 'TPE'},
+            {'airline': '酷航', 'origin': 'TPE', 'destination': 'NRT'},
+        ]
+
+        response = client.get('/api/flights/lookup?flight_number=TR866')
+        data = json.loads(response.data)
+
+        assert response.status_code == 200
+        assert len(data['routes']) == 2
+        assert data['routes'][0]['origin'] == 'SIN'
+        assert data['routes'][1]['origin'] == 'TPE'
 
     @patch('app.routes.flights.lookup_flight_info')
     def test_lookup_not_found(self, mock_lookup, client):

@@ -27,8 +27,8 @@
 
 ## 5. 測試與驗證
 
-- [ ] 5.1 更新 test_flight_lookup.py：所有查詢函式回傳改為列表格式
-- [ ] 5.2 更新 test_flights.py：lookup API 回傳改為 routes 陣列
-- [ ] 5.3 新增多段航班解析與當日資料跳過的測試
-- [ ] 5.4 執行全部測試確認無回歸
+- [x] 5.1 更新 test_flight_lookup.py：所有查詢函式回傳改為列表格式
+- [x] 5.2 更新 test_flights.py：lookup API 回傳改為 routes 陣列
+- [x] 5.3 新增多段航班解析與當日資料跳過的測試
+- [x] 5.4 執行全部測試確認無回歸
 - [ ] 5.5 重建 Docker 容器驗證所有變更
