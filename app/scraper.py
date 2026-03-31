@@ -156,7 +156,7 @@ def _fetch_price_via_playwright(origin, destination, departure_date):
         包含 price 與 departure_time 的字典，或 None。
     """
     import re as _re
-    from playwright.sync_api import sync_playwright
+    from playwright.sync_api import sync_playwright  # noqa: F811
 
     # 構造 Skyscanner 搜尋 URL，日期格式為 YYMMDD
     date_str = departure_date.strftime('%y%m%d')

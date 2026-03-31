@@ -6,6 +6,7 @@ from datetime import date
 from app import db
 from app.models import FlightPrice, ScrapeLog, TrackedFlight
 from app.scraper import (
+    _fetch_price_via_playwright,
     force_scrape_all_active_flights,
     scrape_all_active_flights,
     scrape_flight_price,
@@ -51,17 +52,18 @@ class TestScrapeFlightPrice:
         log = ScrapeLog.query.filter_by(flight_number='CI-100').first()
         assert log.status == 'success'
 
-    def test_scrape_no_api_key(self, app, db_session):
-        """測試未設定 API key 時記錄失敗。"""
+    @patch('app.scraper._fetch_price_via_playwright')
+    def test_scrape_no_api_key_uses_playwright(self, mock_pw, app, db_session):
+        """測試未設定 API Key 時使用 Playwright。"""
         flight = self._create_tracked_flight(db_session)
+        mock_pw.return_value = {'price': 11000, 'departure_time': None}
 
         with patch.dict('os.environ', {'SKYSCANNER_API_KEY': ''}):
             result = scrape_flight_price(flight)
 
-        assert result is None
-        log = ScrapeLog.query.filter_by(flight_number='CI-100').first()
-        assert log.status == 'failed'
-        assert 'SKYSCANNER_API_KEY' in log.error_message
+        assert result is not None
+        assert float(result.price) == 11000.0
+        mock_pw.assert_called_once()
 
     @patch('app.scraper._fetch_price_from_skyscanner')
     def test_scrape_api_returns_none(self, mock_fetch, app, db_session):
@@ -215,3 +217,92 @@ class TestForceScrapeAllActiveFlights:
         results = force_scrape_all_active_flights()
         assert results['total'] == 0
         assert results['success'] == 0
+
+
+class TestFetchPriceViaPlaywright:
+    """Playwright 爬取函式測試。"""
+
+    @patch('playwright.sync_api.sync_playwright')
+    def test_playwright_success(self, mock_pw, app):
+        """測試 Playwright 成功擷取價格。"""
+        mock_page = MagicMock()
+        mock_page.content.return_value = '<div>NT$ 12,345</div><div>NT$ 15,000</div>'
+        mock_browser = MagicMock()
+        mock_browser.new_page.return_value = mock_page
+        mock_pw_instance = MagicMock()
+        mock_pw_instance.chromium.launch.return_value = mock_browser
+        mock_pw.return_value.__enter__ = MagicMock(return_value=mock_pw_instance)
+        mock_pw.return_value.__exit__ = MagicMock(return_value=False)
+
+        result = _fetch_price_via_playwright('TPE', 'NRT', date(2026, 5, 1))
+
+        assert result is not None
+        assert result['price'] == 12345.0
+
+    @patch('playwright.sync_api.sync_playwright')
+    def test_playwright_no_prices(self, mock_pw, app):
+        """測試頁面無價格資料時回傳 None。"""
+        mock_page = MagicMock()
+        mock_page.content.return_value = '<div>No results</div>'
+        mock_browser = MagicMock()
+        mock_browser.new_page.return_value = mock_page
+        mock_pw_instance = MagicMock()
+        mock_pw_instance.chromium.launch.return_value = mock_browser
+        mock_pw.return_value.__enter__ = MagicMock(return_value=mock_pw_instance)
+        mock_pw.return_value.__exit__ = MagicMock(return_value=False)
+
+        result = _fetch_price_via_playwright('TPE', 'NRT', date(2026, 5, 1))
+
+        assert result is None
+
+    @patch('playwright.sync_api.sync_playwright')
+    def test_playwright_exception(self, mock_pw, app):
+        """測試 Playwright 發生例外時回傳 None。"""
+        mock_pw.return_value.__enter__ = MagicMock(side_effect=Exception('啟動失敗'))
+        mock_pw.return_value.__exit__ = MagicMock(return_value=False)
+
+        result = _fetch_price_via_playwright('TPE', 'NRT', date(2026, 5, 1))
+
+        assert result is None
+
+
+class TestScrapeChainSwitch:
+    """查詢鏈切換邏輯測試。"""
+
+    @patch('app.scraper._fetch_price_from_skyscanner')
+    def test_use_api_when_key_set(self, mock_api, app, db_session):
+        """測試有 API Key 時使用 API。"""
+        flight = TrackedFlight(
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
+        )
+        db_session.add(flight)
+        db_session.commit()
+
+        mock_api.return_value = {'price': 12000, 'departure_time': None}
+
+        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
+            result = scrape_flight_price(flight)
+
+        assert result is not None
+        mock_api.assert_called_once()
+
+    @patch('app.scraper._fetch_price_via_playwright')
+    def test_use_playwright_when_no_key(self, mock_pw, app, db_session):
+        """測試無 API Key 時使用 Playwright。"""
+        flight = TrackedFlight(
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT',
+            departure_date=date(2026, 5, 1),
+        )
+        db_session.add(flight)
+        db_session.commit()
+
+        mock_pw.return_value = {'price': 12000, 'departure_time': None}
+
+        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': ''}):
+            result = scrape_flight_price(flight)
+
+        assert result is not None
+        mock_pw.assert_called_once()

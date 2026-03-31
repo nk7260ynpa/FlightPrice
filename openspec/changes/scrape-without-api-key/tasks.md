@@ -12,7 +12,7 @@
 
 ## 3. 測試與驗證
 
-- [ ] 3.1 撰寫 Playwright 爬取函式的單元測試（mock Playwright）
-- [ ] 3.2 撰寫查詢鏈切換邏輯的測試（有/無 API Key）
-- [ ] 3.3 執行全部測試確認無回歸
-- [ ] 3.4 重建 Docker 容器驗證 Playwright 可正常運作
+- [x] 3.1 撰寫 Playwright 爬取函式的單元測試（mock Playwright）
+- [x] 3.2 撰寫查詢鏈切換邏輯的測試（有/無 API Key）
+- [x] 3.3 執行全部測試確認無回歸
+- [x] 3.4 重建 Docker 容器驗證 Playwright 可正常運作
