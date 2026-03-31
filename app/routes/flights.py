@@ -27,9 +27,9 @@ def lookup():
     if not flight_number:
         return jsonify({'error': '請輸入班次代碼'}), 400
 
-    result = lookup_flight_info(flight_number)
-    if result:
-        return jsonify(result)
+    routes = lookup_flight_info(flight_number)
+    if routes:
+        return jsonify({'routes': routes})
 
     return jsonify({'error': '無法查詢該班次資訊，請手動輸入'}), 404
 

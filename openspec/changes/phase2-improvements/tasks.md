@@ -5,13 +5,13 @@
 
 ## 2. 多段航班查詢改造
 
-- [ ] 2.1 修改 Flightradar24 爬取：從 `_extract_fr24_airport` 改為 `_extract_fr24_routes`，解析所有不重複航段
-- [ ] 2.2 修改 `_lookup_via_flightradar24` 回傳航段列表
-- [ ] 2.3 修改 `_lookup_via_aviationstack` 回傳航段列表格式
-- [ ] 2.4 修改 `_lookup_from_db_cache` 回傳航段列表格式
-- [ ] 2.5 修改 `_lookup_from_code_table` 回傳航段列表格式
-- [ ] 2.6 修改 `lookup_flight_info` 統一回傳列表格式
-- [ ] 2.7 修改 `/api/flights/lookup` 回傳 `{routes: [...]}`
+- [x] 2.1 修改 Flightradar24 爬取：從 `_extract_fr24_airport` 改為 `_extract_fr24_routes`，解析所有不重複航段
+- [x] 2.2 修改 `_lookup_via_flightradar24` 回傳航段列表
+- [x] 2.3 修改 `_lookup_via_aviationstack` 回傳航段列表格式
+- [x] 2.4 修改 `_lookup_from_db_cache` 回傳航段列表格式
+- [x] 2.5 修改 `_lookup_from_code_table` 回傳航段列表格式
+- [x] 2.6 修改 `lookup_flight_info` 統一回傳列表格式
+- [x] 2.7 修改 `/api/flights/lookup` 回傳 `{routes: [...]}`
 
 ## 3. 前端航段選擇器
 

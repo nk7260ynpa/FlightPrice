@@ -1,7 +1,8 @@
 """航班資訊查詢模組。
 
 根據班次代碼查詢航空公司、出發地、抵達地。
-優先使用 AviationStack API，失敗時使用內建 IATA 代碼對照表。
+查詢鏈：DB 快取 → Flightradar24 → AviationStack → IATA 對照表。
+所有查詢函式回傳航段列表 [{airline, origin, destination}, ...]。
 """
 
 import logging
@@ -52,13 +53,12 @@ def lookup_flight_info(flight_number):
         flight_number: 班次代碼，例如 'CI100' 或 'CI-100'。
 
     Returns:
-        成功時回傳字典 {'airline', 'origin', 'destination'}，
+        成功時回傳航段列表 [{'airline', 'origin', 'destination'}, ...]，
         失敗時回傳 None。
     """
-    # 正規化班次代碼：移除連字號與空白
     normalized = re.sub(r'[-\s]', '', flight_number.upper())
 
-    # ① DB 快取：從 tracked_flights 查同班次已有紀錄
+    # ① DB 快取
     result = _lookup_from_db_cache(normalized, flight_number)
     if result:
         return result
@@ -83,7 +83,11 @@ def lookup_flight_info(flight_number):
 
 
 def _lookup_from_db_cache(normalized, original):
-    """從 tracked_flights 表查詢同班次已有紀錄。"""
+    """從 tracked_flights 表查詢同班次已有紀錄。
+
+    Returns:
+        航段列表或 None。
+    """
     try:
         from app.models import TrackedFlight
         existing = TrackedFlight.query.filter(
@@ -94,11 +98,11 @@ def _lookup_from_db_cache(normalized, original):
 
         if existing:
             logger.info('DB 快取命中: %s', normalized)
-            return {
+            return [{
                 'airline': existing.airline,
                 'origin': existing.origin,
                 'destination': existing.destination,
-            }
+            }]
     except Exception as e:
         logger.debug('DB 快取查詢失敗: %s', e)
 
@@ -106,7 +110,11 @@ def _lookup_from_db_cache(normalized, original):
 
 
 def _lookup_via_flightradar24(flight_number):
-    """透過 Flightradar24 網頁爬取航班資訊。"""
+    """透過 Flightradar24 網頁爬取航班資訊。
+
+    Returns:
+        航段列表（可能多段）或 None。
+    """
     url = f'https://www.flightradar24.com/data/flights/{flight_number.lower()}'
     headers = {
         'User-Agent': (
@@ -128,22 +136,12 @@ def _lookup_via_flightradar24(flight_number):
 
         html = response.text
         soup = BeautifulSoup(html, 'html.parser')
-
-        # 解析航班資訊：從頁面中的航線資料提取
-        # Flightradar24 頁面包含 data-flight 屬性或表格中的機場 IATA 代碼
-        origin = _extract_fr24_airport(soup, 'origin')
-        destination = _extract_fr24_airport(soup, 'destination')
         airline = _extract_fr24_airline(soup, flight_number)
+        routes = _extract_fr24_routes(soup, airline or '')
 
-        if origin and destination:
-            logger.info(
-                'Flightradar24 查詢成功: %s → %s', origin, destination
-            )
-            return {
-                'airline': airline or '',
-                'origin': origin,
-                'destination': destination,
-            }
+        if routes:
+            logger.info('Flightradar24 查詢成功: %d 段航線', len(routes))
+            return routes
 
         return None
 
@@ -155,54 +153,60 @@ def _lookup_via_flightradar24(flight_number):
         return None
 
 
-def _extract_fr24_airport(soup, position):
-    """從 Flightradar24 頁面解析出發地或抵達地 IATA 代碼。"""
-    # 嘗試從表格的 td 元素中提取機場代碼
-    # Flightradar24 的航班歷史表格包含 Origin 和 Destination 欄位
+def _extract_fr24_routes(soup, airline):
+    """從 Flightradar24 頁面解析所有不重複航段。
+
+    Returns:
+        航段列表 [{'airline', 'origin', 'destination'}, ...]，無資料回傳空列表。
+    """
+    routes = []
+    seen = set()
+
     table = soup.find('table', {'id': 'tbl-datatable'})
     if table:
         rows = table.find_all('tr')
-        for row in rows[1:]:  # 跳過表頭
+        for row in rows[1:]:
             cols = row.find_all('td')
             if len(cols) >= 3:
-                # 欄位順序：Date, From, To, ...
-                if position == 'origin':
-                    airport_text = cols[1].get_text(strip=True)
-                else:
-                    airport_text = cols[2].get_text(strip=True)
-                # 提取括號內的 IATA 代碼，如 "Tokyo Narita (NRT)"
-                match = re.search(r'\(([A-Z]{3})\)', airport_text)
-                if match:
-                    return match.group(1)
-                # 或直接是 3 碼 IATA
-                match = re.match(r'^[A-Z]{3}$', airport_text)
-                if match:
-                    return airport_text
+                origin = _parse_iata_from_text(cols[1].get_text(strip=True))
+                destination = _parse_iata_from_text(cols[2].get_text(strip=True))
+                if origin and destination:
+                    key = f'{origin}-{destination}'
+                    if key not in seen:
+                        seen.add(key)
+                        routes.append({
+                            'airline': airline,
+                            'origin': origin,
+                            'destination': destination,
+                        })
 
-    # 備援：搜尋頁面中帶有機場代碼的元素
-    for tag in soup.find_all(['span', 'a', 'div'], class_=re.compile(r'airport|iata')):
-        text = tag.get_text(strip=True)
-        match = re.match(r'^[A-Z]{3}$', text)
-        if match:
-            return text
+    return routes
 
+
+def _parse_iata_from_text(text):
+    """從文字中提取 IATA 機場代碼。"""
+    # "Tokyo Narita (NRT)" → NRT
+    match = re.search(r'\(([A-Z]{3})\)', text)
+    if match:
+        return match.group(1)
+    # 直接是 3 碼 IATA
+    match = re.match(r'^[A-Z]{3}$', text)
+    if match:
+        return text
     return None
 
 
 def _extract_fr24_airline(soup, flight_number):
     """從 Flightradar24 頁面解析航空公司名稱。"""
-    # 嘗試從頁面標題或特定元素提取
     title = soup.find('title')
     if title:
         title_text = title.get_text(strip=True)
-        # 標題格式通常為 "TR866 - Scoot Flight Tracker"
         parts = title_text.split(' - ')
         if len(parts) >= 2:
             airline_part = parts[1].replace('Flight Tracker', '').strip()
             if airline_part:
                 return airline_part
 
-    # 備援：從 IATA 對照表取得
     match = re.match(r'^([A-Z]{2})\d+', flight_number)
     if match:
         return AIRLINE_CODES.get(match.group(1), '')
@@ -211,7 +215,11 @@ def _extract_fr24_airline(soup, flight_number):
 
 
 def _lookup_via_aviationstack(flight_number):
-    """透過 AviationStack API 查詢航班資訊。"""
+    """透過 AviationStack API 查詢航班資訊。
+
+    Returns:
+        航段列表或 None。
+    """
     api_key = os.getenv('AVIATIONSTACK_API_KEY', '')
     if not api_key:
         logger.debug('AVIATIONSTACK_API_KEY 未設定，跳過 API 查詢')
@@ -235,11 +243,11 @@ def _lookup_via_aviationstack(flight_number):
             return None
 
         flight = flights[0]
-        return {
+        return [{
             'airline': flight.get('airline', {}).get('name', ''),
             'origin': flight.get('departure', {}).get('iata', ''),
             'destination': flight.get('arrival', {}).get('iata', ''),
-        }
+        }]
 
     except Exception as e:
         logger.error('AviationStack API 查詢失敗: %s', e)
@@ -249,9 +257,9 @@ def _lookup_via_aviationstack(flight_number):
 def _lookup_from_code_table(flight_number):
     """從內建 IATA 代碼對照表解析航空公司名稱。
 
-    僅能取得航空公司，無法取得出發地與抵達地。
+    Returns:
+        航段列表（僅含航空公司）或 None。
     """
-    # 提取前 2 碼作為航空公司代碼
     match = re.match(r'^([A-Z]{2})\d+', flight_number)
     if not match:
         return None
@@ -261,8 +269,8 @@ def _lookup_from_code_table(flight_number):
     if not airline_name:
         return None
 
-    return {
+    return [{
         'airline': airline_name,
         'origin': '',
         'destination': '',
-    }
+    }]
