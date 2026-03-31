@@ -61,10 +61,10 @@
 
 ## 10. 航班查詢多層備援策略
 
-- [ ] 10.1 flight_lookup.py 新增 DB 快取查詢：從 tracked_flights 查同班次已有紀錄，直接複製 airline/origin/destination
-- [ ] 10.2 flight_lookup.py 新增 Flightradar24 爬取函式：從網頁解析航空公司、出發地、抵達地 IATA 代碼
-- [ ] 10.3 調整 lookup_flight_info 查詢鏈順序：DB 快取 → Flightradar24 → AviationStack → IATA 對照表
-- [ ] 10.4 撰寫多層備援查詢的單元測試
+- [x] 10.1 flight_lookup.py 新增 DB 快取查詢：從 tracked_flights 查同班次已有紀錄，直接複製 airline/origin/destination
+- [x] 10.2 flight_lookup.py 新增 Flightradar24 爬取函式：從網頁解析航空公司、出發地、抵達地 IATA 代碼
+- [x] 10.3 調整 lookup_flight_info 查詢鏈順序：DB 快取 → Flightradar24 → AviationStack → IATA 對照表
+- [x] 10.4 撰寫多層備援查詢的單元測試
 - [ ] 10.5 重建 Docker 容器驗證變更
 
 ## 8. 文件與收尾
