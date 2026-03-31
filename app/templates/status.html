@@ -3,7 +3,12 @@
 {% block title %}抓取狀態 - FlightPrice{% endblock %}
 
 {% block content %}
-<h2>今日抓取狀態</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">今日抓取狀態</h2>
+    <form method="POST" action="{{ url_for('status.force_scrape') }}">
+        <button type="submit" class="btn btn-danger">立即抓取</button>
+    </form>
+</div>
 
 {% if has_logs %}
 <div class="row mb-4">

@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from flask import Blueprint, render_template
+from flask import Blueprint, flash, redirect, render_template, url_for
 from sqlalchemy import func
 
 from app.models import ScrapeLog, TrackedFlight
@@ -36,3 +36,21 @@ def index():
         failed_count=failed_count,
         has_logs=len(logs) > 0,
     )
+
+
+@status_bp.route('/status/scrape', methods=['POST'])
+def force_scrape():
+    """強制執行價格抓取。"""
+    from app.scraper import force_scrape_all_active_flights
+
+    results = force_scrape_all_active_flights()
+
+    if results['total'] == 0:
+        flash('無啟用班機可抓取', 'warning')
+    else:
+        flash(
+            f'強制抓取完成：成功 {results["success"]}，失敗 {results["failed"]}',
+            'success' if results['failed'] == 0 else 'warning',
+        )
+
+    return redirect(url_for('status.index'))

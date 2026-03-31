@@ -5,7 +5,11 @@ from datetime import date
 
 from app import db
 from app.models import FlightPrice, ScrapeLog, TrackedFlight
-from app.scraper import scrape_flight_price, scrape_all_active_flights
+from app.scraper import (
+    force_scrape_all_active_flights,
+    scrape_all_active_flights,
+    scrape_flight_price,
+)
 
 
 class TestScrapeFlightPrice:
@@ -173,3 +177,41 @@ class TestScrapeAllActiveFlights:
         assert results['total'] == 1
         assert results['success'] == 1
         assert results['skipped'] == 0
+
+
+class TestForceScrapeAllActiveFlights:
+    """force_scrape_all_active_flights 函式測試。"""
+
+    @patch('app.scraper._fetch_price_from_skyscanner')
+    def test_force_scrape_ignores_existing_data(self, mock_fetch, app, db_session):
+        """測試強制抓取不跳過當日已有資料的班機。"""
+        flight = TrackedFlight(
+            flight_number='CI-100', airline='中華航空',
+            origin='TPE', destination='NRT', is_active=True,
+            departure_date=date(2026, 5, 1),
+        )
+        db_session.add(flight)
+        db_session.commit()
+
+        existing_price = FlightPrice(
+            flight_number='CI-100', price=12000,
+            scrape_date=date.today(), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add(existing_price)
+        db_session.commit()
+
+        mock_fetch.return_value = {'price': 11500, 'departure_time': None}
+
+        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
+            results = force_scrape_all_active_flights()
+
+        assert results['total'] == 1
+        assert results['success'] == 1
+        mock_fetch.assert_called_once()
+
+    def test_force_scrape_no_active_flights(self, app, db_session):
+        """測試無啟用班機時的結果。"""
+        results = force_scrape_all_active_flights()
+        assert results['total'] == 0
+        assert results['success'] == 0

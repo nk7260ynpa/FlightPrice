@@ -115,6 +115,31 @@ def scrape_all_active_flights():
     return results
 
 
+def force_scrape_all_active_flights():
+    """強制擷取所有啟用追蹤班機的價格（不檢查當日資料）。
+
+    Returns:
+        包含成功與失敗數量的字典。
+    """
+    active_flights = TrackedFlight.query.filter_by(is_active=True).all()
+    results = {'success': 0, 'failed': 0, 'total': len(active_flights)}
+
+    for flight in active_flights:
+        result = scrape_flight_price(flight)
+        if result:
+            results['success'] += 1
+        else:
+            results['failed'] += 1
+
+    logger.info(
+        '強制抓取完成: 共 %d 筆, 成功 %d, 失敗 %d',
+        results['total'],
+        results['success'],
+        results['failed'],
+    )
+    return results
+
+
 def _fetch_price_from_skyscanner(api_key, origin, destination, flight_number):
     """從 Skyscanner API 擷取航班價格。
 

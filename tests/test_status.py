@@ -1,6 +1,7 @@
 """抓取狀態路由單元測試。"""
 
 from datetime import date
+from unittest.mock import patch
 
 from app import db
 from app.models import ScrapeLog, TrackedFlight
@@ -78,3 +79,29 @@ class TestStatusIndex:
         assert '追蹤班機數' in html
         assert '成功擷取' in html
         assert '失敗擷取' in html
+
+
+class TestForceScrape:
+    """強制抓取路由測試。"""
+
+    @patch('app.scraper.force_scrape_all_active_flights')
+    def test_force_scrape_success(self, mock_scrape, client):
+        """測試強制抓取成功回傳 flash 訊息。"""
+        mock_scrape.return_value = {'total': 2, 'success': 2, 'failed': 0}
+
+        response = client.post('/status/scrape', follow_redirects=True)
+        html = response.data.decode('utf-8')
+
+        assert response.status_code == 200
+        assert '強制抓取完成' in html
+        assert '成功 2' in html
+
+    @patch('app.scraper.force_scrape_all_active_flights')
+    def test_force_scrape_no_flights(self, mock_scrape, client):
+        """測試無啟用班機時的提示。"""
+        mock_scrape.return_value = {'total': 0, 'success': 0, 'failed': 0}
+
+        response = client.post('/status/scrape', follow_redirects=True)
+        html = response.data.decode('utf-8')
+
+        assert '無啟用班機可抓取' in html
