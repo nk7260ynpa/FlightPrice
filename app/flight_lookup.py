@@ -167,9 +167,10 @@ def _extract_fr24_routes(soup, airline):
         rows = table.find_all('tr')
         for row in rows[1:]:
             cols = row.find_all('td')
-            if len(cols) >= 3:
-                origin = _parse_iata_from_text(cols[1].get_text(strip=True))
-                destination = _parse_iata_from_text(cols[2].get_text(strip=True))
+            if len(cols) >= 5:
+                # FR24 欄位：[0]摘要 [1]空 [2]日期 [3]FROM [4]TO [5]機型 ...
+                origin = _parse_iata_from_text(cols[3].get_text(strip=True))
+                destination = _parse_iata_from_text(cols[4].get_text(strip=True))
                 if origin and destination:
                     key = f'{origin}-{destination}'
                     if key not in seen:
@@ -184,15 +185,16 @@ def _extract_fr24_routes(soup, airline):
 
 
 def _parse_iata_from_text(text):
-    """從文字中提取 IATA 機場代碼。"""
-    # "Tokyo Narita (NRT)" → NRT
+    """從文字中提取 IATA 機場代碼。
+
+    支援格式：「Tokyo Narita (NRT)」「Taipei(TPE)」「NRT」
+    """
     match = re.search(r'\(([A-Z]{3})\)', text)
     if match:
         return match.group(1)
-    # 直接是 3 碼 IATA
-    match = re.match(r'^[A-Z]{3}$', text)
+    match = re.match(r'^[A-Z]{3}$', text.strip())
     if match:
-        return text
+        return text.strip()
     return None
 
 

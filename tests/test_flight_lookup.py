@@ -60,13 +60,14 @@ class TestFlightradar24Lookup:
         """測試單段航班回傳長度 1 列表。"""
         mock_response = MagicMock()
         mock_response.status_code = 200
+        # 模擬實際 FR24 HTML 結構：cols[0]摘要 [1]空 [2]日期 [3]FROM [4]TO [5]機型...
         mock_response.text = """
         <html>
         <title>CI100 - China Airlines Flight Tracker</title>
         <table id="tbl-datatable">
-            <tr><th>Date</th><th>From</th><th>To</th></tr>
-            <tr><td>2026-03-30</td><td>Taipei (TPE)</td><td>Tokyo Narita (NRT)</td></tr>
-            <tr><td>2026-03-29</td><td>Taipei (TPE)</td><td>Tokyo Narita (NRT)</td></tr>
+            <tr><th>FLIGHTS HISTORY</th><th></th><th>DATE</th><th>FROM</th><th>TO</th><th>AIRCRAFT</th></tr>
+            <tr><td>summary</td><td></td><td>30 Mar 2026</td><td>Taipei(TPE)</td><td>Tokyo(NRT)</td><td>777</td></tr>
+            <tr><td>summary</td><td></td><td>29 Mar 2026</td><td>Taipei(TPE)</td><td>Tokyo(NRT)</td><td>777</td></tr>
         </table>
         </html>
         """
@@ -87,11 +88,11 @@ class TestFlightradar24Lookup:
         <html>
         <title>TR866 - Scoot Flight Tracker</title>
         <table id="tbl-datatable">
-            <tr><th>Date</th><th>From</th><th>To</th></tr>
-            <tr><td>2026-03-30</td><td>Singapore (SIN)</td><td>Taipei (TPE)</td></tr>
-            <tr><td>2026-03-30</td><td>Taipei (TPE)</td><td>Tokyo Narita (NRT)</td></tr>
-            <tr><td>2026-03-29</td><td>Singapore (SIN)</td><td>Taipei (TPE)</td></tr>
-            <tr><td>2026-03-29</td><td>Taipei (TPE)</td><td>Tokyo Narita (NRT)</td></tr>
+            <tr><th>FLIGHTS HISTORY</th><th></th><th>DATE</th><th>FROM</th><th>TO</th><th>AIRCRAFT</th></tr>
+            <tr><td>summary</td><td></td><td>30 Mar 2026</td><td>Taipei(TPE)</td><td>Tokyo(NRT)</td><td>789</td></tr>
+            <tr><td>summary</td><td></td><td>30 Mar 2026</td><td>Singapore(SIN)</td><td>Taipei(TPE)</td><td>789</td></tr>
+            <tr><td>summary</td><td></td><td>29 Mar 2026</td><td>Taipei(TPE)</td><td>Tokyo(NRT)</td><td>789</td></tr>
+            <tr><td>summary</td><td></td><td>29 Mar 2026</td><td>Singapore(SIN)</td><td>Taipei(TPE)</td><td>789</td></tr>
         </table>
         </html>
         """
@@ -100,10 +101,10 @@ class TestFlightradar24Lookup:
         result = _lookup_via_flightradar24('TR866')
         assert isinstance(result, list)
         assert len(result) == 2
-        assert result[0]['origin'] == 'SIN'
-        assert result[0]['destination'] == 'TPE'
-        assert result[1]['origin'] == 'TPE'
-        assert result[1]['destination'] == 'NRT'
+        assert result[0]['origin'] == 'TPE'
+        assert result[0]['destination'] == 'NRT'
+        assert result[1]['origin'] == 'SIN'
+        assert result[1]['destination'] == 'TPE'
 
     @patch('app.flight_lookup.requests.get')
     def test_fr24_non_200(self, mock_get, app):
