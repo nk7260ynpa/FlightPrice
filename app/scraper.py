@@ -145,7 +145,7 @@ def force_scrape_all_active_flights():
 
 
 def _fetch_price_via_playwright(origin, destination, departure_date):
-    """使用 Playwright 爬取 Skyscanner 網頁搜尋結果取得價格。
+    """使用 Playwright 爬取 Google Flights 搜尋結果取得價格。
 
     Args:
         origin: 出發地 IATA 代碼。
@@ -158,59 +158,54 @@ def _fetch_price_via_playwright(origin, destination, departure_date):
     import re as _re
     from playwright.sync_api import sync_playwright  # noqa: F811
 
-    # 構造 Skyscanner 搜尋 URL，日期格式為 YYMMDD
-    date_str = departure_date.strftime('%y%m%d')
+    date_str = departure_date.strftime('%Y-%m-%d')
     url = (
-        f'https://www.skyscanner.com.tw/transport/flights/'
-        f'{origin.lower()}/{destination.lower()}/{date_str}/'
-        f'?adultsv2=1&cabinclass=economy&rtn=0'
+        f'https://www.google.com/travel/flights'
+        f'?q=Flights+to+{destination}+from+{origin}'
+        f'+on+{date_str}+one+way'
+        f'&curr=TWD&hl=zh-TW&gl=tw'
     )
 
-    logger.info('Playwright 開始爬取: %s', url)
+    logger.info('Playwright 開始爬取 Google Flights: %s', url)
 
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
-            page.set_extra_http_headers({
-                'Accept-Language': 'zh-TW,zh;q=0.9,en;q=0.8',
-            })
 
             page.goto(url, timeout=60000)
 
-            # 等待價格元素出現（Skyscanner 的價格通常在搜尋結果卡片中）
+            # 等待搜尋結果載入
             try:
-                page.wait_for_selector(
-                    '[class*="Price"], [class*="price"], '
-                    '[data-testid*="price"], [class*="BpkText"]',
-                    timeout=30000,
-                )
+                page.wait_for_selector('[data-gs]', timeout=30000)
             except Exception:
-                logger.warning('Playwright 等待價格元素超時')
+                logger.warning('Google Flights 等待價格元素超時')
                 browser.close()
                 return None
 
-            # 從頁面中擷取所有價格文字
-            content = page.content()
+            # 額外等待確保所有結果載入
+            page.wait_for_timeout(3000)
+
+            # 從 [data-gs] 元素擷取所有價格文字
+            texts = page.locator('[data-gs]').all_text_contents()
             browser.close()
 
-        # 解析價格：尋找 TWD 或 NT$ 開頭的數字
+        # 解析價格：格式為 "$5,699"
         prices = []
-        # 匹配 "NT$ 12,345" 或 "TWD 12345" 或純數字在價格區塊中
-        for match in _re.finditer(
-            r'(?:NT\$|TWD)\s*([\d,]+)', content
-        ):
-            price_str = match.group(1).replace(',', '')
-            try:
-                price = float(price_str)
-                if price > 0:
-                    prices.append(price)
-            except ValueError:
-                continue
+        for text in texts:
+            match = _re.search(r'\$([\d,]+)', text)
+            if match:
+                price_str = match.group(1).replace(',', '')
+                try:
+                    price = float(price_str)
+                    if price > 0:
+                        prices.append(price)
+                except ValueError:
+                    continue
 
         if prices:
             min_price = min(prices)
-            logger.info('Playwright 擷取成功，最低價: %s', min_price)
+            logger.info('Google Flights 擷取成功，最低價: %s', min_price)
             return {
                 'price': min_price,
                 'departure_time': datetime.combine(
@@ -218,7 +213,7 @@ def _fetch_price_via_playwright(origin, destination, departure_date):
                 ),
             }
 
-        logger.warning('Playwright 未找到價格資料')
+        logger.warning('Google Flights 未找到價格資料')
         return None
 
     except Exception as e:

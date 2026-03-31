@@ -5,8 +5,8 @@
 ## What Changes
 
 - 新增 Playwright 作為 headless browser 依賴
-- 改寫 `_fetch_price_from_skyscanner` 為使用 Playwright 爬取 Skyscanner 網頁搜尋結果
-- 移除 SKYSCANNER_API_KEY 的必要性（改為選用，有 API Key 時優先使用 API，無則爬網頁）
+- 改用 Google Flights 作為網頁爬取來源（Skyscanner 有 Cloudflare 驗證會被擋）
+- 移除 SKYSCANNER_API_KEY 的必要性（改為選用，有 API Key 時優先使用 Skyscanner API，無則爬 Google Flights）
 - Dockerfile 需安裝 Playwright 瀏覽器
 
 ## Capabilities

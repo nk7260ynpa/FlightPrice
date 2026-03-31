@@ -1,64 +1,58 @@
 ## Context
 
-Skyscanner 和 Google Flights 都是 JavaScript SPA，靜態 HTML 不含價格資料。需使用 headless browser 渲染頁面後解析 DOM 取得價格。目前 scraper.py 依賴 Skyscanner Partners API Key。
+Skyscanner 網頁有 Cloudflare「Are you a robot?」驗證，Playwright headless browser 無法通過。實測 Google Flights 無此限制，可正常載入搜尋結果並擷取價格。
 
 ## Goals / Non-Goals
 
 **Goals:**
 
 - 無需 API Key 即可取得航班價格
-- 使用 Playwright headless browser 爬取 Skyscanner 網頁搜尋結果
-- 保留 API Key 作為可選的優先方案（有 Key 用 API，無 Key 用網頁爬取）
+- 使用 Playwright headless browser 爬取 Google Flights 搜尋結果
+- 保留 Skyscanner API Key 作為可選的優先方案
 
 **Non-Goals:**
 
-- 不實作 Google Flights 爬取（Skyscanner 為主要來源即可）
-- 不實作反反爬蟲的進階技術（如 proxy rotation）
+- 不實作 Skyscanner 網頁爬取（Cloudflare 會擋）
+- 不實作反反爬蟲的進階技術
 
 ## Decisions
 
-### 1. Headless browser：Playwright
+### 1. 爬取來源：Google Flights
 
-**選擇**：使用 Playwright（Python 版）
+**選擇**：改用 Google Flights 取代 Skyscanner 網頁爬取
 
-**理由**：Playwright 比 Selenium 更現代、更快、API 更簡潔。內建等待機制適合 SPA 頁面。支援 headless Chromium。
+**理由**：實測 Skyscanner 有 Cloudflare 驗證（Press & Hold），headless browser 無法通過。Google Flights 無此限制，頁面可正常載入並包含完整價格資料。
 
-**替代方案**：Selenium（較笨重、需額外 WebDriver）
+### 2. URL 格式
 
-### 2. 爬取策略
+**URL**：`https://www.google.com/travel/flights?q=Flights to {destination} from {origin} on {YYYY-MM-DD} one way&curr=TWD&hl=zh-TW&gl=tw`
 
-**選擇**：構造 Skyscanner 搜尋 URL，用 Playwright 渲染後等待價格元素出現，解析最低價。
+**理由**：使用自然語言查詢參數，Google Flights 可正確解析並回傳搜尋結果。
 
-**URL 格式**：`https://www.skyscanner.com.tw/transport/flights/{origin}/{destination}/{date}/?adultsv2=1&cabinclass=economy&rtn=0`
+### 3. 價格選擇器
 
-**日期格式**：`YYMMDD`（如 `260501` 代表 2026-05-01）
+**選擇**：使用 `[data-gs]` CSS 選擇器取得所有航班價格文字，再用 regex `\$([\d,]+)` 解析數字。
 
-### 3. 查詢鏈
+**理由**：實測確認 `[data-gs]` 元素包含所有航班價格，格式為 `$5,699`。
+
+### 4. 查詢鏈
 
 ```
 scrape_flight_price(flight)
     │
     ▼
 ┌──────────────────────┐
-│ 有 API Key？          │ ──→ 是 → 使用 Skyscanner API（原有邏輯）
+│ 有 API Key？          │ ──→ 是 → 使用 Skyscanner API
 └──────────────────────┘
     │ 否
     ▼
 ┌──────────────────────┐
-│ Playwright 爬取       │ ──→ 渲染 Skyscanner 網頁，解析最低價
-│ Skyscanner 網頁      │
+│ Playwright 爬取       │ ──→ Google Flights [data-gs] 選擇器
+│ Google Flights       │     解析最低價
 └──────────────────────┘
 ```
 
-### 4. Docker 整合
-
-**選擇**：在 Dockerfile 中安裝 Playwright 及 Chromium 瀏覽器
-
-**注意**：Playwright 的 Chromium 需要額外系統依賴（libglib、libnss 等），Dockerfile 需要 `playwright install --with-deps chromium`
-
 ## Risks / Trade-offs
 
-- **[Skyscanner 頁面結構變更]** → DOM 選擇器可能失效，需定期維護
-- **[反爬蟲機制]** → Skyscanner 可能封鎖頻繁請求，需設定合理間隔
-- **[Docker image 變大]** → Chromium 瀏覽器約增加 300MB，可接受
-- **[爬取速度較慢]** → Playwright 渲染需 5-15 秒/頁，比 API 慢，但每 3 小時才跑一次可接受
+- **[Google Flights DOM 結構變更]** → `[data-gs]` 選擇器可能失效，需定期維護
+- **[爬取速度]** → Playwright 渲染需 10-15 秒/頁，但每 3 小時才跑一次可接受

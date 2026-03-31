@@ -224,9 +224,13 @@ class TestFetchPriceViaPlaywright:
 
     @patch('playwright.sync_api.sync_playwright')
     def test_playwright_success(self, mock_pw, app):
-        """測試 Playwright 成功擷取價格。"""
+        """測試 Playwright 成功從 Google Flights 擷取價格。"""
+        mock_locator = MagicMock()
+        mock_locator.all_text_contents.return_value = [
+            '$5,699', '$5,699', '$8,088', '$12,345',
+        ]
         mock_page = MagicMock()
-        mock_page.content.return_value = '<div>NT$ 12,345</div><div>NT$ 15,000</div>'
+        mock_page.locator.return_value = mock_locator
         mock_browser = MagicMock()
         mock_browser.new_page.return_value = mock_page
         mock_pw_instance = MagicMock()
@@ -237,13 +241,15 @@ class TestFetchPriceViaPlaywright:
         result = _fetch_price_via_playwright('TPE', 'NRT', date(2026, 5, 1))
 
         assert result is not None
-        assert result['price'] == 12345.0
+        assert result['price'] == 5699.0
 
     @patch('playwright.sync_api.sync_playwright')
     def test_playwright_no_prices(self, mock_pw, app):
         """測試頁面無價格資料時回傳 None。"""
+        mock_locator = MagicMock()
+        mock_locator.all_text_contents.return_value = ['No results']
         mock_page = MagicMock()
-        mock_page.content.return_value = '<div>No results</div>'
+        mock_page.locator.return_value = mock_locator
         mock_browser = MagicMock()
         mock_browser.new_page.return_value = mock_page
         mock_pw_instance = MagicMock()
