@@ -19,7 +19,7 @@
                     {% for flight in flights %}
                     <option value="{{ flight.id }}"
                             {% if selected_id == flight.id %}selected{% endif %}>
-                        {{ flight.flight_number }} ({{ flight.airline }} {{ flight.origin }} → {{ flight.destination }})
+                        {{ flight.flight_number }} ({{ flight.airline }} {{ flight.origin }} → {{ flight.destination }}) {{ flight.departure_date.strftime('%Y-%m-%d') if flight.departure_date else '' }}
                     </option>
                     {% endfor %}
                 </select>
