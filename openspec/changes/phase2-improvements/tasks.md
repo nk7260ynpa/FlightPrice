@@ -15,9 +15,9 @@
 
 ## 3. 前端航段選擇器
 
-- [ ] 3.1 修改 flights.html JavaScript：處理 routes 陣列回傳
-- [ ] 3.2 新增航段選擇下拉選單：routes 長度 > 1 時動態顯示
-- [ ] 3.3 routes 長度 = 1 時維持原行為直接填入
+- [x] 3.1 修改 flights.html JavaScript：處理 routes 陣列回傳
+- [x] 3.2 新增航段選擇下拉選單：routes 長度 > 1 時動態顯示
+- [x] 3.3 routes 長度 = 1 時維持原行為直接填入
 
 ## 4. 智慧排程爬蟲
 

@@ -42,6 +42,10 @@
                     <button type="submit" class="btn btn-primary w-100">新增</button>
                 </div>
             </div>
+            <div id="routeSelector" class="mt-2" style="display: none;">
+                <label for="route_select" class="form-label">此班次有多段航線，請選擇：</label>
+                <select class="form-select" id="route_select"></select>
+            </div>
             <div id="lookupMessage" class="mt-2" style="display: none;"></div>
         </form>
     </div>
@@ -102,6 +106,12 @@
 
 {% block extra_scripts %}
 <script>
+function _fillRoute(route) {
+    if (route.airline) document.getElementById('airline').value = route.airline;
+    if (route.origin) document.getElementById('origin').value = route.origin;
+    if (route.destination) document.getElementById('destination').value = route.destination;
+}
+
 document.getElementById('lookupBtn').addEventListener('click', function() {
     const flightNumber = document.getElementById('flight_number').value.trim();
     const msgDiv = document.getElementById('lookupMessage');
@@ -115,18 +125,41 @@ document.getElementById('lookupBtn').addEventListener('click', function() {
     msgDiv.innerHTML = '<span class="text-muted">查詢中...</span>';
     msgDiv.style.display = 'block';
 
+    const routeDiv = document.getElementById('routeSelector');
+    const routeSelect = document.getElementById('route_select');
+    routeDiv.style.display = 'none';
+
     fetch('{{ url_for("flights.lookup") }}?flight_number=' + encodeURIComponent(flightNumber))
         .then(response => response.json().then(data => ({ok: response.ok, data})))
         .then(({ok, data}) => {
-            if (ok) {
-                if (data.airline) document.getElementById('airline').value = data.airline;
-                if (data.origin) document.getElementById('origin').value = data.origin;
-                if (data.destination) document.getElementById('destination').value = data.destination;
-                msgDiv.innerHTML = '<span class="text-success">已自動帶入航班資訊</span>';
-                if (!data.origin || !data.destination) {
-                    msgDiv.innerHTML = '<span class="text-warning">僅找到航空公司，出發地與抵達地請手動輸入</span>';
+            if (ok && data.routes && data.routes.length > 0) {
+                const routes = data.routes;
+
+                if (routes.length === 1) {
+                    // 單段：直接填入
+                    _fillRoute(routes[0]);
+                    msgDiv.innerHTML = '<span class="text-success">已自動帶入航班資訊</span>';
+                    if (!routes[0].origin || !routes[0].destination) {
+                        msgDiv.innerHTML = '<span class="text-warning">僅找到航空公司，出發地與抵達地請手動輸入</span>';
+                    }
+                } else {
+                    // 多段：顯示選擇器
+                    routeSelect.innerHTML = '';
+                    routes.forEach(function(r, i) {
+                        const opt = document.createElement('option');
+                        opt.value = i;
+                        opt.textContent = r.origin + ' → ' + r.destination + ' (' + r.airline + ')';
+                        routeSelect.appendChild(opt);
+                    });
+                    routeDiv.style.display = 'block';
+                    _fillRoute(routes[0]);
+                    msgDiv.innerHTML = '<span class="text-info">查到 ' + routes.length + ' 段航線，請選擇要追蹤的航段</span>';
+
+                    routeSelect.onchange = function() {
+                        _fillRoute(routes[parseInt(this.value)]);
+                    };
                 }
-            } else {
+            } else if (!ok) {
                 msgDiv.innerHTML = '<span class="text-warning">' + data.error + '</span>';
             }
         })
