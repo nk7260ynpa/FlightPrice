@@ -23,6 +23,15 @@ def scrape_flight_price(tracked_flight):
     Returns:
         成功時回傳 FlightPrice 實例，失敗時回傳 None。
     """
+    # 檢查當日是否已有該班機的價格紀錄
+    existing = FlightPrice.query.filter_by(
+        flight_number=tracked_flight.flight_number,
+        scrape_date=date.today(),
+    ).first()
+    if existing:
+        logger.debug('跳過 %s: 當日已有資料', tracked_flight.flight_number)
+        return None
+
     api_key = os.getenv('SKYSCANNER_API_KEY', '')
 
     try:
@@ -93,21 +102,19 @@ def scrape_all_active_flights():
     }
 
     for flight in active_flights:
-        # 檢查當日是否已有資料
-        existing = FlightPrice.query.filter_by(
-            flight_number=flight.flight_number,
-            scrape_date=today,
-        ).first()
-        if existing:
-            results['skipped'] += 1
-            logger.debug('跳過 %s: 當日已有資料', flight.flight_number)
-            continue
-
         result = scrape_flight_price(flight)
         if result:
             results['success'] += 1
         else:
-            results['failed'] += 1
+            # 底層已含去重檢查，回傳 None 可能是跳過或失敗
+            existing = FlightPrice.query.filter_by(
+                flight_number=flight.flight_number,
+                scrape_date=today,
+            ).first()
+            if existing:
+                results['skipped'] += 1
+            else:
+                results['failed'] += 1
 
     logger.info(
         '抓取完成: 共 %d 筆, 成功 %d, 失敗 %d, 跳過 %d',
@@ -115,31 +122,6 @@ def scrape_all_active_flights():
         results['success'],
         results['failed'],
         results['skipped'],
-    )
-    return results
-
-
-def force_scrape_all_active_flights():
-    """強制擷取所有啟用追蹤班機的價格（不檢查當日資料）。
-
-    Returns:
-        包含成功與失敗數量的字典。
-    """
-    active_flights = TrackedFlight.query.filter_by(is_active=True).all()
-    results = {'success': 0, 'failed': 0, 'total': len(active_flights)}
-
-    for flight in active_flights:
-        result = scrape_flight_price(flight)
-        if result:
-            results['success'] += 1
-        else:
-            results['failed'] += 1
-
-    logger.info(
-        '強制抓取完成: 共 %d 筆, 成功 %d, 失敗 %d',
-        results['total'],
-        results['success'],
-        results['failed'],
     )
     return results
 

@@ -49,6 +49,13 @@ class FlightPrice(db.Model):
         db.Integer, db.ForeignKey('tracked_flights.id'), nullable=True
     )
 
+    # 每日每班機僅一筆價格紀錄
+    __table_args__ = (
+        db.UniqueConstraint(
+            'flight_number', 'scrape_date', name='uq_flight_scrape_date'
+        ),
+    )
+
     def __repr__(self):
         return f'<FlightPrice {self.flight_number} {self.price} {self.scrape_date}>'
 

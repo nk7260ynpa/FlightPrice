@@ -40,16 +40,19 @@ def index():
 
 @status_bp.route('/status/scrape', methods=['POST'])
 def force_scrape():
-    """強制執行價格抓取。"""
-    from app.scraper import force_scrape_all_active_flights
+    """手動執行價格抓取（已含去重檢查）。"""
+    from app.scraper import scrape_all_active_flights
 
-    results = force_scrape_all_active_flights()
+    results = scrape_all_active_flights()
 
     if results['total'] == 0:
         flash('無啟用班機可抓取', 'warning')
     else:
+        msg = f'抓取完成：成功 {results["success"]}，失敗 {results["failed"]}'
+        if results['skipped'] > 0:
+            msg += f'，跳過 {results["skipped"]}（當日已有資料）'
         flash(
-            f'強制抓取完成：成功 {results["success"]}，失敗 {results["failed"]}',
+            msg,
             'success' if results['failed'] == 0 else 'warning',
         )
 

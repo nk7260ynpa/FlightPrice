@@ -102,25 +102,29 @@ class TestFlightPrice:
         assert result is not None
         assert float(result.price) == 12500.00
 
-    def test_multiple_prices_same_flight_same_day(self, app, db_session):
-        """測試同一班次同一天可有多筆紀錄。"""
-        for price_val in [12500.00, 12800.00]:
-            price = FlightPrice(
-                flight_number='CI-100',
-                price=price_val,
-                scrape_date=date(2026, 3, 30),
-                airline='中華航空',
-                origin='TPE',
-                destination='NRT',
-            )
-            db_session.add(price)
+    def test_unique_constraint_same_flight_same_day(self, app, db_session):
+        """測試同一班次同一天不可有多筆紀錄。"""
+        import sqlalchemy
+
+        price1 = FlightPrice(
+            flight_number='CI-100', price=12500.00,
+            scrape_date=date(2026, 3, 30), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add(price1)
         db_session.commit()
 
-        results = FlightPrice.query.filter_by(
-            flight_number='CI-100',
-            scrape_date=date(2026, 3, 30),
-        ).all()
-        assert len(results) == 2
+        price2 = FlightPrice(
+            flight_number='CI-100', price=12800.00,
+            scrape_date=date(2026, 3, 30), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add(price2)
+        try:
+            db_session.commit()
+            assert False, '應拋出唯一性約束錯誤'
+        except sqlalchemy.exc.IntegrityError:
+            db_session.rollback()
 
 
 class TestScrapeLog:

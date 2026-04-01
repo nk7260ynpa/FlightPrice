@@ -7,7 +7,6 @@ from app import db
 from app.models import FlightPrice, ScrapeLog, TrackedFlight
 from app.scraper import (
     _fetch_price_via_playwright,
-    force_scrape_all_active_flights,
     scrape_all_active_flights,
     scrape_flight_price,
 )
@@ -91,6 +90,25 @@ class TestScrapeFlightPrice:
         log = ScrapeLog.query.filter_by(flight_number='CI-100').first()
         assert log.status == 'failed'
         assert '連線逾時' in log.error_message
+
+    @patch('app.scraper._fetch_price_from_skyscanner')
+    def test_scrape_skip_when_today_data_exists(self, mock_fetch, app, db_session):
+        """測試當日已有資料時跳過擷取。"""
+        flight = self._create_tracked_flight(db_session)
+
+        existing_price = FlightPrice(
+            flight_number='CI-100', price=12000,
+            scrape_date=date.today(), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add(existing_price)
+        db_session.commit()
+
+        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
+            result = scrape_flight_price(flight)
+
+        assert result is None
+        mock_fetch.assert_not_called()
 
 
 class TestScrapeAllActiveFlights:
@@ -181,42 +199,50 @@ class TestScrapeAllActiveFlights:
         assert results['skipped'] == 0
 
 
-class TestForceScrapeAllActiveFlights:
-    """force_scrape_all_active_flights 函式測試。"""
+class TestFlightPriceUniqueConstraint:
+    """FlightPrice 唯一約束測試。"""
 
-    @patch('app.scraper._fetch_price_from_skyscanner')
-    def test_force_scrape_ignores_existing_data(self, mock_fetch, app, db_session):
-        """測試強制抓取不跳過當日已有資料的班機。"""
-        flight = TrackedFlight(
-            flight_number='CI-100', airline='中華航空',
-            origin='TPE', destination='NRT', is_active=True,
-            departure_date=date(2026, 5, 1),
-        )
-        db_session.add(flight)
-        db_session.commit()
+    def test_duplicate_flight_scrape_date_rejected(self, app, db_session):
+        """測試同一班機同一天重複寫入被拒絕。"""
+        from sqlalchemy.exc import IntegrityError
 
-        existing_price = FlightPrice(
+        price1 = FlightPrice(
             flight_number='CI-100', price=12000,
             scrape_date=date.today(), airline='中華航空',
             origin='TPE', destination='NRT',
         )
-        db_session.add(existing_price)
+        db_session.add(price1)
         db_session.commit()
 
-        mock_fetch.return_value = {'price': 11500, 'departure_time': None}
+        price2 = FlightPrice(
+            flight_number='CI-100', price=11500,
+            scrape_date=date.today(), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add(price2)
 
-        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
-            results = force_scrape_all_active_flights()
+        try:
+            db_session.commit()
+            assert False, '應拋出 IntegrityError'
+        except IntegrityError:
+            db_session.rollback()
 
-        assert results['total'] == 1
-        assert results['success'] == 1
-        mock_fetch.assert_called_once()
+    def test_different_date_allowed(self, app, db_session):
+        """測試不同日期可以各有一筆。"""
+        price1 = FlightPrice(
+            flight_number='CI-100', price=12000,
+            scrape_date=date(2026, 4, 1), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        price2 = FlightPrice(
+            flight_number='CI-100', price=11500,
+            scrape_date=date(2026, 4, 2), airline='中華航空',
+            origin='TPE', destination='NRT',
+        )
+        db_session.add_all([price1, price2])
+        db_session.commit()
 
-    def test_force_scrape_no_active_flights(self, app, db_session):
-        """測試無啟用班機時的結果。"""
-        results = force_scrape_all_active_flights()
-        assert results['total'] == 0
-        assert results['success'] == 0
+        assert FlightPrice.query.count() == 2
 
 
 class TestFetchPriceViaPlaywright:
