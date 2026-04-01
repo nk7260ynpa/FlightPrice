@@ -37,8 +37,8 @@ FlightPrice/
 
 ## 技術棧
 
-- Python 3.12 / Flask
-- MySQL 8.0（Docker 容器）
+- Python 3.12 / Flask（容器時區：Asia/Taipei）
+- MySQL 8.0（Docker 容器，時區：Asia/Taipei）
 - SQLAlchemy ORM
 - Chart.js（前端圖表）
 - APScheduler（定時排程）
