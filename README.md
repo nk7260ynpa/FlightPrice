@@ -59,7 +59,7 @@ cp .env.example .env
 ./run.sh
 ```
 
-此指令會透過 Docker Compose 啟動 MySQL 與 Flask 應用容器。
+此指令會透過 Docker Compose 啟動 MySQL 與 Flask 應用容器。容器的 restart 政策設為 `always`，Docker daemon 啟動（包括主機重開機）時會自動拉起服務，無需手動重新執行。
 
 - Web 介面：`http://localhost:5003`
 - MySQL：`localhost:3306`

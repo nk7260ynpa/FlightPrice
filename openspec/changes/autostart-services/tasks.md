@@ -11,4 +11,4 @@
 
 ## 3. 文件更新
 
-- [ ] 3.1 更新 `README.md` 安裝與啟動段落，註明服務會隨 Docker daemon 自動啟動
+- [x] 3.1 更新 `README.md` 安裝與啟動段落，註明服務會隨 Docker daemon 自動啟動
