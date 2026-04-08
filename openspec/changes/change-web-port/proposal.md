@@ -1,12 +1,12 @@
 ## Why
 
-目前 FlightPrice Web 服務對外 port 為 5001，與本機其他服務（docker-web-1）衝突，需改為 5002 以避免 port 佔用問題。
+目前 FlightPrice Web 服務對外 port 為 5001，與本機其他服務（docker-web-1）衝突，需改為 5003 以避免 port 佔用問題。
 
 ## What Changes
 
-- 將 `.env` 中 `FLASK_PORT` 預設值從 `5001` 改為 `5002`
-- 將 `.env.example` 中 `FLASK_PORT` 預設值同步更新為 `5002`
-- 更新 `docker-compose.yaml` 中 `FLASK_PORT` 的 fallback 預設值為 `5002`
+- 將 `.env` 中 `FLASK_PORT` 預設值從 `5001` 改為 `5003`
+- 將 `.env.example` 中 `FLASK_PORT` 預設值同步更新為 `5003`
+- 更新 `docker-compose.yaml` 中 `FLASK_PORT` 的 fallback 預設值為 `5003`
 - 更新 `README.md` 中 Web 介面的 port 說明
 
 ## Capabilities

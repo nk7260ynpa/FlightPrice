@@ -27,7 +27,7 @@ services:
     container_name: flightprice-web
     restart: unless-stopped
     ports:
-      - "${FLASK_PORT:-5002}:5000"
+      - "${FLASK_PORT:-5003}:5000"
     environment:
       - TZ=Asia/Taipei
       - MYSQL_HOST=db
