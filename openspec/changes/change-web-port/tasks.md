@@ -2,7 +2,7 @@
 
 - [x] 1.1 將 `.env` 中 `FLASK_PORT` 從 `5001` 改為 `5002`
 - [x] 1.2 將 `.env.example` 中 `FLASK_PORT` 從 `5001` 改為 `5002`
-- [ ] 1.3 將 `docker/docker-compose.yaml` 中 `FLASK_PORT` fallback 預設值改為 `5002`
+- [x] 1.3 將 `docker/docker-compose.yaml` 中 `FLASK_PORT` fallback 預設值改為 `5002`
 
 ## 2. 文件更新
 
