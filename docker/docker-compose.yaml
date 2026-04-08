@@ -2,7 +2,7 @@ services:
   db:
     image: mysql:8.0
     container_name: flightprice-db
-    restart: unless-stopped
+    restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
       TZ: Asia/Taipei
@@ -25,7 +25,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     container_name: flightprice-web
-    restart: unless-stopped
+    restart: always
     ports:
       - "${FLASK_PORT:-5003}:5000"
     environment:
