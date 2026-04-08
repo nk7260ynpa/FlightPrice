@@ -61,7 +61,7 @@ cp .env.example .env
 
 此指令會透過 Docker Compose 啟動 MySQL 與 Flask 應用容器。
 
-- Web 介面：`http://localhost:5000`
+- Web 介面：`http://localhost:5002`
 - MySQL：`localhost:3306`
 
 ### 3. 單獨建立 Docker Image

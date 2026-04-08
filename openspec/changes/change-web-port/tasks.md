@@ -6,7 +6,7 @@
 
 ## 2. 文件更新
 
-- [ ] 2.1 更新 `README.md` 中 Web 介面 port 說明為 `localhost:5002`
+- [x] 2.1 更新 `README.md` 中 Web 介面 port 說明為 `localhost:5002`
 
 ## 3. 驗證
 
