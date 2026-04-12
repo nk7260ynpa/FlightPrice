@@ -2,7 +2,7 @@
 
 ### Requirement: 從 Skyscanner 擷取航班價格
 
-系統 SHALL 提供後台爬蟲服務，能擷取指定班機的價格資訊。當 SKYSCANNER_API_KEY 已設定時使用 Skyscanner API，未設定時使用 Playwright 爬取 Google Flights。擷取前 MUST 檢查當日是否已有該班機的價格紀錄，若已存在則跳過擷取。
+系統 SHALL 提供後台爬蟲服務，能擷取指定班機的價格資訊。當 SKYSCANNER_API_KEY 已設定時使用 Skyscanner API，未設定時使用 Playwright 爬取 Google Flights。擷取前 MUST 檢查當日是否已有該班機的價格紀錄，若已存在則跳過擷取。批次擷取時 MUST 排除出發日期已過的航班，僅對出發日期為今天或未來的啟用航班執行擷取。
 
 #### Scenario: 有 API Key 時使用 Skyscanner API
 - **WHEN** SKYSCANNER_API_KEY 環境變數已設定
@@ -23,3 +23,7 @@
 #### Scenario: 當日已有該班機資料時跳過擷取
 - **WHEN** `flight_prices` 表中已存在該班機當日的價格紀錄
 - **THEN** 系統 SHALL 跳過該班機的擷取，不產生重複紀錄
+
+#### Scenario: 出發日期已過的航班不進行擷取
+- **WHEN** 批次擷取所有啟用航班時，某航班的 `departure_date` 早於今天
+- **THEN** 系統 SHALL 在查詢階段排除該航班，不對其發起任何擷取動作
