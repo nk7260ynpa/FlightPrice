@@ -35,28 +35,31 @@
     </div>
 </div>
 
-<div id="statsContainer" class="row mb-4" style="display: none;">
+<div id="statsContainer" class="row g-3 mb-4" style="display: none;">
     <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">最高價</h6>
-                <h4 id="maxPrice" class="card-title text-danger">-</h4>
+        <div class="stat-card">
+            <div class="stat-card-stripe stat-card-stripe--danger"></div>
+            <div class="stat-card-content">
+                <div class="stat-card-label">最高價</div>
+                <div id="maxPrice" class="stat-card-value stat-card-value--danger">-</div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">最低價</h6>
-                <h4 id="minPrice" class="card-title text-success">-</h4>
+        <div class="stat-card">
+            <div class="stat-card-stripe stat-card-stripe--success"></div>
+            <div class="stat-card-content">
+                <div class="stat-card-label">最低價</div>
+                <div id="minPrice" class="stat-card-value stat-card-value--success">-</div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="card-subtitle mb-2 text-muted">平均價</h6>
-                <h4 id="avgPrice" class="card-title text-primary">-</h4>
+        <div class="stat-card">
+            <div class="stat-card-stripe stat-card-stripe--blue"></div>
+            <div class="stat-card-content">
+                <div class="stat-card-label">平均價</div>
+                <div id="avgPrice" class="stat-card-value stat-card-value--blue">-</div>
             </div>
         </div>
     </div>
@@ -93,31 +96,55 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasets: [{
                         label: '票價 (TWD)',
                         data: data.data,
-                        borderColor: 'rgb(54, 162, 235)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.08)',
                         fill: true,
-                        tension: 0.1,
+                        tension: 0.3,
+                        pointBackgroundColor: '#2563eb',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         tooltip: {
+                            backgroundColor: '#1e3a5f',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            padding: 10,
                             callbacks: {
                                 label: function(context) {
                                     return 'NT$ ' + context.parsed.y.toLocaleString();
                                 }
+                            }
+                        },
+                        legend: {
+                            labels: {
+                                color: '#1e293b',
+                                font: { weight: '500' }
                             }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: false,
+                            grid: { color: 'rgba(30,58,95,0.06)' },
                             ticks: {
+                                color: '#64748b',
                                 callback: function(value) {
                                     return 'NT$ ' + value.toLocaleString();
                                 }
                             }
+                        },
+                        x: {
+                            grid: { color: 'rgba(30,58,95,0.04)' },
+                            ticks: { color: '#64748b' }
                         }
                     }
                 }

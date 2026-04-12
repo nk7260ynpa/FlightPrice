@@ -15,7 +15,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" id="flight_number"
                                name="flight_number" placeholder="例: CI100" required>
-                        <button type="button" class="btn btn-outline-secondary" id="lookupBtn">查詢</button>
+                        <button type="button" class="btn btn-aviation-outline" id="lookupBtn">查詢</button>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -39,7 +39,7 @@
                            name="destination" placeholder="自動帶入" required>
                 </div>
                 <div class="col-md-1 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">新增</button>
+                    <button type="submit" class="btn btn-aviation w-100">新增</button>
                 </div>
             </div>
             <div id="routeSelector" class="mt-2" style="display: none;">
@@ -54,49 +54,51 @@
 {% if flights %}
 <div class="card">
     <div class="card-header">追蹤清單</div>
-    <div class="card-body">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>班次代碼</th>
-                    <th>航空公司</th>
-                    <th>出發地</th>
-                    <th>抵達地</th>
-                    <th>出發日期</th>
-                    <th>狀態</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for flight in flights %}
-                <tr>
-                    <td>{{ flight.flight_number }}</td>
-                    <td>{{ flight.airline }}</td>
-                    <td>{{ flight.origin }}</td>
-                    <td>{{ flight.destination }}</td>
-                    <td>{{ flight.departure_date.strftime('%Y-%m-%d') if flight.departure_date else '-' }}</td>
-                    <td>
-                        {% if flight.is_active %}
-                            <span class="badge bg-success">啟用</span>
-                        {% else %}
-                            <span class="badge bg-secondary">停用</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <form method="POST"
-                              action="{{ url_for('flights.toggle_flight', flight_id=flight.id) }}"
-                              style="display: inline;">
+    <div class="card-body p-0">
+        <div class="table-aviation-wrap">
+            <table class="table table-aviation">
+                <thead>
+                    <tr>
+                        <th>班次代碼</th>
+                        <th>航空公司</th>
+                        <th>出發地</th>
+                        <th>抵達地</th>
+                        <th>出發日期</th>
+                        <th>狀態</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for flight in flights %}
+                    <tr>
+                        <td>{{ flight.flight_number }}</td>
+                        <td>{{ flight.airline }}</td>
+                        <td>{{ flight.origin }}</td>
+                        <td>{{ flight.destination }}</td>
+                        <td>{{ flight.departure_date.strftime('%Y-%m-%d') if flight.departure_date else '-' }}</td>
+                        <td>
                             {% if flight.is_active %}
-                                <button type="submit" class="btn btn-sm btn-warning">停用</button>
+                                <span class="badge-aviation-success">啟用</span>
                             {% else %}
-                                <button type="submit" class="btn btn-sm btn-success">啟用</button>
+                                <span class="badge-aviation-muted">停用</span>
                             {% endif %}
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                        <td>
+                            <form method="POST"
+                                  action="{{ url_for('flights.toggle_flight', flight_id=flight.id) }}"
+                                  style="display: inline;">
+                                {% if flight.is_active %}
+                                    <button type="submit" class="btn btn-sm btn-aviation-warning">停用</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-sm btn-aviation-success">啟用</button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% else %}
@@ -136,14 +138,12 @@ document.getElementById('lookupBtn').addEventListener('click', function() {
                 const routes = data.routes;
 
                 if (routes.length === 1) {
-                    // 單段：直接填入
                     _fillRoute(routes[0]);
                     msgDiv.innerHTML = '<span class="text-success">已自動帶入航班資訊</span>';
                     if (!routes[0].origin || !routes[0].destination) {
                         msgDiv.innerHTML = '<span class="text-warning">僅找到航空公司，出發地與抵達地請手動輸入</span>';
                     }
                 } else {
-                    // 多段：顯示選擇器
                     routeSelect.innerHTML = '';
                     routes.forEach(function(r, i) {
                         const opt = document.createElement('option');
@@ -168,7 +168,6 @@ document.getElementById('lookupBtn').addEventListener('click', function() {
         });
 });
 
-// 輸入班次代碼後按 Enter 也觸發查詢
 document.getElementById('flight_number').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();

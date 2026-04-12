@@ -10,10 +10,10 @@
 
 ## 2. 模板更新
 
-- [ ] 2.1 更新 `base.html`：引入 style.css、修改導航列 class 與品牌文字（加飛機符號）
-- [ ] 2.2 更新 `flights.html`：套用新的卡片、表格、表單、按鈕 class
-- [ ] 2.3 更新 `charts.html`：套用新的卡片與統計卡片 class，調整 Chart.js 配色
-- [ ] 2.4 更新 `status.html`：套用新的卡片、統計卡片、表格 class
+- [x] 2.1 更新 `base.html`：引入 style.css、修改導航列 class 與品牌文字（加飛機符號）
+- [x] 2.2 更新 `flights.html`：套用新的卡片、表格、表單、按鈕 class
+- [x] 2.3 更新 `charts.html`：套用新的卡片與統計卡片 class，調整 Chart.js 配色
+- [x] 2.4 更新 `status.html`：套用新的卡片、統計卡片、表格 class
 
 ## 3. 驗證
 
