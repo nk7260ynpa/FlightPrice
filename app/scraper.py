@@ -95,7 +95,10 @@ def scrape_all_active_flights():
         包含成功、失敗、跳過數量的字典。
     """
     today = date.today()
-    active_flights = TrackedFlight.query.filter_by(is_active=True).all()
+    active_flights = TrackedFlight.query.filter(
+        TrackedFlight.is_active.is_(True),
+        TrackedFlight.departure_date >= today,
+    ).all()
     results = {
         'success': 0, 'failed': 0, 'skipped': 0,
         'total': len(active_flights),
