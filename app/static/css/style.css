@@ -1,0 +1,342 @@
+/* ==========================================================
+   FlightPrice — 航空主題樣式
+   覆蓋 Bootstrap 5 預設，載入於 bootstrap.min.css 之後
+   ========================================================== */
+
+/* --- 1. 色彩變數與全域樣式 --- */
+
+:root {
+  --av-navy:      #1e3a5f;
+  --av-navy-light:#264a73;
+  --av-blue:      #2563eb;
+  --av-blue-light:#3b82f6;
+  --av-amber:     #f59e0b;
+  --av-amber-light:#fbbf24;
+  --av-cloud:     #f0f4f8;
+  --av-white:     #ffffff;
+  --av-ink:       #1e293b;
+  --av-muted:     #64748b;
+  --av-border:    #e2e8f0;
+  --av-success:   #16a34a;
+  --av-danger:    #dc2626;
+  --av-shadow:    0 1px 3px rgba(30, 58, 95, .08), 0 1px 2px rgba(30, 58, 95, .06);
+  --av-shadow-md: 0 4px 12px rgba(30, 58, 95, .10), 0 2px 4px rgba(30, 58, 95, .06);
+  --av-shadow-lg: 0 10px 24px rgba(30, 58, 95, .12), 0 4px 8px rgba(30, 58, 95, .06);
+  --av-radius:    12px;
+  --av-radius-sm: 8px;
+}
+
+body {
+  background-color: var(--av-cloud);
+  color: var(--av-ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+}
+
+/* --- 2. 導航列 --- */
+
+.navbar-aviation {
+  background: linear-gradient(135deg, var(--av-navy) 0%, var(--av-navy-light) 100%);
+  box-shadow: var(--av-shadow-md);
+  padding: .75rem 0;
+}
+
+.navbar-aviation .navbar-brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: .02em;
+  color: var(--av-white);
+}
+
+.navbar-aviation .navbar-brand:hover {
+  color: var(--av-amber-light);
+}
+
+.navbar-aviation .nav-link {
+  color: rgba(255, 255, 255, .78);
+  font-weight: 500;
+  padding: .5rem 1rem;
+  border-radius: var(--av-radius-sm);
+  transition: color .2s, background-color .2s;
+}
+
+.navbar-aviation .nav-link:hover {
+  color: var(--av-white);
+  background-color: rgba(255, 255, 255, .1);
+}
+
+.navbar-aviation .nav-link.active {
+  color: var(--av-white);
+  background-color: rgba(255, 255, 255, .15);
+  position: relative;
+}
+
+.navbar-aviation .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 1rem;
+  right: 1rem;
+  height: 2px;
+  background: var(--av-amber);
+  border-radius: 1px;
+}
+
+.navbar-aviation .navbar-toggler {
+  border-color: rgba(255, 255, 255, .3);
+}
+
+/* --- 3. 卡片 --- */
+
+.card {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: var(--av-radius);
+  box-shadow: var(--av-shadow);
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+
+.card:hover {
+  box-shadow: var(--av-shadow-md);
+  transform: translateY(-2px);
+}
+
+.card-header {
+  background: var(--av-cloud);
+  border-bottom: 1px solid var(--av-border);
+  font-weight: 600;
+  color: var(--av-navy);
+  padding: .875rem 1.25rem;
+  border-radius: var(--av-radius) var(--av-radius) 0 0 !important;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* --- 4. 表格 --- */
+
+.table-aviation-wrap {
+  border-radius: var(--av-radius);
+  overflow: hidden;
+  box-shadow: var(--av-shadow);
+}
+
+.table-aviation {
+  margin-bottom: 0;
+}
+
+.table-aviation thead th {
+  background: var(--av-navy);
+  color: var(--av-white);
+  font-weight: 600;
+  border: none;
+  padding: .75rem 1rem;
+  white-space: nowrap;
+}
+
+.table-aviation tbody tr:nth-child(even) {
+  background-color: rgba(240, 244, 248, .5);
+}
+
+.table-aviation tbody tr:hover {
+  background-color: rgba(37, 99, 235, .04);
+}
+
+.table-aviation tbody td {
+  padding: .75rem 1rem;
+  border-color: var(--av-border);
+  vertical-align: middle;
+}
+
+/* --- 5. 按鈕與表單 --- */
+
+.btn-aviation {
+  background: var(--av-blue);
+  border: none;
+  color: var(--av-white);
+  font-weight: 500;
+  padding: .5rem 1.25rem;
+  border-radius: var(--av-radius-sm);
+  transition: background-color .2s, box-shadow .2s;
+}
+
+.btn-aviation:hover,
+.btn-aviation:focus {
+  background: var(--av-blue-light);
+  color: var(--av-white);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, .3);
+}
+
+.btn-aviation-outline {
+  background: transparent;
+  border: 1px solid var(--av-blue);
+  color: var(--av-blue);
+  font-weight: 500;
+  padding: .5rem 1.25rem;
+  border-radius: var(--av-radius-sm);
+  transition: background-color .2s, color .2s;
+}
+
+.btn-aviation-outline:hover {
+  background: var(--av-blue);
+  color: var(--av-white);
+}
+
+.btn-aviation-danger {
+  background: var(--av-danger);
+  border: none;
+  color: var(--av-white);
+  font-weight: 500;
+  padding: .5rem 1.25rem;
+  border-radius: var(--av-radius-sm);
+  transition: background-color .2s, box-shadow .2s;
+}
+
+.btn-aviation-danger:hover,
+.btn-aviation-danger:focus {
+  background: #b91c1c;
+  color: var(--av-white);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, .3);
+}
+
+.btn-aviation-success {
+  background: var(--av-success);
+  border: none;
+  color: var(--av-white);
+  font-weight: 500;
+  border-radius: var(--av-radius-sm);
+  transition: background-color .2s;
+}
+
+.btn-aviation-success:hover {
+  background: #15803d;
+  color: var(--av-white);
+}
+
+.btn-aviation-warning {
+  background: var(--av-amber);
+  border: none;
+  color: var(--av-ink);
+  font-weight: 500;
+  border-radius: var(--av-radius-sm);
+  transition: background-color .2s;
+}
+
+.btn-aviation-warning:hover {
+  background: var(--av-amber-light);
+  color: var(--av-ink);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--av-blue-light);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+}
+
+.form-control,
+.form-select {
+  border-radius: var(--av-radius-sm);
+  border-color: var(--av-border);
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--av-navy);
+  font-size: .875rem;
+}
+
+/* --- 6. 統計卡片 --- */
+
+.stat-card {
+  background: var(--av-white);
+  border: 1px solid var(--av-border);
+  border-radius: var(--av-radius);
+  box-shadow: var(--av-shadow);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+
+.stat-card:hover {
+  box-shadow: var(--av-shadow-md);
+  transform: translateY(-2px);
+}
+
+.stat-card-stripe {
+  width: 4px;
+  height: 48px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.stat-card-stripe--danger  { background: var(--av-danger); }
+.stat-card-stripe--success { background: var(--av-success); }
+.stat-card-stripe--blue    { background: var(--av-blue); }
+.stat-card-stripe--amber   { background: var(--av-amber); }
+.stat-card-stripe--navy    { background: var(--av-navy); }
+
+.stat-card-content {
+  min-width: 0;
+}
+
+.stat-card-label {
+  font-size: .8rem;
+  color: var(--av-muted);
+  font-weight: 500;
+  margin-bottom: .125rem;
+}
+
+.stat-card-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--av-ink);
+  line-height: 1.2;
+}
+
+.stat-card-value--danger  { color: var(--av-danger); }
+.stat-card-value--success { color: var(--av-success); }
+.stat-card-value--blue    { color: var(--av-blue); }
+
+/* --- 7. Badge --- */
+
+.badge-aviation-success {
+  background: rgba(22, 163, 74, .12);
+  color: var(--av-success);
+  font-weight: 600;
+  padding: .35em .65em;
+  border-radius: 6px;
+}
+
+.badge-aviation-danger {
+  background: rgba(220, 38, 38, .12);
+  color: var(--av-danger);
+  font-weight: 600;
+  padding: .35em .65em;
+  border-radius: 6px;
+}
+
+.badge-aviation-muted {
+  background: rgba(100, 116, 139, .12);
+  color: var(--av-muted);
+  font-weight: 600;
+  padding: .35em .65em;
+  border-radius: 6px;
+}
+
+/* --- 其他 --- */
+
+.alert {
+  border-radius: var(--av-radius-sm);
+}
+
+h2 {
+  color: var(--av-navy);
+  font-weight: 700;
+}
+
+.container.mt-4 {
+  padding-top: .5rem;
+  padding-bottom: 2rem;
+}
