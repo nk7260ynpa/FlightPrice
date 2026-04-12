@@ -1,7 +1,7 @@
 """爬蟲模組單元測試。"""
 
 from unittest.mock import patch, MagicMock
-from datetime import date
+from datetime import date, timedelta
 
 from app import db
 from app.models import FlightPrice, ScrapeLog, TrackedFlight
@@ -197,6 +197,53 @@ class TestScrapeAllActiveFlights:
         assert results['total'] == 1
         assert results['success'] == 1
         assert results['skipped'] == 0
+
+
+    def test_skip_expired_flights(self, app, db_session):
+        """測試出發日期已過的航班不被選入爬取清單。"""
+        yesterday = date.today() - timedelta(days=1)
+        expired = TrackedFlight(
+            flight_number='TR-874', airline='台灣虎航',
+            origin='TPE', destination='NRT', is_active=True,
+            departure_date=yesterday,
+        )
+        future = TrackedFlight(
+            flight_number='TR-875', airline='台灣虎航',
+            origin='NRT', destination='TPE', is_active=True,
+            departure_date=date.today() + timedelta(days=30),
+        )
+        db_session.add_all([expired, future])
+        db_session.commit()
+
+        with patch('app.scraper._fetch_price_from_skyscanner') as mock_fetch:
+            mock_fetch.return_value = {'price': 8000, 'departure_time': None}
+            with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
+                results = scrape_all_active_flights()
+
+        assert results['total'] == 1
+        assert results['success'] == 1
+        prices = FlightPrice.query.all()
+        assert len(prices) == 1
+        assert prices[0].flight_number == 'TR-875'
+
+    @patch('app.scraper._fetch_price_from_skyscanner')
+    def test_include_today_departure_flights(self, mock_fetch, app, db_session):
+        """測試出發日期為今天的航班仍被選入爬取清單。"""
+        today_flight = TrackedFlight(
+            flight_number='CI-200', airline='中華航空',
+            origin='TPE', destination='NRT', is_active=True,
+            departure_date=date.today(),
+        )
+        db_session.add(today_flight)
+        db_session.commit()
+
+        mock_fetch.return_value = {'price': 9500, 'departure_time': None}
+
+        with patch.dict('os.environ', {'SKYSCANNER_API_KEY': 'test-key'}):
+            results = scrape_all_active_flights()
+
+        assert results['total'] == 1
+        assert results['success'] == 1
 
 
 class TestFlightPriceUniqueConstraint:
