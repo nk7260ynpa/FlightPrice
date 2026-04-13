@@ -146,6 +146,7 @@ body {
   padding: .75rem 1rem;
   border-color: var(--av-border);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 /* --- 5. 按鈕與表單 --- */
@@ -301,28 +302,29 @@ body {
 
 /* --- 7. Badge --- */
 
-.badge-aviation-success {
-  background: rgba(22, 163, 74, .12);
-  color: var(--av-success);
+.badge-aviation-success,
+.badge-aviation-danger,
+.badge-aviation-muted {
+  display: inline-block;
+  white-space: nowrap;
   font-weight: 600;
   padding: .35em .65em;
   border-radius: 6px;
+}
+
+.badge-aviation-success {
+  background: rgba(22, 163, 74, .12);
+  color: var(--av-success);
 }
 
 .badge-aviation-danger {
   background: rgba(220, 38, 38, .12);
   color: var(--av-danger);
-  font-weight: 600;
-  padding: .35em .65em;
-  border-radius: 6px;
 }
 
 .badge-aviation-muted {
   background: rgba(100, 116, 139, .12);
   color: var(--av-muted);
-  font-weight: 600;
-  padding: .35em .65em;
-  border-radius: 6px;
 }
 
 /* --- 其他 --- */
