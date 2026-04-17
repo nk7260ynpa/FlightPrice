@@ -72,8 +72,8 @@
 
 **檔案範圍**：無程式碼變更；僅執行與觀察
 
-- [ ] 7.1 重建 Docker image（`docker/build.sh`）並重啟容器（`./run.sh` 或等效指令）
-- [ ] 7.2 依序瀏覽 `/`、`/charts`、`/status` 三頁，驗證：導航列為黃底黑字底部粗邊、主按鈕為黃底黑字、卡片為白底深邊、統計卡片為整卡塊面染色、表格表頭近黑底白字、badge 為圓角 pill
-- [ ] 7.3 開啟瀏覽器開發者工具，確認：`body` 的 computed `font-family` 以 `Nunito Sans` 開頭、`<h2>` 以 `Nunito` 開頭、票價欄位以 `JetBrains Mono` 開頭；`:root` 定義了 `--scoot-yellow` 等 tokens
-- [ ] 7.4 以鍵盤 Tab 依序聚焦導航連結、表單欄位、按鈕，確認每一步皆有可見 focus 外描邊
-- [ ] 7.5 暫時於作業系統啟用「減少動畫」偏好，確認按鈕按下時 `translateY` 位移被停用
+- [x] 7.1 重建 Docker image（`docker/build.sh`）並重啟容器（`./run.sh` 或等效指令）
+- [x] 7.2 依序瀏覽 `/`、`/charts`、`/status` 三頁，驗證：導航列為黃底黑字底部粗邊、主按鈕為黃底黑字、卡片為白底深邊、統計卡片為整卡塊面染色、表格表頭近黑底白字、badge 為圓角 pill
+- [x] 7.3 開啟瀏覽器開發者工具，確認：`body` 的 computed `font-family` 以 `Nunito Sans` 開頭、`<h2>` 以 `Nunito` 開頭、票價欄位以 `JetBrains Mono` 開頭；`:root` 定義了 `--scoot-yellow` 等 tokens
+- [x] 7.4 以鍵盤 Tab 依序聚焦導航連結、表單欄位、按鈕，確認每一步皆有可見 focus 外描邊
+- [x] 7.5 暫時於作業系統啟用「減少動畫」偏好，確認按鈕按下時 `translateY` 位移被停用
