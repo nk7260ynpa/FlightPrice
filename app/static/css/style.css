@@ -1,344 +1,532 @@
 /* ==========================================================
-   FlightPrice — 航空主題樣式
+   FlightPrice — 酷航（Scoot）主題樣式
    覆蓋 Bootstrap 5 預設，載入於 bootstrap.min.css 之後
    ========================================================== */
 
-/* --- 1. 色彩變數與全域樣式 --- */
+/* --- 1. 酷航品牌設計 Tokens ------------------------------- */
 
 :root {
-  --av-navy:      #1e3a5f;
-  --av-navy-light:#264a73;
-  --av-blue:      #2563eb;
-  --av-blue-light:#3b82f6;
-  --av-amber:     #f59e0b;
-  --av-amber-light:#fbbf24;
-  --av-cloud:     #f0f4f8;
-  --av-white:     #ffffff;
-  --av-ink:       #1e293b;
-  --av-muted:     #64748b;
-  --av-border:    #e2e8f0;
-  --av-success:   #16a34a;
-  --av-danger:    #dc2626;
-  --av-shadow:    0 1px 3px rgba(30, 58, 95, .08), 0 1px 2px rgba(30, 58, 95, .06);
-  --av-shadow-md: 0 4px 12px rgba(30, 58, 95, .10), 0 2px 4px rgba(30, 58, 95, .06);
-  --av-shadow-lg: 0 10px 24px rgba(30, 58, 95, .12), 0 4px 8px rgba(30, 58, 95, .06);
-  --av-radius:    12px;
-  --av-radius-sm: 8px;
+  /* 品牌色系 */
+  --scoot-yellow:         #FFDA00; /* 主品牌黃 */
+  --scoot-yellow-bright:  #FFEB3D; /* 提亮層（hover / active） */
+  --scoot-yellow-deep:    #E5B800; /* 深黃（描邊與按壓邊） */
+  --scoot-ink:            #0E0E10; /* 主要深色文字 / 深色區塊 */
+  --scoot-ink-soft:       #24242A; /* 次要深色區塊 */
+  --scoot-slate:          #4A4A55; /* 次要文字 */
+  --scoot-muted:          #8A8A95; /* 輔助說明、placeholder */
+  --scoot-canvas:         #FAFAF7; /* 頁面背景（暖米白） */
+  --scoot-surface:        #FFFFFF; /* 卡片 / 面板背景 */
+  --scoot-line:           #E6E6DF; /* 分隔線、柔和邊框 */
+
+  /* 狀態色 */
+  --scoot-success:        #1FAD66;
+  --scoot-danger:         #E4322B;
+  --scoot-warn:           #FF8A1F;
+  --scoot-info:           #2D6BD6;
+
+  /* 字體堆疊 */
+  --font-display: "Nunito", "Poppins", "PingFang TC", "Noto Sans TC",
+                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-body:    "Nunito Sans", "Poppins", "PingFang TC", "Noto Sans TC",
+                  -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", "Roboto Mono",
+                  ui-monospace, monospace;
+
+  /* 半徑 */
+  --scoot-radius-sm: 10px;
+  --scoot-radius:    12px;
+  --scoot-radius-lg: 16px;
 }
+
+/* --- 2. 全域排版 ------------------------------------------ */
 
 body {
-  background-color: var(--av-cloud);
-  color: var(--av-ink);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  background-color: var(--scoot-canvas);
+  color: var(--scoot-ink);
+  font-family: var(--font-body);
+  font-weight: 400;
 }
 
-/* --- 2. 導航列 --- */
-
-.navbar-aviation {
-  background: linear-gradient(135deg, var(--av-navy) 0%, var(--av-navy-light) 100%);
-  box-shadow: var(--av-shadow-md);
-  padding: .75rem 0;
+h1, h2, h3,
+.navbar-scoot .navbar-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--scoot-ink);
+  letter-spacing: 0.01em;
 }
 
-.navbar-aviation .navbar-brand {
-  font-weight: 700;
+h2 {
+  font-weight: 800;
+}
+
+.container.mt-4 {
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+}
+
+/* --- 3. 導航列（.navbar-scoot） --------------------------- */
+
+.navbar-scoot {
+  background: var(--scoot-yellow);
+  border-bottom: 4px solid var(--scoot-ink);
+  padding: 0.75rem 0;
+}
+
+.navbar-scoot .navbar-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
   font-size: 1.25rem;
-  letter-spacing: .02em;
-  color: var(--av-white);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--scoot-ink);
 }
 
-.navbar-aviation .navbar-brand:hover {
-  color: var(--av-amber-light);
+.navbar-scoot .navbar-brand:hover,
+.navbar-scoot .navbar-brand:focus {
+  color: var(--scoot-ink);
 }
 
-.navbar-aviation .nav-link {
-  color: rgba(255, 255, 255, .78);
-  font-weight: 500;
-  padding: .5rem 1rem;
-  border-radius: var(--av-radius-sm);
-  transition: color .2s, background-color .2s;
+.navbar-scoot .nav-link {
+  color: var(--scoot-ink);
+  font-weight: 600;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.navbar-aviation .nav-link:hover {
-  color: var(--av-white);
-  background-color: rgba(255, 255, 255, .1);
+.navbar-scoot .nav-link:hover {
+  color: var(--scoot-ink);
+  background-color: rgba(14, 14, 16, 0.08);
 }
 
-.navbar-aviation .nav-link.active {
-  color: var(--av-white);
-  background-color: rgba(255, 255, 255, .15);
-  position: relative;
+.navbar-scoot .nav-link.active {
+  color: #ffffff;
+  background-color: var(--scoot-ink);
 }
 
-.navbar-aviation .nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 1rem;
-  right: 1rem;
-  height: 2px;
-  background: var(--av-amber);
-  border-radius: 1px;
+.navbar-scoot .navbar-toggler {
+  border-color: rgba(14, 14, 16, 0.4);
 }
 
-.navbar-aviation .navbar-toggler {
-  border-color: rgba(255, 255, 255, .3);
+.navbar-scoot .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%230E0E10' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
-/* --- 3. 卡片 --- */
+/* --- 4. 卡片 ---------------------------------------------- */
 
 .card {
-  background: var(--av-white);
-  border: 1px solid var(--av-border);
-  border-radius: var(--av-radius);
-  box-shadow: var(--av-shadow);
-  transition: box-shadow .25s ease, transform .25s ease;
+  background: var(--scoot-surface);
+  border: 1.5px solid var(--scoot-line);
+  border-radius: var(--scoot-radius-lg);
+  box-shadow: 0 2px 0 var(--scoot-line);
+  transition: border-color 0.2s ease;
 }
 
 .card:hover {
-  box-shadow: var(--av-shadow-md);
-  transform: translateY(-2px);
+  border-color: var(--scoot-ink);
 }
 
 .card-header {
-  background: var(--av-cloud);
-  border-bottom: 1px solid var(--av-border);
-  font-weight: 600;
-  color: var(--av-navy);
-  padding: .875rem 1.25rem;
-  border-radius: var(--av-radius) var(--av-radius) 0 0 !important;
+  background: var(--scoot-surface);
+  border-bottom: 1.5px solid var(--scoot-line);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--scoot-ink);
+  padding: 0.875rem 1.25rem;
+  border-radius: var(--scoot-radius-lg) var(--scoot-radius-lg) 0 0 !important;
+}
+
+.card-header-scoot {
+  background: var(--scoot-yellow);
+  color: var(--scoot-ink);
+  border-bottom: 2px solid var(--scoot-ink);
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .card-body {
   padding: 1.25rem;
 }
 
-/* --- 4. 表格 --- */
+/* --- 5. 按鈕系統（.btn-scoot*） --------------------------- */
 
-.table-aviation-wrap {
-  border-radius: var(--av-radius);
-  overflow: hidden;
-  box-shadow: var(--av-shadow);
-}
-
-.table-aviation {
-  margin-bottom: 0;
-}
-
-.table-aviation thead th {
-  background: var(--av-navy);
-  color: var(--av-white);
-  font-weight: 600;
+.btn-scoot,
+.btn-scoot-secondary,
+.btn-scoot-danger,
+.btn-scoot-success,
+.btn-scoot-warning {
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-radius: var(--scoot-radius-sm);
+  padding: 0.55rem 1.25rem;
   border: none;
-  padding: .75rem 1rem;
-  white-space: nowrap;
+  transition: transform 0.05s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
 }
 
-.table-aviation tbody tr:nth-child(even) {
-  background-color: rgba(240, 244, 248, .5);
+/* 主按鈕：黃底黑字 + 深黃底按壓邊 */
+.btn-scoot {
+  background: var(--scoot-yellow);
+  color: var(--scoot-ink);
+  border-bottom: 3px solid var(--scoot-yellow-deep);
 }
 
-.table-aviation tbody tr:hover {
-  background-color: rgba(37, 99, 235, .04);
+.btn-scoot:hover,
+.btn-scoot:focus {
+  background: var(--scoot-yellow-bright);
+  color: var(--scoot-ink);
 }
 
-.table-aviation tbody td {
-  padding: .75rem 1rem;
-  border-color: var(--av-border);
-  vertical-align: middle;
-  white-space: nowrap;
+.btn-scoot:active {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  margin-bottom: 2px;
 }
 
-/* --- 5. 按鈕與表單 --- */
-
-.btn-aviation {
-  background: var(--av-blue);
-  border: none;
-  color: var(--av-white);
-  font-weight: 500;
-  padding: .5rem 1.25rem;
-  border-radius: var(--av-radius-sm);
-  transition: background-color .2s, box-shadow .2s;
-}
-
-.btn-aviation:hover,
-.btn-aviation:focus {
-  background: var(--av-blue-light);
-  color: var(--av-white);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, .3);
-}
-
-.btn-aviation-outline {
+/* 次按鈕：透明底 + 深色邊 */
+.btn-scoot-secondary {
   background: transparent;
-  border: 1px solid var(--av-blue);
-  color: var(--av-blue);
-  font-weight: 500;
-  padding: .5rem 1.25rem;
-  border-radius: var(--av-radius-sm);
-  transition: background-color .2s, color .2s;
+  color: var(--scoot-ink);
+  border: 2px solid var(--scoot-ink);
+  border-bottom-width: 3px;
+  padding: calc(0.55rem - 2px) calc(1.25rem - 2px);
 }
 
-.btn-aviation-outline:hover {
-  background: var(--av-blue);
-  color: var(--av-white);
+.btn-scoot-secondary:hover,
+.btn-scoot-secondary:focus {
+  background: var(--scoot-ink);
+  color: #ffffff;
 }
 
-.btn-aviation-danger {
-  background: var(--av-danger);
-  border: none;
-  color: var(--av-white);
-  font-weight: 500;
-  padding: .5rem 1.25rem;
-  border-radius: var(--av-radius-sm);
-  transition: background-color .2s, box-shadow .2s;
+.btn-scoot-secondary:active {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  margin-bottom: 2px;
 }
 
-.btn-aviation-danger:hover,
-.btn-aviation-danger:focus {
-  background: #b91c1c;
-  color: var(--av-white);
-  box-shadow: 0 2px 8px rgba(220, 38, 38, .3);
+/* 危險按鈕：紅底白字 */
+.btn-scoot-danger {
+  background: var(--scoot-danger);
+  color: #ffffff;
+  border-bottom: 3px solid #b91c1c;
 }
 
-.btn-aviation-success {
-  background: var(--av-success);
-  border: none;
-  color: var(--av-white);
-  font-weight: 500;
-  border-radius: var(--av-radius-sm);
-  transition: background-color .2s;
+.btn-scoot-danger:hover,
+.btn-scoot-danger:focus {
+  background: #f04d46;
+  color: #ffffff;
 }
 
-.btn-aviation-success:hover {
-  background: #15803d;
-  color: var(--av-white);
+.btn-scoot-danger:active {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  margin-bottom: 2px;
 }
 
-.btn-aviation-warning {
-  background: var(--av-amber);
-  border: none;
-  color: var(--av-ink);
-  font-weight: 500;
-  border-radius: var(--av-radius-sm);
-  transition: background-color .2s;
+/* 成功按鈕：綠底白字 */
+.btn-scoot-success {
+  background: var(--scoot-success);
+  color: #ffffff;
+  border-bottom: 3px solid #158A4F;
 }
 
-.btn-aviation-warning:hover {
-  background: var(--av-amber-light);
-  color: var(--av-ink);
+.btn-scoot-success:hover,
+.btn-scoot-success:focus {
+  background: #28c274;
+  color: #ffffff;
+}
+
+.btn-scoot-success:active {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  margin-bottom: 2px;
+}
+
+/* 警告按鈕：橘底黑字 */
+.btn-scoot-warning {
+  background: var(--scoot-warn);
+  color: var(--scoot-ink);
+  border-bottom: 3px solid #D9690F;
+}
+
+.btn-scoot-warning:hover,
+.btn-scoot-warning:focus {
+  background: #ff9d41;
+  color: var(--scoot-ink);
+}
+
+.btn-scoot-warning:active {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  margin-bottom: 2px;
+}
+
+/* 共同 focus 樣式 */
+.btn-scoot:focus-visible,
+.btn-scoot-secondary:focus-visible,
+.btn-scoot-danger:focus-visible,
+.btn-scoot-success:focus-visible,
+.btn-scoot-warning:focus-visible {
+  outline: 2px solid var(--scoot-ink);
+  outline-offset: 2px;
+}
+
+/* --- 6. 表單（底邊強調風格） ---------------------------- */
+
+.form-control,
+.form-select {
+  border-top:    1px solid var(--scoot-line);
+  border-left:   1px solid var(--scoot-line);
+  border-right:  1px solid var(--scoot-line);
+  border-bottom: 2px solid var(--scoot-line);
+  border-radius: var(--scoot-radius-sm);
+  color: var(--scoot-ink);
+  background: var(--scoot-surface);
+  font-family: var(--font-body);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control::placeholder {
+  color: var(--scoot-muted);
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--av-blue-light);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
-}
-
-.form-control,
-.form-select {
-  border-radius: var(--av-radius-sm);
-  border-color: var(--av-border);
+  border-color: var(--scoot-line);
+  border-bottom-color: var(--scoot-yellow);
+  box-shadow: 0 3px 0 -1px rgba(255, 218, 0, 0.35),
+              0 0 0 3px rgba(255, 218, 0, 0.25);
+  outline: none;
 }
 
 .form-label {
-  font-weight: 500;
-  color: var(--av-navy);
-  font-size: .875rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--scoot-ink);
+  margin-bottom: 0.375rem;
 }
 
-/* --- 6. 統計卡片 --- */
+/* --- 7. 表格（.table-scoot-wrap / .table-scoot） ---------- */
 
-.stat-card {
-  background: var(--av-white);
-  border: 1px solid var(--av-border);
-  border-radius: var(--av-radius);
-  box-shadow: var(--av-shadow);
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: box-shadow .25s ease, transform .25s ease;
+.table-scoot-wrap {
+  border-radius: var(--scoot-radius);
+  overflow: hidden;
+  border: 1.5px solid var(--scoot-line);
 }
 
-.stat-card:hover {
-  box-shadow: var(--av-shadow-md);
-  transform: translateY(-2px);
+.table-scoot {
+  margin-bottom: 0;
+  color: var(--scoot-ink);
 }
 
-.stat-card-stripe {
-  width: 4px;
-  height: 48px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.stat-card-stripe--danger  { background: var(--av-danger); }
-.stat-card-stripe--success { background: var(--av-success); }
-.stat-card-stripe--blue    { background: var(--av-blue); }
-.stat-card-stripe--amber   { background: var(--av-amber); }
-.stat-card-stripe--navy    { background: var(--av-navy); }
-
-.stat-card-content {
-  min-width: 0;
-}
-
-.stat-card-label {
-  font-size: .8rem;
-  color: var(--av-muted);
-  font-weight: 500;
-  margin-bottom: .125rem;
-}
-
-.stat-card-value {
-  font-size: 1.5rem;
+.table-scoot thead th {
+  background: var(--scoot-ink);
+  color: #ffffff;
+  font-family: var(--font-display);
   font-weight: 700;
-  color: var(--av-ink);
-  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  border: none;
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
 }
 
-.stat-card-value--danger  { color: var(--av-danger); }
-.stat-card-value--success { color: var(--av-success); }
-.stat-card-value--blue    { color: var(--av-blue); }
+.table-scoot tbody tr {
+  background-color: var(--scoot-surface);
+  transition: background-color 0.15s ease;
+}
 
-/* --- 7. Badge --- */
+.table-scoot tbody tr:nth-child(even) {
+  background-color: rgba(255, 218, 0, 0.08);
+}
 
-.badge-aviation-success,
-.badge-aviation-danger,
-.badge-aviation-muted {
+.table-scoot tbody tr:hover {
+  background-color: rgba(255, 218, 0, 0.16);
+}
+
+.table-scoot tbody td {
+  padding: 0.75rem 1rem;
+  border-color: var(--scoot-line);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* 價格 / 數字欄：mono 字體 + 右對齊 */
+.table-scoot td.text-end,
+.table-scoot td.num,
+.table-scoot td.price,
+.table-scoot .num,
+.table-scoot .price {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* --- 8. 統計卡片（.stat-scoot*） -------------------------- */
+
+.stat-scoot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--scoot-radius-lg);
+  border: 1.5px solid transparent;
+  box-shadow: 0 2px 0 rgba(14, 14, 16, 0.06);
+  overflow: hidden;
+}
+
+.stat-scoot::after {
+  /* 登機證打孔裝飾（右下角半透明圓點） */
+  content: '';
+  position: absolute;
+  right: 1rem;
+  bottom: 0.75rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+.stat-scoot-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+
+.stat-scoot-value {
+  font-family: var(--font-mono);
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 塊面變體 */
+.stat-scoot--ink {
+  background: var(--scoot-ink);
+  color: #ffffff;
+}
+
+.stat-scoot--yellow {
+  background: var(--scoot-yellow);
+  color: var(--scoot-ink);   /* 黃底禁白字：強制深色 */
+  border-color: var(--scoot-yellow-deep);
+}
+
+.stat-scoot--yellow::after {
+  background: rgba(14, 14, 16, 0.12);
+}
+
+.stat-scoot--success {
+  background: var(--scoot-success);
+  color: #ffffff;
+}
+
+.stat-scoot--danger {
+  background: var(--scoot-danger);
+  color: #ffffff;
+}
+
+.stat-scoot--slate {
+  background: var(--scoot-slate);
+  color: #ffffff;
+}
+
+/* --- 9. Badge（圓角 pill） -------------------------------- */
+
+.badge-scoot-success,
+.badge-scoot-danger,
+.badge-scoot-muted {
   display: inline-block;
   white-space: nowrap;
-  font-weight: 600;
-  padding: .35em .65em;
-  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.35em 0.75em;
+  border-radius: 999px;
 }
 
-.badge-aviation-success {
-  background: rgba(22, 163, 74, .12);
-  color: var(--av-success);
+.badge-scoot-success {
+  background: rgba(31, 173, 102, 0.12);
+  color: var(--scoot-success);
 }
 
-.badge-aviation-danger {
-  background: rgba(220, 38, 38, .12);
-  color: var(--av-danger);
+.badge-scoot-danger {
+  background: rgba(228, 50, 43, 0.12);
+  color: var(--scoot-danger);
 }
 
-.badge-aviation-muted {
-  background: rgba(100, 116, 139, .12);
-  color: var(--av-muted);
+.badge-scoot-muted {
+  background: rgba(138, 138, 149, 0.12);
+  color: var(--scoot-slate);
 }
 
-/* --- 其他 --- */
+/* --- 10. Alert ------------------------------------------- */
 
 .alert {
-  border-radius: var(--av-radius-sm);
+  background: var(--scoot-surface);
+  color: var(--scoot-ink);
+  border: 1.5px solid var(--scoot-line);
+  border-left: 6px solid var(--scoot-info);
+  border-radius: var(--scoot-radius);
+  padding: 0.875rem 1.125rem;
+  font-weight: 500;
 }
 
-h2 {
-  color: var(--av-navy);
-  font-weight: 700;
+.alert-info {
+  border-left-color: var(--scoot-info);
 }
 
-.container.mt-4 {
-  padding-top: .5rem;
-  padding-bottom: 2rem;
+.alert-success {
+  border-left-color: var(--scoot-success);
+}
+
+.alert-warning {
+  border-left-color: var(--scoot-warn);
+}
+
+.alert-danger {
+  border-left-color: var(--scoot-danger);
+}
+
+/* --- 11. 減少動畫偏好 ------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-scoot,
+  .btn-scoot-secondary,
+  .btn-scoot-danger,
+  .btn-scoot-success,
+  .btn-scoot-warning,
+  .btn-scoot:active,
+  .btn-scoot-secondary:active,
+  .btn-scoot-danger:active,
+  .btn-scoot-success:active,
+  .btn-scoot-warning:active {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .card,
+  .card:hover,
+  .table-scoot tbody tr,
+  .alert {
+    transition: none !important;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -2,18 +2,18 @@
 
 **檔案範圍**：`app/static/css/style.css`
 
-- [ ] 1.1 在 `:root` 定義酷航 14 項 `--scoot-*` 色彩 tokens（`scoot-yellow` / `scoot-yellow-bright` / `scoot-yellow-deep` / `scoot-ink` / `scoot-ink-soft` / `scoot-slate` / `scoot-muted` / `scoot-canvas` / `scoot-surface` / `scoot-line` / `scoot-success` / `scoot-danger` / `scoot-warn` / `scoot-info`），色值必須與 `specs/scoot-theme/spec.md` 的「酷航品牌色彩 Tokens」一致
-- [ ] 1.2 在 `:root` 定義 `--font-display`、`--font-body`、`--font-mono` 三組字體堆疊變數，含繁體中文與系統字型 fallback；設定 `body` 套用 `--font-body`、`body` 背景為 `var(--scoot-canvas)`、預設文字 `var(--scoot-ink)`
-- [ ] 1.3 新增 `.navbar-scoot` 樣式：亮黃底、`4px` solid 近黑底邊、品牌文字 `--font-display` 字重 800 大寫、`.nav-link` 深色文字、`.nav-link.active` 使用 `var(--scoot-ink)` 圓角 pill + 白字
-- [ ] 1.4 新增 `.card` 與 `.card-header-scoot` 樣式：白底、`16px` 圓角、`1.5px solid var(--scoot-line)` 邊框、平面陰影、hover 時邊框轉 `var(--scoot-ink)`；`.card-header-scoot` 變體為黃底近黑字
-- [ ] 1.5 新增 `.btn-scoot`、`.btn-scoot-secondary`、`.btn-scoot-danger`、`.btn-scoot-success`、`.btn-scoot-warning` 五種按鈕層級，包含背景色、文字色、`10px` 圓角、`3px` solid 底部按壓邊、`:active` 套用 `translateY(1px)`、`:focus-visible` 顯示 2px 外描邊
-- [ ] 1.6 覆蓋 `.form-control`、`.form-select`、`.form-label`：輸入元素採上左右 `1px` + 底 `2px` 邊、`10px` 圓角，`:focus` 底邊轉 `var(--scoot-yellow)` 並加 `3px` 黃色外暈；`.form-label` 字重 600、`0.875rem`、`var(--scoot-ink)`
-- [ ] 1.7 新增 `.table-scoot-wrap`、`.table-scoot` 樣式：`12px` 圓角容器、`overflow: hidden`、`thead th` 近黑底白字 `--font-display` 字重 700、`tbody tr:nth-child(even)` 淡黃背景、hover 時加深、價格欄位（透過 `.num` / `.price` 輔助 class 或欄位 `td.text-end`）使用 `--font-mono` 右對齊
-- [ ] 1.8 新增 `.stat-scoot` 家族樣式：整卡塊面背景、主數值 `--font-mono` 字級 `2.25rem` 字重 800、label uppercase `letter-spacing: 0.08em`，包含 `.stat-scoot--ink`、`.stat-scoot--yellow`、`.stat-scoot--success`、`.stat-scoot--danger`、`.stat-scoot--slate` 五種變體，禁止 `.stat-scoot--yellow` 出現白字
-- [ ] 1.9 新增 `.badge-scoot-success`、`.badge-scoot-danger`、`.badge-scoot-muted` 樣式：`border-radius: 999px`、字重 700、`0.75rem` uppercase、12% alpha 底色
-- [ ] 1.10 覆蓋 `.alert` 與其變體（info/success/warning/danger）：白底、`12px` 圓角、左側 `6px` 實色彩條、深色文字
-- [ ] 1.11 新增全域 `@media (prefers-reduced-motion: reduce)` 規則，停用按鈕 `translateY` 位移、卡片 hover 過渡、alert 動畫（`transition` 設為 `none` 或 `0.01ms`）
-- [ ] 1.12 移除舊 `--av-*` 變數與 `.navbar-aviation` / `.btn-aviation*` / `.table-aviation*` / `.stat-card*` / `.badge-aviation-*` 所有 class；結果 style.css 內 **不得** 出現 `--av-` 或 `aviation` 字串（禁止遺留）
+- [x] 1.1 在 `:root` 定義酷航 14 項 `--scoot-*` 色彩 tokens（`scoot-yellow` / `scoot-yellow-bright` / `scoot-yellow-deep` / `scoot-ink` / `scoot-ink-soft` / `scoot-slate` / `scoot-muted` / `scoot-canvas` / `scoot-surface` / `scoot-line` / `scoot-success` / `scoot-danger` / `scoot-warn` / `scoot-info`），色值必須與 `specs/scoot-theme/spec.md` 的「酷航品牌色彩 Tokens」一致
+- [x] 1.2 在 `:root` 定義 `--font-display`、`--font-body`、`--font-mono` 三組字體堆疊變數，含繁體中文與系統字型 fallback；設定 `body` 套用 `--font-body`、`body` 背景為 `var(--scoot-canvas)`、預設文字 `var(--scoot-ink)`
+- [x] 1.3 新增 `.navbar-scoot` 樣式：亮黃底、`4px` solid 近黑底邊、品牌文字 `--font-display` 字重 800 大寫、`.nav-link` 深色文字、`.nav-link.active` 使用 `var(--scoot-ink)` 圓角 pill + 白字
+- [x] 1.4 新增 `.card` 與 `.card-header-scoot` 樣式：白底、`16px` 圓角、`1.5px solid var(--scoot-line)` 邊框、平面陰影、hover 時邊框轉 `var(--scoot-ink)`；`.card-header-scoot` 變體為黃底近黑字
+- [x] 1.5 新增 `.btn-scoot`、`.btn-scoot-secondary`、`.btn-scoot-danger`、`.btn-scoot-success`、`.btn-scoot-warning` 五種按鈕層級，包含背景色、文字色、`10px` 圓角、`3px` solid 底部按壓邊、`:active` 套用 `translateY(1px)`、`:focus-visible` 顯示 2px 外描邊
+- [x] 1.6 覆蓋 `.form-control`、`.form-select`、`.form-label`：輸入元素採上左右 `1px` + 底 `2px` 邊、`10px` 圓角，`:focus` 底邊轉 `var(--scoot-yellow)` 並加 `3px` 黃色外暈；`.form-label` 字重 600、`0.875rem`、`var(--scoot-ink)`
+- [x] 1.7 新增 `.table-scoot-wrap`、`.table-scoot` 樣式：`12px` 圓角容器、`overflow: hidden`、`thead th` 近黑底白字 `--font-display` 字重 700、`tbody tr:nth-child(even)` 淡黃背景、hover 時加深、價格欄位（透過 `.num` / `.price` 輔助 class 或欄位 `td.text-end`）使用 `--font-mono` 右對齊
+- [x] 1.8 新增 `.stat-scoot` 家族樣式：整卡塊面背景、主數值 `--font-mono` 字級 `2.25rem` 字重 800、label uppercase `letter-spacing: 0.08em`，包含 `.stat-scoot--ink`、`.stat-scoot--yellow`、`.stat-scoot--success`、`.stat-scoot--danger`、`.stat-scoot--slate` 五種變體，禁止 `.stat-scoot--yellow` 出現白字
+- [x] 1.9 新增 `.badge-scoot-success`、`.badge-scoot-danger`、`.badge-scoot-muted` 樣式：`border-radius: 999px`、字重 700、`0.75rem` uppercase、12% alpha 底色
+- [x] 1.10 覆蓋 `.alert` 與其變體（info/success/warning/danger）：白底、`12px` 圓角、左側 `6px` 實色彩條、深色文字
+- [x] 1.11 新增全域 `@media (prefers-reduced-motion: reduce)` 規則，停用按鈕 `translateY` 位移、卡片 hover 過渡、alert 動畫（`transition` 設為 `none` 或 `0.01ms`）
+- [x] 1.12 移除舊 `--av-*` 變數與 `.navbar-aviation` / `.btn-aviation*` / `.table-aviation*` / `.stat-card*` / `.badge-aviation-*` 所有 class；結果 style.css 內 **不得** 出現 `--av-` 或 `aviation` 字串（禁止遺留）
 
 ## 2. base.html 骨架更新
 
