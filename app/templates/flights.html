@@ -6,7 +6,7 @@
 <h2>追蹤班機管理</h2>
 
 <div class="card mb-4">
-    <div class="card-header">新增追蹤班機</div>
+    <div class="card-header card-header-scoot">新增追蹤班機</div>
     <div class="card-body">
         <form method="POST" action="{{ url_for('flights.add_flight') }}" id="addFlightForm">
             <div class="row g-3">
@@ -15,7 +15,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" id="flight_number"
                                name="flight_number" placeholder="例: CI100" required>
-                        <button type="button" class="btn btn-aviation-outline" id="lookupBtn">查詢</button>
+                        <button type="button" class="btn btn-scoot-secondary" id="lookupBtn">查詢</button>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -39,7 +39,7 @@
                            name="destination" placeholder="自動帶入" required>
                 </div>
                 <div class="col-md-1 d-flex align-items-end">
-                    <button type="submit" class="btn btn-aviation w-100">新增</button>
+                    <button type="submit" class="btn btn-scoot w-100">新增</button>
                 </div>
             </div>
             <div id="routeSelector" class="mt-2" style="display: none;">
@@ -55,8 +55,8 @@
 <div class="card">
     <div class="card-header">追蹤清單</div>
     <div class="card-body p-0">
-        <div class="table-aviation-wrap">
-            <table class="table table-aviation">
+        <div class="table-scoot-wrap">
+            <table class="table table-scoot">
                 <thead>
                     <tr>
                         <th>班次代碼</th>
@@ -78,9 +78,9 @@
                         <td>{{ flight.departure_date.strftime('%Y-%m-%d') if flight.departure_date else '-' }}</td>
                         <td>
                             {% if flight.is_active %}
-                                <span class="badge-aviation-success">啟用</span>
+                                <span class="badge-scoot-success">啟用</span>
                             {% else %}
-                                <span class="badge-aviation-muted">停用</span>
+                                <span class="badge-scoot-muted">停用</span>
                             {% endif %}
                         </td>
                         <td>
@@ -88,9 +88,9 @@
                                   action="{{ url_for('flights.toggle_flight', flight_id=flight.id) }}"
                                   style="display: inline;">
                                 {% if flight.is_active %}
-                                    <button type="submit" class="btn btn-sm btn-aviation-warning">停用</button>
+                                    <button type="submit" class="btn btn-sm btn-scoot-warning">停用</button>
                                 {% else %}
-                                    <button type="submit" class="btn btn-sm btn-aviation-success">啟用</button>
+                                    <button type="submit" class="btn btn-sm btn-scoot-success">啟用</button>
                                 {% endif %}
                             </form>
                         </td>

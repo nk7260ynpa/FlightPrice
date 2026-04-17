@@ -37,30 +37,21 @@
 
 <div id="statsContainer" class="row g-3 mb-4" style="display: none;">
     <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-card-stripe stat-card-stripe--danger"></div>
-            <div class="stat-card-content">
-                <div class="stat-card-label">最高價</div>
-                <div id="maxPrice" class="stat-card-value stat-card-value--danger">-</div>
-            </div>
+        <div class="stat-scoot stat-scoot--danger">
+            <div class="stat-scoot-label">最高價</div>
+            <div id="maxPrice" class="stat-scoot-value">-</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-card-stripe stat-card-stripe--success"></div>
-            <div class="stat-card-content">
-                <div class="stat-card-label">最低價</div>
-                <div id="minPrice" class="stat-card-value stat-card-value--success">-</div>
-            </div>
+        <div class="stat-scoot stat-scoot--success">
+            <div class="stat-scoot-label">最低價</div>
+            <div id="minPrice" class="stat-scoot-value">-</div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-card-stripe stat-card-stripe--blue"></div>
-            <div class="stat-card-content">
-                <div class="stat-card-label">平均價</div>
-                <div id="avgPrice" class="stat-card-value stat-card-value--blue">-</div>
-            </div>
+        <div class="stat-scoot stat-scoot--ink">
+            <div class="stat-scoot-label">平均價</div>
+            <div id="avgPrice" class="stat-scoot-value">-</div>
         </div>
     </div>
 </div>
@@ -96,12 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasets: [{
                         label: '票價 (TWD)',
                         data: data.data,
-                        borderColor: '#2563eb',
-                        backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                        borderColor: '#0E0E10',
+                        backgroundColor: 'rgba(14, 14, 16, 0.08)',
                         fill: true,
                         tension: 0.3,
-                        pointBackgroundColor: '#2563eb',
-                        pointBorderColor: '#ffffff',
+                        pointBackgroundColor: '#FFDA00',
+                        pointBorderColor: '#0E0E10',
                         pointBorderWidth: 2,
                         pointRadius: 4,
                         pointHoverRadius: 6,
@@ -111,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     responsive: true,
                     plugins: {
                         tooltip: {
-                            backgroundColor: '#1e3a5f',
+                            backgroundColor: '#0E0E10',
                             titleColor: '#ffffff',
-                            bodyColor: '#ffffff',
+                            bodyColor: '#FFDA00',
                             borderColor: 'rgba(255,255,255,0.1)',
                             borderWidth: 1,
                             cornerRadius: 8,
@@ -126,25 +117,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         legend: {
                             labels: {
-                                color: '#1e293b',
-                                font: { weight: '500' }
+                                color: '#0E0E10',
+                                font: { weight: '600' }
                             }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: false,
-                            grid: { color: 'rgba(30,58,95,0.06)' },
+                            grid: { color: 'rgba(14, 14, 16, 0.06)' },
                             ticks: {
-                                color: '#64748b',
+                                color: '#4A4A55',
                                 callback: function(value) {
                                     return 'NT$ ' + value.toLocaleString();
                                 }
                             }
                         },
                         x: {
-                            grid: { color: 'rgba(30,58,95,0.04)' },
-                            ticks: { color: '#64748b' }
+                            grid: { color: 'rgba(14, 14, 16, 0.06)' },
+                            ticks: { color: '#4A4A55' }
                         }
                     }
                 }
