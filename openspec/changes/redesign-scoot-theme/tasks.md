@@ -19,41 +19,41 @@
 
 **檔案範圍**：`app/templates/base.html`
 
-- [ ] 2.1 於 `<head>` 加入 Google Fonts `<link>` 標籤，preload `Nunito`（700, 800）與 `Nunito Sans`（400, 500, 600）、`JetBrains Mono`（500），含 `preconnect` 至 `fonts.googleapis.com` 與 `fonts.gstatic.com`、`display=swap`；務必置於 Bootstrap CSS 之前或與之並列
-- [ ] 2.2 將 `<nav class="navbar navbar-expand-lg navbar-dark navbar-aviation">` 中的 `navbar-aviation` 替換為 `navbar-scoot`；移除 `navbar-dark`（黃底需深色文字）；品牌 `<a class="navbar-brand">` 文字改為 `✈ FlightPrice` 或維持 `&#9992;` entity，並套用 `text-uppercase fw-bold` 對應類或依 CSS 預設生效
-- [ ] 2.3 檢查 `.nav-link` 與 `.nav-link.active` 的 Jinja 條件判斷維持原樣，確認 CSS 會由 `.navbar-scoot .nav-link.active` 接手 pill 樣式
+- [x] 2.1 於 `<head>` 加入 Google Fonts `<link>` 標籤，preload `Nunito`（700, 800）與 `Nunito Sans`（400, 500, 600）、`JetBrains Mono`（500），含 `preconnect` 至 `fonts.googleapis.com` 與 `fonts.gstatic.com`、`display=swap`；務必置於 Bootstrap CSS 之前或與之並列
+- [x] 2.2 將 `<nav class="navbar navbar-expand-lg navbar-dark navbar-aviation">` 中的 `navbar-aviation` 替換為 `navbar-scoot`；移除 `navbar-dark`（黃底需深色文字）；品牌 `<a class="navbar-brand">` 文字改為 `✈ FlightPrice` 或維持 `&#9992;` entity，並套用 `text-uppercase fw-bold` 對應類或依 CSS 預設生效
+- [x] 2.3 檢查 `.nav-link` 與 `.nav-link.active` 的 Jinja 條件判斷維持原樣，確認 CSS 會由 `.navbar-scoot .nav-link.active` 接手 pill 樣式
 
 ## 3. flights.html 模板更新
 
 **檔案範圍**：`app/templates/flights.html`
 
-- [ ] 3.1 將「新增追蹤班機」卡片的 `.card-header` 加上 `card-header-scoot` 輔助類（或更新 spec 中 primary header 樣式），讓黃色強調套用到該標題列
-- [ ] 3.2 將「查詢」按鈕 `btn-aviation-outline` 替換為 `btn-scoot-secondary`
-- [ ] 3.3 將「新增」按鈕 `btn-aviation` 替換為 `btn-scoot`
-- [ ] 3.4 將追蹤清單區塊的表格容器 `.table-aviation-wrap` 與表格 `.table-aviation` 替換為 `.table-scoot-wrap` / `.table-scoot`
-- [ ] 3.5 將班機狀態 badge 由 `badge-aviation-success` / `badge-aviation-muted` 替換為 `badge-scoot-success` / `badge-scoot-muted`
-- [ ] 3.6 將操作按鈕 `btn-aviation-warning` / `btn-aviation-success` 替換為 `btn-scoot-warning` / `btn-scoot-success`
-- [ ] 3.7 檢查模板內不得遺留任何 `aviation` 字串或 `btn-aviation*`、`table-aviation*`、`badge-aviation-*` 類別
+- [x] 3.1 將「新增追蹤班機」卡片的 `.card-header` 加上 `card-header-scoot` 輔助類（或更新 spec 中 primary header 樣式），讓黃色強調套用到該標題列
+- [x] 3.2 將「查詢」按鈕 `btn-aviation-outline` 替換為 `btn-scoot-secondary`
+- [x] 3.3 將「新增」按鈕 `btn-aviation` 替換為 `btn-scoot`
+- [x] 3.4 將追蹤清單區塊的表格容器 `.table-aviation-wrap` 與表格 `.table-aviation` 替換為 `.table-scoot-wrap` / `.table-scoot`
+- [x] 3.5 將班機狀態 badge 由 `badge-aviation-success` / `badge-aviation-muted` 替換為 `badge-scoot-success` / `badge-scoot-muted`
+- [x] 3.6 將操作按鈕 `btn-aviation-warning` / `btn-aviation-success` 替換為 `btn-scoot-warning` / `btn-scoot-success`
+- [x] 3.7 檢查模板內不得遺留任何 `aviation` 字串或 `btn-aviation*`、`table-aviation*`、`badge-aviation-*` 類別
 
 ## 4. charts.html 模板與 Chart.js 配色更新
 
 **檔案範圍**：`app/templates/charts.html`
 
-- [ ] 4.1 將下拉選單卡片與圖表卡片使用的樣式類別確認與 scoot-theme 相容；若有 `aviation` 類殘留，一併移除
-- [ ] 4.2 將三張統計卡片由「`.stat-card` + `.stat-card-stripe*`」結構改為新的 `.stat-scoot` 結構：最高價 → `.stat-scoot--danger`、最低價 → `.stat-scoot--success`、平均價 → `.stat-scoot--ink`；主數值仍透過 `id="maxPrice"` / `minPrice` / `avgPrice` 綁定以供 JS 填入
-- [ ] 4.3 將 Chart.js `borderColor` 改為 `#0E0E10`、`backgroundColor` 改為 `rgba(14,14,16,0.08)`、`pointBackgroundColor` 改為 `#FFDA00`、`pointBorderColor` 改為 `#0E0E10`、`pointBorderWidth` ≥ `2`、tooltip 背景 `#0E0E10` / 文字 `#ffffff`、價格數值 label 色 `#FFDA00`
-- [ ] 4.4 將 grid line 顏色改為 `rgba(14,14,16,0.06)`、座標刻度 `ticks.color` 改為 `#4A4A55`、legend 文字 `#0E0E10` 字重 600
-- [ ] 4.5 檢查模板內不得遺留任何 `aviation` 字串或舊 stat-card 類別
+- [x] 4.1 將下拉選單卡片與圖表卡片使用的樣式類別確認與 scoot-theme 相容；若有 `aviation` 類殘留，一併移除
+- [x] 4.2 將三張統計卡片由「`.stat-card` + `.stat-card-stripe*`」結構改為新的 `.stat-scoot` 結構：最高價 → `.stat-scoot--danger`、最低價 → `.stat-scoot--success`、平均價 → `.stat-scoot--ink`；主數值仍透過 `id="maxPrice"` / `minPrice` / `avgPrice` 綁定以供 JS 填入
+- [x] 4.3 將 Chart.js `borderColor` 改為 `#0E0E10`、`backgroundColor` 改為 `rgba(14,14,16,0.08)`、`pointBackgroundColor` 改為 `#FFDA00`、`pointBorderColor` 改為 `#0E0E10`、`pointBorderWidth` ≥ `2`、tooltip 背景 `#0E0E10` / 文字 `#ffffff`、價格數值 label 色 `#FFDA00`
+- [x] 4.4 將 grid line 顏色改為 `rgba(14,14,16,0.06)`、座標刻度 `ticks.color` 改為 `#4A4A55`、legend 文字 `#0E0E10` 字重 600
+- [x] 4.5 檢查模板內不得遺留任何 `aviation` 字串或舊 stat-card 類別
 
 ## 5. status.html 模板更新
 
 **檔案範圍**：`app/templates/status.html`
 
-- [ ] 5.1 將「立即抓取」按鈕 `btn-aviation-danger` 替換為 `btn-scoot-danger`
-- [ ] 5.2 將三張統計卡片（追蹤班機數、成功擷取、失敗擷取）改為 `.stat-scoot` 結構：追蹤班機數 → `.stat-scoot--ink`、成功擷取 → `.stat-scoot--success`、失敗擷取 → `.stat-scoot--danger`
-- [ ] 5.3 將「抓取紀錄」區塊 `.table-aviation-wrap` / `.table-aviation` 替換為 `.table-scoot-wrap` / `.table-scoot`
-- [ ] 5.4 將成功 / 失敗 badge `badge-aviation-success` / `badge-aviation-danger` 替換為 `badge-scoot-success` / `badge-scoot-danger`
-- [ ] 5.5 檢查模板內不得遺留任何 `aviation` 字串
+- [x] 5.1 將「立即抓取」按鈕 `btn-aviation-danger` 替換為 `btn-scoot-danger`
+- [x] 5.2 將三張統計卡片（追蹤班機數、成功擷取、失敗擷取）改為 `.stat-scoot` 結構：追蹤班機數 → `.stat-scoot--ink`、成功擷取 → `.stat-scoot--success`、失敗擷取 → `.stat-scoot--danger`
+- [x] 5.3 將「抓取紀錄」區塊 `.table-aviation-wrap` / `.table-aviation` 替換為 `.table-scoot-wrap` / `.table-scoot`
+- [x] 5.4 將成功 / 失敗 badge `badge-aviation-success` / `badge-aviation-danger` 替換為 `badge-scoot-success` / `badge-scoot-danger`
+- [x] 5.5 檢查模板內不得遺留任何 `aviation` 字串
 
 ## 6. 自動化驗證與測試
 
