@@ -59,14 +59,14 @@
 
 **檔案範圍**：`tests/test_theme_smoke.py`（新增）、既有測試維持不動
 
-- [ ] 6.1 新增 `tests/test_theme_smoke.py`，使用 Flask test client 驗證 `GET /`、`GET /charts`、`GET /status` 的 HTML 回應：
+- [x] 6.1 新增 `tests/test_theme_smoke.py`，使用 Flask test client 驗證 `GET /`、`GET /charts`、`GET /status` 的 HTML 回應：
   - 斷言 `navbar-scoot` class 出現在 `/` 回應中
   - 斷言 `/` 回應包含 `btn-scoot` 字串（「新增」主按鈕）
   - 斷言 `/charts` 回應包含 `stat-scoot--ink` 或 `stat-scoot--success` 或 `stat-scoot--danger`
   - 斷言 `/status` 回應包含 `table-scoot` 與 `badge-scoot-success` 或對應 badge 類別
   - 斷言所有回應皆不得包含 `navbar-aviation`、`btn-aviation`、`table-aviation`、`stat-card-stripe`、`badge-aviation-` 等舊 class 字串
-- [ ] 6.2 新增 `tests/test_theme_smoke.py` 中的「CSS 靜態檔」測試：`GET /static/css/style.css` 回應 200、Content-Type 為 `text/css`、內容包含 `--scoot-yellow: #FFDA00`（或等同色碼宣告），且不包含 `--av-` 與 `aviation` 字串
-- [ ] 6.3 於 Docker container 內執行 `pytest`（`./run.sh pytest` 或 `docker compose run --rm app pytest`），確認所有測試通過、無迴歸
+- [x] 6.2 新增 `tests/test_theme_smoke.py` 中的「CSS 靜態檔」測試：`GET /static/css/style.css` 回應 200、Content-Type 為 `text/css`、內容包含 `--scoot-yellow: #FFDA00`（或等同色碼宣告），且不包含 `--av-` 與 `aviation` 字串
+- [x] 6.3 於 Docker container 內執行 `pytest`（`./run.sh pytest` 或 `docker compose run --rm app pytest`），確認所有測試通過、無迴歸
 
 ## 7. 手動視覺驗證與容器重啟
 
