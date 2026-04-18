@@ -72,9 +72,11 @@
  */
 function readThemeColors() {
     const cs = getComputedStyle(document.documentElement);
-    const ink = cs.getPropertyValue('--theme-ink').trim() || '#0E0E10';
-    const primary = cs.getPropertyValue('--theme-primary').trim() || '#FFDA00';
-    const slate = cs.getPropertyValue('--theme-slate').trim() || '#4A4A55';
+    // 所有色彩皆來自 --theme-* tokens，CSS 已備 :root:not([data-theme])
+    // fallback，故無需於此處提供硬編 hex fallback。
+    const ink = cs.getPropertyValue('--theme-ink').trim();
+    const primary = cs.getPropertyValue('--theme-primary').trim();
+    const slate = cs.getPropertyValue('--theme-slate').trim();
     return {
         ink: ink,
         primary: primary,
@@ -94,7 +96,8 @@ function readThemeColors() {
 function hexWithAlpha(hex, alpha) {
     const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
     if (!m) {
-        return 'rgba(14, 14, 16, ' + alpha + ')';
+        // 非預期格式：回傳完全透明以避免影響圖表可讀性。
+        return 'rgba(0, 0, 0, ' + alpha + ')';
     }
     const r = parseInt(m[1], 16);
     const g = parseInt(m[2], 16);

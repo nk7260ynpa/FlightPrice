@@ -67,16 +67,16 @@
 **檔案範圍**：`tests/test_theme_smoke.py`
 **相依**：Task 1–6
 
-- [ ] 7.1 新增 `TestThemeSwitcherUI` 類別：驗證 `/`、`/charts`、`/status` 皆渲染主題切換器 DOM（`data-theme-value="scoot"`、`data-theme-value="eva"`、`data-theme-value="china-airlines"`、`data-theme-value="starlux"` 四個選項同時存在，切換按鈕具 `aria-label="主題切換"`）
-- [ ] 7.2 新增 `TestThemeSwitcherScript` 類別：以 Flask test client 取 `/static/js/theme-switcher.js`，斷言回應 200、Content-Type 含 `javascript`、原始碼包含 `flightprice-theme`、`data-theme-value`、`themechange`、白名單 `['scoot','eva','china-airlines','starlux']`、MUST 不含 `location.reload`
-- [ ] 7.3 新增 `TestBaseTemplateFOUC` 類別：驗證 `base.html` 渲染結果中，`<head>` 內 `bootstrap.min.css` link 之前有 `<script>` 區塊，且該 script 包含字串 `flightprice-theme`、`data-theme`、`try`
-- [ ] 7.4 新增 `TestEvaThemeCss` 類別：取 `/static/css/style.css`，斷言內容包含 `:root[data-theme="eva"]`、`#005F3C`、`#D4A84B`、`Noto Serif TC`、`Source Sans 3`
-- [ ] 7.5 新增 `TestChinaAirlinesThemeCss` 類別：斷言內容包含 `:root[data-theme="china-airlines"]`、`#003F87`、`#C8102E`
-- [ ] 7.6 新增 `TestStarluxThemeCss` 類別：斷言內容包含 `:root[data-theme="starlux"]`、`#0E1842`、`#C8A96A`、`Cormorant Garamond`、`Inter Tight`；斷言 `--theme-btn-press-width: 0px` 於 starlux block 內出現（以 regex 或 substring 檢查）
-- [ ] 7.7 新增 `TestChartsThemeIntegration` 類別：取 `/charts`，斷言 HTML 回應含 `getPropertyValue('--theme-` 與 `themechange` 字串；MUST 不含硬編色 `'#0E0E10'` 或 `'#FFDA00'` 在 Chart.js 配置中（可用簡單 substring 檢查）
-- [ ] 7.8 新增 `TestNeutralClassAliases` 類別：斷言 style.css 內同時出現 `.navbar-theme`、`.btn-theme`、`.btn-theme-danger`、`.stat-theme`、`.stat-theme--ink`、`.table-theme`、`.badge-theme-success` 與對應 `.*-scoot` class（證明別名共存）
-- [ ] 7.9 確認既有 `TestFlightsPageScootTheme`、`TestChartsPageScootTheme`、`TestStatusPageScootTheme`、`TestStaticCssFile`、`TestBaseTemplateFonts` 全數維持通過（預設 data-theme="scoot"，Scoot 視覺不變）
-- [ ] 7.10 在 Docker container 內執行完整測試：`./run.sh` 或 `docker compose run --rm app pytest tests/test_theme_smoke.py -v`，所有斷言 MUST 通過
+- [x] 7.1 新增 `TestThemeSwitcherUI` 類別：驗證 `/`、`/charts`、`/status` 皆渲染主題切換器 DOM（`data-theme-value="scoot"`、`data-theme-value="eva"`、`data-theme-value="china-airlines"`、`data-theme-value="starlux"` 四個選項同時存在，切換按鈕具 `aria-label="主題切換"`）
+- [x] 7.2 新增 `TestThemeSwitcherScript` 類別：以 Flask test client 取 `/static/js/theme-switcher.js`，斷言回應 200、Content-Type 含 `javascript`、原始碼包含 `flightprice-theme`、`data-theme-value`、`themechange`、白名單 `['scoot','eva','china-airlines','starlux']`、MUST 不含 `location.reload`
+- [x] 7.3 新增 `TestBaseTemplateFOUC` 類別：驗證 `base.html` 渲染結果中，`<head>` 內 `bootstrap.min.css` link 之前有 `<script>` 區塊，且該 script 包含字串 `flightprice-theme`、`data-theme`、`try`
+- [x] 7.4 新增 `TestEvaThemeCss` 類別：取 `/static/css/style.css`，斷言內容包含 `:root[data-theme="eva"]`、`#005F3C`、`#D4A84B`、`Noto Serif TC`、`Source Sans 3`
+- [x] 7.5 新增 `TestChinaAirlinesThemeCss` 類別：斷言內容包含 `:root[data-theme="china-airlines"]`、`#003F87`、`#C8102E`
+- [x] 7.6 新增 `TestStarluxThemeCss` 類別：斷言內容包含 `:root[data-theme="starlux"]`、`#0E1842`、`#C8A96A`、`Cormorant Garamond`、`Inter Tight`；斷言 `--theme-btn-press-width: 0px` 於 starlux block 內出現（以 regex 或 substring 檢查）
+- [x] 7.7 新增 `TestChartsThemeIntegration` 類別：取 `/charts`，斷言 HTML 回應含 `getPropertyValue('--theme-` 與 `themechange` 字串；MUST 不含硬編色 `'#0E0E10'` 或 `'#FFDA00'` 在 Chart.js 配置中（可用簡單 substring 檢查）
+- [x] 7.8 新增 `TestNeutralClassAliases` 類別：斷言 style.css 內同時出現 `.navbar-theme`、`.btn-theme`、`.btn-theme-danger`、`.stat-theme`、`.stat-theme--ink`、`.table-theme`、`.badge-theme-success` 與對應 `.*-scoot` class（證明別名共存）
+- [x] 7.9 確認既有 `TestFlightsPageScootTheme`、`TestChartsPageScootTheme`、`TestStatusPageScootTheme`、`TestStaticCssFile`、`TestBaseTemplateFonts` 全數維持通過（預設 data-theme="scoot"，Scoot 視覺不變）
+- [x] 7.10 在 Docker container 內執行完整測試：`./run.sh` 或 `docker compose run --rm app pytest tests/test_theme_smoke.py -v`，所有斷言 MUST 通過
 
 ## 8. 文件同步檢查
 

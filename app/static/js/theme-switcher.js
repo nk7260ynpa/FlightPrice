@@ -8,7 +8,7 @@
  *   4. 派發 CustomEvent('themechange')，供 Chart.js 等模組監聽重繪
  *   5. 初始化時根據 localStorage 標記當前選項 aria-current
  *
- * 本腳本 MUST NOT 呼叫 window.location.reload；主題切換全程不刷新頁面。
+ * 本腳本不得呼叫頁面重新載入 API；主題切換全程不刷新頁面。
  */
 (function () {
   'use strict';
