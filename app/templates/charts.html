@@ -65,6 +65,63 @@
 {% block extra_scripts %}
 {% if selected_id %}
 <script>
+/**
+ * 從當前 <html data-theme> 的 CSS custom properties 讀取主題色。
+ * 所有 Chart.js 色彩 MUST 透過本函式動態取得；不得硬編色碼。
+ * @returns {Object} 主題色 map
+ */
+function readThemeColors() {
+    const cs = getComputedStyle(document.documentElement);
+    const ink = cs.getPropertyValue('--theme-ink').trim() || '#0E0E10';
+    const primary = cs.getPropertyValue('--theme-primary').trim() || '#FFDA00';
+    const slate = cs.getPropertyValue('--theme-slate').trim() || '#4A4A55';
+    return {
+        ink: ink,
+        primary: primary,
+        slate: slate,
+        // ink 衍生透明度：以 currentColor 風格產生 rgba
+        inkAlpha08: hexWithAlpha(ink, 0.08),
+        inkAlpha06: hexWithAlpha(ink, 0.06),
+    };
+}
+
+/**
+ * 將 #RRGGBB 轉為 rgba(...)；若非 hex（例 hsl/var 等）回傳帶透明度 fallback。
+ * @param {string} hex 色碼字串（通常為 #RRGGBB）
+ * @param {number} alpha 0-1 之間的透明度
+ * @returns {string} rgba(...)
+ */
+function hexWithAlpha(hex, alpha) {
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+    if (!m) {
+        return 'rgba(14, 14, 16, ' + alpha + ')';
+    }
+    const r = parseInt(m[1], 16);
+    const g = parseInt(m[2], 16);
+    const b = parseInt(m[3], 16);
+    return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+}
+
+/**
+ * 依主題色產生 Chart.js 配色物件（套用至 dataset 與 options）。
+ * @param {Object} colors readThemeColors() 回傳值
+ * @returns {Object} 含 dataset / scales / plugins 三區塊的配色
+ */
+function buildChartColors(colors) {
+    return {
+        borderColor: colors.ink,
+        backgroundColor: colors.inkAlpha08,
+        pointBackgroundColor: colors.primary,
+        pointBorderColor: colors.ink,
+        gridColor: colors.inkAlpha06,
+        tickColor: colors.slate,
+        tooltipBg: colors.ink,
+        tooltipTitle: '#ffffff',
+        tooltipBody: colors.primary,
+        legendColor: colors.ink,
+    };
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('{{ url_for("charts.chart_data", flight_id=selected_id) }}')
         .then(response => response.json())
@@ -80,19 +137,21 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('avgPrice').textContent = 'NT$ ' + data.stats.avg.toLocaleString();
 
             const ctx = document.getElementById('priceChart').getContext('2d');
-            new Chart(ctx, {
+            const themeColors = buildChartColors(readThemeColors());
+
+            const chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: data.labels,
                     datasets: [{
                         label: '票價 (TWD)',
                         data: data.data,
-                        borderColor: '#0E0E10',
-                        backgroundColor: 'rgba(14, 14, 16, 0.08)',
+                        borderColor: themeColors.borderColor,
+                        backgroundColor: themeColors.backgroundColor,
                         fill: true,
                         tension: 0.3,
-                        pointBackgroundColor: '#FFDA00',
-                        pointBorderColor: '#0E0E10',
+                        pointBackgroundColor: themeColors.pointBackgroundColor,
+                        pointBorderColor: themeColors.pointBorderColor,
                         pointBorderWidth: 2,
                         pointRadius: 4,
                         pointHoverRadius: 6,
@@ -102,9 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     responsive: true,
                     plugins: {
                         tooltip: {
-                            backgroundColor: '#0E0E10',
-                            titleColor: '#ffffff',
-                            bodyColor: '#FFDA00',
+                            backgroundColor: themeColors.tooltipBg,
+                            titleColor: themeColors.tooltipTitle,
+                            bodyColor: themeColors.tooltipBody,
                             borderColor: 'rgba(255,255,255,0.1)',
                             borderWidth: 1,
                             cornerRadius: 8,
@@ -117,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         },
                         legend: {
                             labels: {
-                                color: '#0E0E10',
+                                color: themeColors.legendColor,
                                 font: { weight: '600' }
                             }
                         }
@@ -125,20 +184,41 @@ document.addEventListener('DOMContentLoaded', function() {
                     scales: {
                         y: {
                             beginAtZero: false,
-                            grid: { color: 'rgba(14, 14, 16, 0.06)' },
+                            grid: { color: themeColors.gridColor },
                             ticks: {
-                                color: '#4A4A55',
+                                color: themeColors.tickColor,
                                 callback: function(value) {
                                     return 'NT$ ' + value.toLocaleString();
                                 }
                             }
                         },
                         x: {
-                            grid: { color: 'rgba(14, 14, 16, 0.06)' },
-                            ticks: { color: '#4A4A55' }
+                            grid: { color: themeColors.gridColor },
+                            ticks: { color: themeColors.tickColor }
                         }
                     }
                 }
+            });
+
+            // 監聽主題切換事件：重讀 CSS tokens 後重繪圖表。
+            document.addEventListener('themechange', function() {
+                const updated = buildChartColors(readThemeColors());
+                const ds = chart.data.datasets[0];
+                ds.borderColor = updated.borderColor;
+                ds.backgroundColor = updated.backgroundColor;
+                ds.pointBackgroundColor = updated.pointBackgroundColor;
+                ds.pointBorderColor = updated.pointBorderColor;
+
+                chart.options.plugins.tooltip.backgroundColor = updated.tooltipBg;
+                chart.options.plugins.tooltip.titleColor = updated.tooltipTitle;
+                chart.options.plugins.tooltip.bodyColor = updated.tooltipBody;
+                chart.options.plugins.legend.labels.color = updated.legendColor;
+                chart.options.scales.y.grid.color = updated.gridColor;
+                chart.options.scales.y.ticks.color = updated.tickColor;
+                chart.options.scales.x.grid.color = updated.gridColor;
+                chart.options.scales.x.ticks.color = updated.tickColor;
+
+                chart.update();
             });
         });
 });

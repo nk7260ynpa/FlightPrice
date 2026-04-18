@@ -58,9 +58,9 @@
 **檔案範圍**：`app/templates/charts.html`
 **相依**：Task 4
 
-- [ ] 6.1 將 `charts.html` 內嵌 Chart.js 初始化程式碼重構為：建立 `readThemeColors()` 函式透過 `getComputedStyle(document.documentElement).getPropertyValue('--theme-<token>').trim()` 讀取 `--theme-ink`、`--theme-primary`、`--theme-slate` 等；datasets 與 scales（`borderColor`、`backgroundColor`、`pointBackgroundColor`、`pointBorderColor`、`grid.color`、`ticks.color`、`plugins.tooltip.backgroundColor`、`plugins.tooltip.titleColor`、`plugins.tooltip.bodyColor`、`plugins.legend.labels.color`）改由該函式回傳值填入
-- [ ] 6.2 註冊 `document.addEventListener('themechange', () => { /* 重新讀色、套用至 chart.data.datasets 與 chart.options，呼叫 chart.update() */ });`
-- [ ] 6.3 確認原有硬編色碼（`'#0E0E10'`、`'#FFDA00'`、`'rgba(14, 14, 16, 0.08)'` 等）全數從 Chart.js 配置中移除
+- [x] 6.1 將 `charts.html` 內嵌 Chart.js 初始化程式碼重構為：建立 `readThemeColors()` 函式透過 `getComputedStyle(document.documentElement).getPropertyValue('--theme-<token>').trim()` 讀取 `--theme-ink`、`--theme-primary`、`--theme-slate` 等；datasets 與 scales（`borderColor`、`backgroundColor`、`pointBackgroundColor`、`pointBorderColor`、`grid.color`、`ticks.color`、`plugins.tooltip.backgroundColor`、`plugins.tooltip.titleColor`、`plugins.tooltip.bodyColor`、`plugins.legend.labels.color`）改由該函式回傳值填入
+- [x] 6.2 註冊 `document.addEventListener('themechange', () => { /* 重新讀色、套用至 chart.data.datasets 與 chart.options，呼叫 chart.update() */ });`
+- [x] 6.3 確認原有硬編色碼（`'#0E0E10'`、`'#FFDA00'`、`'rgba(14, 14, 16, 0.08)'` 等）全數從 Chart.js 配置中移除
 
 ## 7. 測試擴充
 
