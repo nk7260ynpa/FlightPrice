@@ -83,5 +83,5 @@
 **檔案範圍**：無（僅檢查；若需更新 README.md / CLAUDE.md 則寫入 `issues.md` 回報 Coordinator）
 **相依**：Task 1–7
 
-- [ ] 8.1 檢查 `README.md` 專案架構章節是否需補充多主題說明；若需要，Specialist MUST 將修改需求寫入 `openspec/changes/add-airline-theme-switcher/issues.md` 交由 Coordinator 更新 tasks.md，不得直接修改 README.md
-- [ ] 8.2 Commit 前以 `git diff --cached | rg -iE 'api[_-]?key|secret|token|password'` 掃描，確認無 API key 外洩
+- [x] 8.1 檢查 `README.md` 專案架構章節是否需補充多主題說明；若需要，Specialist MUST 將修改需求寫入 `openspec/changes/add-airline-theme-switcher/issues.md` 交由 Coordinator 更新 tasks.md，不得直接修改 README.md
+- [x] 8.2 Commit 前以 `git diff --cached | rg -iE 'api[_-]?key|secret|token|password'` 掃描，確認無 API key 外洩
