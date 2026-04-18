@@ -31,27 +31,27 @@
 **檔案範圍**：`app/templates/base.html`、`app/static/css/style.css`
 **相依**：Task 1、Task 2
 
-- [ ] 3.1 於 `base.html` navbar 的 `.navbar-collapse` 內右側（與現有 `navbar-nav` 平行或使用 `ms-auto`）新增 Bootstrap dropdown：`<button aria-label="主題切換" class="btn btn-theme-secondary dropdown-toggle" data-bs-toggle="dropdown">` + `<ul class="dropdown-menu dropdown-menu-end">`
-- [ ] 3.2 下拉選單中列出四個 `<li><button type="button" class="dropdown-item" role="menuitemradio" data-theme-value="scoot">酷航 Scoot</button></li>` 等四項；當前生效項目 MUST 加上 `aria-current="true"` 並加上勾選符號（`✓` 或 SVG icon）於文字前
-- [ ] 3.3 於 style.css 新增 `.theme-switcher` 或 `.dropdown-menu` 的主題專屬樣式（若預設 Bootstrap 樣式不符合，加上最小必要覆寫以保持各主題風格）
+- [x] 3.1 於 `base.html` navbar 的 `.navbar-collapse` 內右側（與現有 `navbar-nav` 平行或使用 `ms-auto`）新增 Bootstrap dropdown：`<button aria-label="主題切換" class="btn btn-theme-secondary dropdown-toggle" data-bs-toggle="dropdown">` + `<ul class="dropdown-menu dropdown-menu-end">`
+- [x] 3.2 下拉選單中列出四個 `<li><button type="button" class="dropdown-item" role="menuitemradio" data-theme-value="scoot">酷航 Scoot</button></li>` 等四項；當前生效項目 MUST 加上 `aria-current="true"` 並加上勾選符號（`✓` 或 SVG icon）於文字前
+- [x] 3.3 於 style.css 新增 `.theme-switcher` 或 `.dropdown-menu` 的主題專屬樣式（若預設 Bootstrap 樣式不符合，加上最小必要覆寫以保持各主題風格）
 
 ## 4. 主題切換 JS（持久化 + themechange event）
 
 **檔案範圍**：`app/static/js/theme-switcher.js`（新檔）、`app/templates/base.html`
 **相依**：Task 3
 
-- [ ] 4.1 建立 `app/static/js/theme-switcher.js`，內容包含：合法主題白名單 `['scoot','eva','china-airlines','starlux']`、`applyTheme(value)` 函式（設定 data-theme、寫入 localStorage key `flightprice-theme`、派發 `CustomEvent('themechange', { detail: { theme: value } })`、更新選單 `aria-current`）、DOMContentLoaded 後綁定所有 `[data-theme-value]` click 事件、頁面載入時依 localStorage 初始化選單 `aria-current` 標示
-- [ ] 4.2 於 `base.html` 底部 `<script>` 區塊引入 `<script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>`（Bootstrap bundle 之後）
-- [ ] 4.3 於 `base.html` `<head>` 的第一個 `<link>` 之前嵌入 FOUC 防護 inline script：`try { var t = localStorage.getItem('flightprice-theme'); var valid = ['scoot','eva','china-airlines','starlux']; document.documentElement.setAttribute('data-theme', valid.indexOf(t)>=0 ? t : 'scoot'); } catch(e) { document.documentElement.setAttribute('data-theme','scoot'); }`
-- [ ] 4.4 確認 `app/templates/base.html` 中 `<html>` 起始標籤移除硬編 `data-theme="scoot"`（改由 inline script 負責）；若 script 未執行則以 style.css 的 `:root:not([data-theme])` fallback 保底
+- [x] 4.1 建立 `app/static/js/theme-switcher.js`，內容包含：合法主題白名單 `['scoot','eva','china-airlines','starlux']`、`applyTheme(value)` 函式（設定 data-theme、寫入 localStorage key `flightprice-theme`、派發 `CustomEvent('themechange', { detail: { theme: value } })`、更新選單 `aria-current`）、DOMContentLoaded 後綁定所有 `[data-theme-value]` click 事件、頁面載入時依 localStorage 初始化選單 `aria-current` 標示
+- [x] 4.2 於 `base.html` 底部 `<script>` 區塊引入 `<script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>`（Bootstrap bundle 之後）
+- [x] 4.3 於 `base.html` `<head>` 的第一個 `<link>` 之前嵌入 FOUC 防護 inline script：`try { var t = localStorage.getItem('flightprice-theme'); var valid = ['scoot','eva','china-airlines','starlux']; document.documentElement.setAttribute('data-theme', valid.indexOf(t)>=0 ? t : 'scoot'); } catch(e) { document.documentElement.setAttribute('data-theme','scoot'); }`
+- [x] 4.4 確認 `app/templates/base.html` 中 `<html>` 起始標籤移除硬編 `data-theme="scoot"`（改由 inline script 負責）；若 script 未執行則以 style.css 的 `:root:not([data-theme])` fallback 保底
 
 ## 5. Google Fonts 合併載入
 
 **檔案範圍**：`app/templates/base.html`
 **相依**：Task 2
 
-- [ ] 5.1 將 `base.html` 現有的 Google Fonts `<link>` URL 擴充為合併版本，`family=` 參數涵蓋四主題所需字型：Nunito:wght@700;800、Nunito+Sans:wght@400;500;600、JetBrains+Mono:wght@500、Noto+Serif+TC:wght@500;700、Source+Sans+3:wght@400;500;600、IBM+Plex+Mono:wght@500、Cormorant+Garamond:wght@500;600;700、Inter+Tight:wght@400;500;600；加上 `display=swap`
-- [ ] 5.2 保留 `preconnect` 至 `fonts.googleapis.com` 與 `fonts.gstatic.com`
+- [x] 5.1 將 `base.html` 現有的 Google Fonts `<link>` URL 擴充為合併版本，`family=` 參數涵蓋四主題所需字型：Nunito:wght@700;800、Nunito+Sans:wght@400;500;600、JetBrains+Mono:wght@500、Noto+Serif+TC:wght@500;700、Source+Sans+3:wght@400;500;600、IBM+Plex+Mono:wght@500、Cormorant+Garamond:wght@500;600;700、Inter+Tight:wght@400;500;600；加上 `display=swap`
+- [x] 5.2 保留 `preconnect` 至 `fonts.googleapis.com` 與 `fonts.gstatic.com`
 
 ## 6. Chart.js 主題色動態化
 
