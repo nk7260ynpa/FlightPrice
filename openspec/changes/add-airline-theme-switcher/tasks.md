@@ -4,27 +4,27 @@
 **相依**：無
 **說明**：此階段僅重構架構（data-theme scope + 中性 token + 中性 class 別名），視覺 100% 不變，所有 `tests/test_theme_smoke.py` 既有斷言必須依然通過。
 
-- [ ] 1.1 於 `app/templates/base.html` 的 `<html>` 標籤新增 `data-theme="scoot"` 預設屬性
-- [ ] 1.2 將 `style.css` 中 `:root { --scoot-* }` 改寫為 `:root[data-theme="scoot"] { --scoot-*; }` 並加入 `:root:not([data-theme]) { ... }` fallback（套用與 scoot 相同值）
-- [ ] 1.3 於 `:root[data-theme="scoot"]` 內新增中性語意 tokens 映射：`--theme-primary`、`--theme-primary-bright`、`--theme-primary-deep`、`--theme-accent`、`--theme-accent-deep`、`--theme-ink`、`--theme-ink-soft`、`--theme-slate`、`--theme-muted`、`--theme-canvas`、`--theme-surface`、`--theme-line`、`--theme-success`、`--theme-danger`、`--theme-warn`、`--theme-info`、`--theme-font-display`、`--theme-font-body`、`--theme-font-mono`、`--theme-radius-sm`、`--theme-radius`、`--theme-radius-lg`、`--theme-navbar-bg`、`--theme-navbar-accent-line`、`--theme-btn-press-width`、`--theme-btn-radius`、`--theme-stat-motif`
-- [ ] 1.4 將 style.css 中所有元件規則（body、h1-h3、.navbar-scoot、.card、.card-header、.card-header-scoot、.btn-scoot*、.form-control、.form-select、.form-label、.table-scoot*、.stat-scoot*、.badge-scoot-*、.alert、`@media prefers-reduced-motion`）中的 `var(--scoot-*)` 全數改為對應 `var(--theme-*)`
-- [ ] 1.5 為每條既有元件 selector 加入中性 class 別名：`.navbar-scoot` → `.navbar-scoot, .navbar-theme`、`.btn-scoot` → `.btn-scoot, .btn-theme`、`.btn-scoot-secondary/danger/success/warning` 各自加上 `.btn-theme-secondary/danger/success/warning`、`.card-header-scoot` → `.card-header-scoot, .card-header-theme`、`.table-scoot-wrap` → `.table-scoot-wrap, .table-theme-wrap`、`.table-scoot` → `.table-scoot, .table-theme`、`.stat-scoot*` 系列加上 `.stat-theme*` 對應變體（`--yellow` → `--primary`）、`.badge-scoot-*` 加上 `.badge-theme-*`
-- [ ] 1.6 使用 Docker container 執行 `pytest tests/test_theme_smoke.py -v`，確認 14 項既有斷言全數通過（Scoot 預設視覺無破壞）
+- [x] 1.1 於 `app/templates/base.html` 的 `<html>` 標籤新增 `data-theme="scoot"` 預設屬性
+- [x] 1.2 將 `style.css` 中 `:root { --scoot-* }` 改寫為 `:root[data-theme="scoot"] { --scoot-*; }` 並加入 `:root:not([data-theme]) { ... }` fallback（套用與 scoot 相同值）
+- [x] 1.3 於 `:root[data-theme="scoot"]` 內新增中性語意 tokens 映射：`--theme-primary`、`--theme-primary-bright`、`--theme-primary-deep`、`--theme-accent`、`--theme-accent-deep`、`--theme-ink`、`--theme-ink-soft`、`--theme-slate`、`--theme-muted`、`--theme-canvas`、`--theme-surface`、`--theme-line`、`--theme-success`、`--theme-danger`、`--theme-warn`、`--theme-info`、`--theme-font-display`、`--theme-font-body`、`--theme-font-mono`、`--theme-radius-sm`、`--theme-radius`、`--theme-radius-lg`、`--theme-navbar-bg`、`--theme-navbar-accent-line`、`--theme-btn-press-width`、`--theme-btn-radius`、`--theme-stat-motif`
+- [x] 1.4 將 style.css 中所有元件規則（body、h1-h3、.navbar-scoot、.card、.card-header、.card-header-scoot、.btn-scoot*、.form-control、.form-select、.form-label、.table-scoot*、.stat-scoot*、.badge-scoot-*、.alert、`@media prefers-reduced-motion`）中的 `var(--scoot-*)` 全數改為對應 `var(--theme-*)`
+- [x] 1.5 為每條既有元件 selector 加入中性 class 別名：`.navbar-scoot` → `.navbar-scoot, .navbar-theme`、`.btn-scoot` → `.btn-scoot, .btn-theme`、`.btn-scoot-secondary/danger/success/warning` 各自加上 `.btn-theme-secondary/danger/success/warning`、`.card-header-scoot` → `.card-header-scoot, .card-header-theme`、`.table-scoot-wrap` → `.table-scoot-wrap, .table-theme-wrap`、`.table-scoot` → `.table-scoot, .table-theme`、`.stat-scoot*` 系列加上 `.stat-theme*` 對應變體（`--yellow` → `--primary`）、`.badge-scoot-*` 加上 `.badge-theme-*`
+- [x] 1.6 使用 Docker container 執行 `pytest tests/test_theme_smoke.py -v`，確認 14 項既有斷言全數通過（Scoot 預設視覺無破壞）
 
 ## 2. 新增 3 主題 token scope（EVA / China Airlines / Starlux）
 
 **檔案範圍**：`app/static/css/style.css`
 **相依**：Task 1
 
-- [ ] 2.1 新增 `:root[data-theme="eva"] { ... }` block：定義 16 項 `--eva-*` 品牌 tokens（色碼見 `specs/eva-theme/spec.md`）與中性 `--theme-*` 映射；字體堆疊 `--theme-font-display: "Noto Serif TC", "Source Serif Pro", ...`、`--theme-font-body: "Source Sans 3", ...`、`--theme-font-mono: "IBM Plex Mono", ...`
-- [ ] 2.2 於 EVA scope 設定 `--theme-btn-press-width: 3px`、`--theme-btn-radius: 10px`、`--theme-navbar-accent-line: 1px solid var(--theme-accent)`、`--theme-stat-motif: linear-gradient(45deg, transparent 45%, var(--theme-accent) 45%, var(--theme-accent) 55%, transparent 55%)`
-- [ ] 2.3 新增 `:root[data-theme="china-airlines"] { ... }` block：定義 16 項 `--cal-*` 品牌 tokens 與中性映射；字體堆疊 `--theme-font-display: "Noto Serif TC", "Playfair Display", ...`、`--theme-font-body: "Source Sans 3", ...`
-- [ ] 2.4 於 China Airlines scope 設定 `--theme-btn-press-width: 3px`、`--theme-btn-radius: 10px`、`--theme-navbar-accent-line: 3px solid var(--theme-accent)`、`--theme-stat-motif` 為 inline SVG data URI（5 瓣梅花，半透明 accent 色）
-- [ ] 2.5 新增 `:root[data-theme="starlux"] { ... }` block：定義 17 項 `--jx-*` 品牌 tokens（含 `--jx-accent-bright`）與中性映射；字體堆疊 `--theme-font-display: "Cormorant Garamond", ...`、`--theme-font-body: "Inter Tight", ...`、`--theme-font-mono: "JetBrains Mono", ...`
-- [ ] 2.6 於 Starlux scope 設定 `--theme-btn-press-width: 0px`（差異化）、`--theme-btn-radius: 4px`、`--theme-navbar-accent-line: 1px solid var(--theme-accent)`、`--theme-stat-motif` 為 inline SVG data URI（6pt 金色星形）
-- [ ] 2.7 為 Starlux 的按鈕 `:active` 規則加入條件樣式（透過 `[data-theme="starlux"] .btn-theme:active` selector group），使用 `box-shadow: inset 0 1px 2px rgba(0,0,0,0.2)` 取代 transform+border shrink；`@media (prefers-reduced-motion: reduce)` 下停用
-- [ ] 2.8 為 Starlux 的 `.navbar-theme .nav-link.active` 覆寫樣式：透明底 + `border-bottom: 2px solid var(--theme-accent)`（金色下劃線），不用實色 pill
-- [ ] 2.9 為 Starlux 的 `.card` / `.table-theme thead th` 覆寫：card 背景使用 `var(--theme-surface)`（象牙色），表頭字體以 `var(--theme-font-display)` 襯線金字
+- [x] 2.1 新增 `:root[data-theme="eva"] { ... }` block：定義 16 項 `--eva-*` 品牌 tokens（色碼見 `specs/eva-theme/spec.md`）與中性 `--theme-*` 映射；字體堆疊 `--theme-font-display: "Noto Serif TC", "Source Serif Pro", ...`、`--theme-font-body: "Source Sans 3", ...`、`--theme-font-mono: "IBM Plex Mono", ...`
+- [x] 2.2 於 EVA scope 設定 `--theme-btn-press-width: 3px`、`--theme-btn-radius: 10px`、`--theme-navbar-accent-line: 1px solid var(--theme-accent)`、`--theme-stat-motif: linear-gradient(45deg, transparent 45%, var(--theme-accent) 45%, var(--theme-accent) 55%, transparent 55%)`
+- [x] 2.3 新增 `:root[data-theme="china-airlines"] { ... }` block：定義 16 項 `--cal-*` 品牌 tokens 與中性映射；字體堆疊 `--theme-font-display: "Noto Serif TC", "Playfair Display", ...`、`--theme-font-body: "Source Sans 3", ...`
+- [x] 2.4 於 China Airlines scope 設定 `--theme-btn-press-width: 3px`、`--theme-btn-radius: 10px`、`--theme-navbar-accent-line: 3px solid var(--theme-accent)`、`--theme-stat-motif` 為 inline SVG data URI（5 瓣梅花，半透明 accent 色）
+- [x] 2.5 新增 `:root[data-theme="starlux"] { ... }` block：定義 17 項 `--jx-*` 品牌 tokens（含 `--jx-accent-bright`）與中性映射；字體堆疊 `--theme-font-display: "Cormorant Garamond", ...`、`--theme-font-body: "Inter Tight", ...`、`--theme-font-mono: "JetBrains Mono", ...`
+- [x] 2.6 於 Starlux scope 設定 `--theme-btn-press-width: 0px`（差異化）、`--theme-btn-radius: 4px`、`--theme-navbar-accent-line: 1px solid var(--theme-accent)`、`--theme-stat-motif` 為 inline SVG data URI（6pt 金色星形）
+- [x] 2.7 為 Starlux 的按鈕 `:active` 規則加入條件樣式（透過 `[data-theme="starlux"] .btn-theme:active` selector group），使用 `box-shadow: inset 0 1px 2px rgba(0,0,0,0.2)` 取代 transform+border shrink；`@media (prefers-reduced-motion: reduce)` 下停用
+- [x] 2.8 為 Starlux 的 `.navbar-theme .nav-link.active` 覆寫樣式：透明底 + `border-bottom: 2px solid var(--theme-accent)`（金色下劃線），不用實色 pill
+- [x] 2.9 為 Starlux 的 `.card` / `.table-theme thead th` 覆寫：card 背景使用 `var(--theme-surface)`（象牙色），表頭字體以 `var(--theme-font-display)` 襯線金字
 
 ## 3. 主題切換器 UI（navbar 下拉）
 
