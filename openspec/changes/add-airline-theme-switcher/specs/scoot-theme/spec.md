@@ -1,3 +1,5 @@
+## MODIFIED Requirements
+
 ### Requirement: 酷航品牌色彩 Tokens
 
 系統 SHALL 在 `app/static/css/style.css` 的 `:root[data-theme="scoot"]` scope 中定義酷航品牌的 CSS 自訂屬性色彩 tokens（原先置於 `:root` 無屬性限定，現改為以 data-theme 屬性作為啟用 scope）；並於同一 scope 內將中性語意 tokens（`--theme-*`）映射至對應 `--scoot-*` 品牌 token。元件 CSS MUST 透過 `var(--theme-*)` 引用色彩（不再直接使用 `var(--scoot-*)`），以達成多主題架構下的即時切換。
@@ -55,46 +57,6 @@
 - **WHEN** `data-theme="scoot"` 下頁面呈現票價、班次代碼或統計數值（統計卡片的 `.stat-scoot-value` / `.stat-theme-value`、表格的價格欄、圖表 tooltip 價格）
 - **THEN** 該文字 computed style `font-family` SHALL 包含 `JetBrains Mono` 或其 fallback `monospace`
 
-### Requirement: 頁面背景與整體排版
-
-所有頁面的 `body` 背景色 SHALL 為 `var(--scoot-canvas)`；主要內容容器（`container.mt-4`）上下內距 SHALL ≥ `0.5rem` / `2rem`，確保與導航列保留呼吸空間。預設文字顏色 SHALL 為 `var(--scoot-ink)`。
-
-#### Scenario: 頁面背景色
-- **WHEN** 使用者瀏覽任一頁面
-- **THEN** `<body>` 的背景色 SHALL 為 `#FAFAF7`（或與之匹配的 `--scoot-canvas` 變數值）
-
-### Requirement: 導航列酷航風格
-
-導航列 SHALL 使用 `var(--scoot-yellow)` 純色實底（不得使用漸層），底部 MUST 有 `4px` 實色 `var(--scoot-ink)` 粗邊作為登機證撕線裝飾。品牌文字 `FlightPrice` MUST 使用 `--font-display`、字重 800、字母全大寫、包含飛機符號（`&#9992;` 或等效 SVG icon）。導航連結 MUST 為 `var(--scoot-ink)` 深色文字，active 狀態 MUST 使用 `var(--scoot-ink)` 實色圓角 pill 背景搭配 `#ffffff` 白色文字。
-
-#### Scenario: 導航列顯示
-- **WHEN** 使用者瀏覽任一頁面
-- **THEN** 頂部導航列 SHALL 顯示亮黃實色背景、底部 4px 深色粗邊、飛機符號前綴的大寫粗體品牌字
-
-#### Scenario: 當前頁面導航高亮
-- **WHEN** 使用者位於 `/flights`、`/charts`、`/status` 任一頁面
-- **THEN** 對應的 `.nav-link` SHALL 套用 `.active` 狀態樣式，顯示近黑色圓角 pill 背景與白色文字；其他非當前頁的連結 SHALL 保持深色文字與透明背景
-
-#### Scenario: 禁止黃底白字
-- **WHEN** 開發者檢視導航列樣式
-- **THEN** 導航列 `.nav-link` 非 active 狀態的文字顏色 MUST 為 `var(--scoot-ink)` 或等效深色，禁止使用白色或淺色文字於黃色底上（AA 對比規範）
-
-### Requirement: 卡片元件風格
-
-所有內容卡片（Bootstrap `.card` 與其他面板容器）SHALL 使用 `var(--scoot-surface)` 白色背景、`16px` 圓角、`1.5px` 實色 `var(--scoot-line)` 邊框；陰影 MUST 採「平面塊面」風格（建議 `0 2px 0 var(--scoot-line)` 或極淺陰影），不得使用大範圍浮空陰影。滑鼠懸浮時，卡片 MUST 不上移，改以 `border-color` 轉為 `var(--scoot-ink)` 的方式回饋互動。
-
-`card-header` SHALL 支援兩種變體：
-- 預設：`var(--scoot-surface)` 背景 + `var(--scoot-ink)` 文字 + `var(--font-display)` 字重 700。
-- 強調（class 包含 `card-header-scoot` 或同義變體）：`var(--scoot-yellow)` 背景 + `var(--scoot-ink)` 文字。
-
-#### Scenario: 卡片靜態顯示
-- **WHEN** 頁面載入包含 `.card` 的內容區塊
-- **THEN** 卡片 SHALL 顯示白色背景、`border-radius` ≥ 14px、`border-width` ≥ 1px 且 `border-style: solid`
-
-#### Scenario: 卡片懸浮互動
-- **WHEN** 使用者將滑鼠移至 `.card` 上方且系統未啟用 `prefers-reduced-motion`
-- **THEN** 卡片 `border-color` SHALL 從 `var(--scoot-line)` 轉變為 `var(--scoot-ink)`，且 `transform` SHALL 不包含 `translateY` 位移（保持塊面感）
-
 ### Requirement: 按鈕系統
 
 系統 SHALL 透過中性 class（`.btn-theme`、`.btn-theme-secondary`、`.btn-theme-danger`、`.btn-theme-success`、`.btn-theme-warning`）提供五種按鈕層級，並保留既有 `.btn-scoot`、`.btn-scoot-secondary`、`.btn-scoot-danger`、`.btn-scoot-success`、`.btn-scoot-warning` 作為別名 selector（與中性 class 於同一 CSS rule group 中共用 declarations）。每一層級的按鈕 SHALL：
@@ -130,77 +92,6 @@
 - **WHEN** 使用者以鍵盤 Tab 至任一 `btn-theme*` / `btn-scoot*`
 - **THEN** 按鈕 SHALL 顯示 `2px` 可見外描邊與 `2px` offset（或等效高對比聚焦指示）
 
-### Requirement: 表單樣式
-
-表單輸入元素（`.form-control`、`.form-select`）SHALL 採「底邊強調」風格：上、左、右邊為 `1px solid var(--scoot-line)`，底邊為 `2px solid var(--scoot-line)`，圓角 `10px`；聚焦時底邊 MUST 轉為 `var(--scoot-yellow)`，並顯示 `3px` 黃色柔和外暈（`rgba(255, 218, 0, 0.25)` 或等效透明層）。Placeholder 顏色 MUST 為 `var(--scoot-muted)`。Label（`.form-label`）MUST 使用 `--font-body` 字重 600、字級 `0.875rem`、顏色 `var(--scoot-ink)`。
-
-#### Scenario: 表單輸入聚焦
-- **WHEN** 使用者點擊或 Tab 聚焦任一 `.form-control` 或 `.form-select`
-- **THEN** 該元素底邊 SHALL 轉為酷航黃 `var(--scoot-yellow)`，並帶有柔和黃色外暈
-
-#### Scenario: Label 樣式
-- **WHEN** 頁面渲染包含 `.form-label` 的表單欄位
-- **THEN** label 文字 SHALL 以字重 600、`var(--scoot-ink)` 顏色、字級 `0.875rem` 顯示
-
-### Requirement: 表格風格
-
-資料表格 SHALL 使用 `12px` 圓角容器並設 `overflow: hidden` 以裁切邊角；表頭 MUST 使用 `var(--scoot-ink)` 深色背景搭配 `#ffffff` 白色文字與 `var(--font-display)` 字重 700、`letter-spacing: 0.04em`；表身行列交替 MUST 使用 `var(--scoot-yellow)` 約 8% alpha 的淡黃底（`rgba(255, 218, 0, 0.08)`），hover 時提升至約 16% alpha；價格欄位 MUST 使用 `--font-mono` 並右對齊。
-
-#### Scenario: 表格顯示
-- **WHEN** 頁面載入包含 `.table-scoot` 的資料表
-- **THEN** 表頭 SHALL 為近黑色背景白色粗體文字，偶數行 SHALL 套用淡黃色背景，價格欄位 SHALL 使用 mono 字體
-
-#### Scenario: 表格互動
-- **WHEN** 使用者將滑鼠移至任一資料列
-- **THEN** 該列 SHALL 套用更深一階的黃色底（約 16% alpha）以示 hover
-
-### Requirement: 統計卡片風格
-
-統計卡片（用於價格圖表頁的最高／最低／平均，以及抓取狀態頁的追蹤／成功／失敗數）SHALL 以「整卡塊面」取代原本「左側色條 + 數字」的樣式。每張統計卡片 MUST：
-
-- 具備背景色類別（如 `.stat-scoot--ink` 近黑、`.stat-scoot--yellow` 亮黃、`.stat-scoot--success`、`.stat-scoot--danger`、`.stat-scoot--slate`），各自搭配 AA 對比的文字色。
-- 主數值使用 `var(--font-mono)`、字級 `2.25rem`、字重 800。
-- 說明 label 使用 `var(--font-body)`、uppercase、`letter-spacing: 0.08em`、字級 `0.75rem`，放置於數值上方。
-- 於卡片右下角 MAY 加入半透明圓點或打孔裝飾（登機證意象），不得遮擋主數值。
-
-AA 對比對照（必須符合）：
-
-- 黃底 `.stat-scoot--yellow` 搭配 `var(--scoot-ink)` 文字（禁止白字）。
-- 近黑底 `.stat-scoot--ink` 搭配 `#ffffff` 白色文字。
-- 綠／紅／灰底搭配 `#ffffff` 白色文字。
-
-#### Scenario: 統計卡片顯示
-- **WHEN** 頁面載入統計區塊
-- **THEN** 每張統計卡片 SHALL 顯示整卡塊面背景色、位於上方的 uppercase label、大字號 mono 字體主數值
-
-#### Scenario: 黃底不得白字
-- **WHEN** 開發者檢視 `.stat-scoot--yellow` 樣式
-- **THEN** 其文字顏色 MUST 為 `var(--scoot-ink)` 或等效深色，禁止出現 `#fff` 或 `white`
-
-### Requirement: Badge 樣式
-
-Badge SHALL 採圓角 pill（`border-radius: 999px`）、字重 700、字級 `0.75rem`、uppercase、內距 `0.35em 0.75em`。系統 SHALL 至少提供三種 badge 類別：
-
-- success：`var(--scoot-success)` 12% alpha 底色 + `var(--scoot-success)` 文字
-- danger：`var(--scoot-danger)` 12% alpha 底色 + `var(--scoot-danger)` 文字
-- muted：`var(--scoot-muted)` 12% alpha 底色 + `var(--scoot-slate)` 文字
-
-#### Scenario: 班機啟用 / 停用 badge
-- **WHEN** 班機管理頁顯示每筆班機的啟用狀態
-- **THEN** 啟用 SHALL 渲染為 success badge（綠色文字 + 淡綠底 pill），停用 SHALL 渲染為 muted badge（灰色系 pill）
-
-#### Scenario: 抓取成功 / 失敗 badge
-- **WHEN** 抓取狀態頁顯示抓取紀錄
-- **THEN** 成功列 SHALL 顯示 success badge，失敗列 SHALL 顯示 danger badge
-
-### Requirement: Alert 樣式
-
-Alert 元件 SHALL 使用 `12px` 圓角、白色背景（`var(--scoot-surface)`），並以左側 `6px` 實色粗邊指示語意（info 藍、success 綠、warning 橘、danger 紅）。文字顏色 MUST 為 `var(--scoot-ink)`；標題／強調文字字重 600；關閉按鈕（若存在）需可聚焦。
-
-#### Scenario: 資訊 alert 顯示
-- **WHEN** 頁面出現 Bootstrap `.alert-info` 或本主題對應類別
-- **THEN** alert SHALL 顯示白底、左側 6px 藍色粗邊、`var(--scoot-ink)` 深色文字
-
 ### Requirement: Chart.js 配色
 
 價格趨勢圖（`charts.html` 內 Chart.js 線圖）SHALL 透過 `getComputedStyle(document.documentElement).getPropertyValue('--theme-<token>').trim()` 動態取得主題色，不得硬編色碼；配色語意對應如下（各主題下實際色碼由該主題 tokens 決定，於 `data-theme="scoot"` 下需等效於先前版本）：
@@ -226,24 +117,3 @@ Chart.js 實例 MUST 監聽 `document` 的 `themechange` CustomEvent；事件觸
 #### Scenario: 主題切換後圖表重繪
 - **WHEN** 使用者於 `/charts?flight_id=<id>` 頁面切換主題（觸發 `themechange` event）
 - **THEN** Chart.js 實例 MUST 呼叫 `chart.update()`；折線 `borderColor`、資料點 `backgroundColor` SHALL 更新為新主題對應的 `--theme-ink` 與 `--theme-primary` 色碼
-### Requirement: 可及性（Accessibility）
-
-主題 SHALL 滿足 WCAG 2.1 AA 的對比與操作指引：
-
-- 所有文字對比 MUST ≥ 4.5:1（AA 正文），大字（≥ 18pt 或 14pt bold）≥ 3:1。
-- `var(--scoot-yellow)` 背景 MUST 僅搭配 `var(--scoot-ink)` 或等效深色文字；禁止黃底白字。
-- 所有互動元素（按鈕、連結、表單）MUST 提供清楚的 `:focus-visible` 樣式，與預設狀態可視覺區分。
-- 狀態（成功／失敗／停用）MUST 不只靠顏色區分，必須同時顯示文字標籤或 icon。
-- 主題 MUST 尊重 `prefers-reduced-motion: reduce`：在此媒體查詢下，按鈕 active 位移、卡片互動動畫、hover transition 皆 MUST 停用或縮短至 `0.01ms`。
-
-#### Scenario: 黃底文字對比
-- **WHEN** 開發者於 `.navbar-scoot`、`.btn-scoot`、`.stat-scoot--yellow` 或任何使用 `--scoot-yellow` 背景的元件上檢視文字色
-- **THEN** 文字顏色 MUST 為 `var(--scoot-ink)` 或其他與 `#FFDA00` 對比 ≥ 4.5:1 的深色
-
-#### Scenario: 鍵盤聚焦可見
-- **WHEN** 使用者以 Tab 鍵依序聚焦導航連結、按鈕、表單欄位
-- **THEN** 每個聚焦元素 SHALL 顯示至少 `2px` 寬的 `:focus-visible` 描邊，且描邊與該元件背景對比 ≥ 3:1
-
-#### Scenario: 減少動畫偏好
-- **WHEN** 使用者系統偏好設定為 `prefers-reduced-motion: reduce`
-- **THEN** 所有按鈕 active 位移、卡片 hover transition、alert 淡入 MUST 停用或動畫時間 ≤ 0.01ms

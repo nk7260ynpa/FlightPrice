@@ -1,12 +1,13 @@
 /* ==========================================================
-   FlightPrice — 酷航（Scoot）主題樣式
+   FlightPrice — 多主題架構樣式
+   支援 scoot / eva / china-airlines / starlux 四主題
    覆蓋 Bootstrap 5 預設，載入於 bootstrap.min.css 之後
    ========================================================== */
 
-/* --- 1. 酷航品牌設計 Tokens ------------------------------- */
+/* --- 1. 酷航（Scoot）主題 Tokens ------------------------- */
 
-:root {
-  /* 品牌色系 */
+:root[data-theme="scoot"] {
+  /* 品牌色系（保留原生 --scoot-* 作為映射來源） */
   --scoot-yellow:         #FFDA00; /* 主品牌黃 */
   --scoot-yellow-bright:  #FFEB3D; /* 提亮層（hover / active） */
   --scoot-yellow-deep:    #E5B800; /* 深黃（描邊與按壓邊） */
@@ -24,7 +25,7 @@
   --scoot-warn:           #FF8A1F;
   --scoot-info:           #2D6BD6;
 
-  /* 字體堆疊 */
+  /* 字體堆疊（保留 --font-* 別名以利除錯） */
   --font-display: "Nunito", "Poppins", "PingFang TC", "Noto Sans TC",
                   -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   --font-body:    "Nunito Sans", "Poppins", "PingFang TC", "Noto Sans TC",
@@ -32,26 +33,291 @@
   --font-mono:    "JetBrains Mono", "Fira Code", "Roboto Mono",
                   ui-monospace, monospace;
 
-  /* 半徑 */
+  /* 半徑（保留 --scoot-radius-* 別名） */
   --scoot-radius-sm: 10px;
   --scoot-radius:    12px;
   --scoot-radius-lg: 16px;
+
+  /* --- 中性語意 tokens 映射（元件 CSS 只引用這組） --- */
+  --theme-primary:        var(--scoot-yellow);
+  --theme-primary-bright: var(--scoot-yellow-bright);
+  --theme-primary-deep:   var(--scoot-yellow-deep);
+  --theme-accent:         var(--scoot-ink);
+  --theme-accent-deep:    #000000;
+  --theme-ink:            var(--scoot-ink);
+  --theme-ink-soft:       var(--scoot-ink-soft);
+  --theme-slate:          var(--scoot-slate);
+  --theme-muted:          var(--scoot-muted);
+  --theme-canvas:         var(--scoot-canvas);
+  --theme-surface:        var(--scoot-surface);
+  --theme-line:           var(--scoot-line);
+  --theme-success:        var(--scoot-success);
+  --theme-danger:         var(--scoot-danger);
+  --theme-warn:           var(--scoot-warn);
+  --theme-info:           var(--scoot-info);
+
+  --theme-font-display:   var(--font-display);
+  --theme-font-body:      var(--font-body);
+  --theme-font-mono:      var(--font-mono);
+
+  --theme-radius-sm:      var(--scoot-radius-sm);
+  --theme-radius:         var(--scoot-radius);
+  --theme-radius-lg:      var(--scoot-radius-lg);
+
+  /* 元件行為 tokens */
+  --theme-navbar-bg: var(--scoot-yellow);
+  --theme-navbar-accent-line: 4px solid var(--scoot-ink);
+  --theme-btn-press-width: 3px;
+  --theme-btn-radius: var(--scoot-radius-sm);
+  --theme-stat-motif: radial-gradient(circle, rgba(14, 14, 16, 0.2) 40%, transparent 41%);
 }
 
-/* --- 2. 全域排版 ------------------------------------------ */
+/* Fallback：<html> 未指定 data-theme 時以 Scoot 值保底，避免整頁無樣式。 */
+:root:not([data-theme]) {
+  --scoot-yellow:         #FFDA00;
+  --scoot-yellow-bright:  #FFEB3D;
+  --scoot-yellow-deep:    #E5B800;
+  --scoot-ink:            #0E0E10;
+  --scoot-ink-soft:       #24242A;
+  --scoot-slate:          #4A4A55;
+  --scoot-muted:          #8A8A95;
+  --scoot-canvas:         #FAFAF7;
+  --scoot-surface:        #FFFFFF;
+  --scoot-line:           #E6E6DF;
+  --scoot-success:        #1FAD66;
+  --scoot-danger:         #E4322B;
+  --scoot-warn:           #FF8A1F;
+  --scoot-info:           #2D6BD6;
+
+  --font-display: "Nunito", "Poppins", "PingFang TC", "Noto Sans TC",
+                  -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-body:    "Nunito Sans", "Poppins", "PingFang TC", "Noto Sans TC",
+                  -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:    "JetBrains Mono", "Fira Code", "Roboto Mono",
+                  ui-monospace, monospace;
+
+  --scoot-radius-sm: 10px;
+  --scoot-radius:    12px;
+  --scoot-radius-lg: 16px;
+
+  --theme-primary:        var(--scoot-yellow);
+  --theme-primary-bright: var(--scoot-yellow-bright);
+  --theme-primary-deep:   var(--scoot-yellow-deep);
+  --theme-accent:         var(--scoot-ink);
+  --theme-accent-deep:    #000000;
+  --theme-ink:            var(--scoot-ink);
+  --theme-ink-soft:       var(--scoot-ink-soft);
+  --theme-slate:          var(--scoot-slate);
+  --theme-muted:          var(--scoot-muted);
+  --theme-canvas:         var(--scoot-canvas);
+  --theme-surface:        var(--scoot-surface);
+  --theme-line:           var(--scoot-line);
+  --theme-success:        var(--scoot-success);
+  --theme-danger:         var(--scoot-danger);
+  --theme-warn:           var(--scoot-warn);
+  --theme-info:           var(--scoot-info);
+
+  --theme-font-display:   var(--font-display);
+  --theme-font-body:      var(--font-body);
+  --theme-font-mono:      var(--font-mono);
+
+  --theme-radius-sm:      var(--scoot-radius-sm);
+  --theme-radius:         var(--scoot-radius);
+  --theme-radius-lg:      var(--scoot-radius-lg);
+
+  --theme-navbar-bg: var(--scoot-yellow);
+  --theme-navbar-accent-line: 4px solid var(--scoot-ink);
+  --theme-btn-press-width: 3px;
+  --theme-btn-radius: var(--scoot-radius-sm);
+  --theme-stat-motif: radial-gradient(circle, rgba(14, 14, 16, 0.2) 40%, transparent 41%);
+}
+
+/* --- 2. EVA Air（長榮航空）主題 Tokens ------------------- */
+
+:root[data-theme="eva"] {
+  --eva-primary:        #005F3C;
+  --eva-primary-bright: #00744A;
+  --eva-primary-deep:   #004429;
+  --eva-accent:         #D4A84B;
+  --eva-accent-deep:    #A6822F;
+  --eva-ink:            #15241C;
+  --eva-ink-soft:       #2A3B33;
+  --eva-slate:          #4E5B55;
+  --eva-muted:          #8A938F;
+  --eva-canvas:         #F6F4EE;
+  --eva-surface:        #FFFFFF;
+  --eva-line:           #DDE3DD;
+  --eva-success:        #2E8B57;
+  --eva-danger:         #B83A2E;
+  --eva-warn:           #C68A1C;
+  --eva-info:           #2B5AA0;
+
+  --theme-primary:        var(--eva-primary);
+  --theme-primary-bright: var(--eva-primary-bright);
+  --theme-primary-deep:   var(--eva-primary-deep);
+  --theme-accent:         var(--eva-accent);
+  --theme-accent-deep:    var(--eva-accent-deep);
+  --theme-ink:            var(--eva-ink);
+  --theme-ink-soft:       var(--eva-ink-soft);
+  --theme-slate:          var(--eva-slate);
+  --theme-muted:          var(--eva-muted);
+  --theme-canvas:         var(--eva-canvas);
+  --theme-surface:        var(--eva-surface);
+  --theme-line:           var(--eva-line);
+  --theme-success:        var(--eva-success);
+  --theme-danger:         var(--eva-danger);
+  --theme-warn:           var(--eva-warn);
+  --theme-info:           var(--eva-info);
+
+  --theme-font-display: "Noto Serif TC", "Source Serif Pro", "Georgia",
+                        "PingFang TC", serif;
+  --theme-font-body:    "Source Sans 3", "Noto Sans TC", "PingFang TC",
+                        -apple-system, BlinkMacSystemFont, sans-serif;
+  --theme-font-mono:    "IBM Plex Mono", "JetBrains Mono",
+                        ui-monospace, monospace;
+
+  --theme-radius-sm: 10px;
+  --theme-radius:    12px;
+  --theme-radius-lg: 16px;
+
+  --theme-navbar-bg: var(--eva-primary);
+  --theme-navbar-accent-line: 1px solid var(--theme-accent);
+  --theme-btn-press-width: 3px;
+  --theme-btn-radius: 10px;
+  --theme-stat-motif: linear-gradient(45deg,
+                                  transparent 45%,
+                                  var(--theme-accent) 45%,
+                                  var(--theme-accent) 55%,
+                                  transparent 55%);
+}
+
+/* --- 3. China Airlines（中華航空）主題 Tokens ------------- */
+
+:root[data-theme="china-airlines"] {
+  --cal-primary:        #003F87;
+  --cal-primary-bright: #0A4FA3;
+  --cal-primary-deep:   #002C5F;
+  --cal-accent:         #C8102E;
+  --cal-accent-deep:    #8F0A20;
+  --cal-ink:            #0F1B33;
+  --cal-ink-soft:       #2A334A;
+  --cal-slate:          #4F5870;
+  --cal-muted:          #8C93A4;
+  --cal-canvas:         #F5F6FA;
+  --cal-surface:        #FFFFFF;
+  --cal-line:           #DDE1EC;
+  --cal-success:        #2E8B4A;
+  --cal-danger:         #C8102E;
+  --cal-warn:           #D98200;
+  --cal-info:           #1A5CB0;
+
+  --theme-primary:        var(--cal-primary);
+  --theme-primary-bright: var(--cal-primary-bright);
+  --theme-primary-deep:   var(--cal-primary-deep);
+  --theme-accent:         var(--cal-accent);
+  --theme-accent-deep:    var(--cal-accent-deep);
+  --theme-ink:            var(--cal-ink);
+  --theme-ink-soft:       var(--cal-ink-soft);
+  --theme-slate:          var(--cal-slate);
+  --theme-muted:          var(--cal-muted);
+  --theme-canvas:         var(--cal-canvas);
+  --theme-surface:        var(--cal-surface);
+  --theme-line:           var(--cal-line);
+  --theme-success:        var(--cal-success);
+  --theme-danger:         var(--cal-danger);
+  --theme-warn:           var(--cal-warn);
+  --theme-info:           var(--cal-info);
+
+  --theme-font-display: "Noto Serif TC", "Playfair Display", "Times New Roman",
+                        "PingFang TC", serif;
+  --theme-font-body:    "Source Sans 3", "Noto Sans TC", "PingFang TC",
+                        -apple-system, BlinkMacSystemFont, sans-serif;
+  --theme-font-mono:    "JetBrains Mono", "IBM Plex Mono",
+                        ui-monospace, monospace;
+
+  --theme-radius-sm: 10px;
+  --theme-radius:    12px;
+  --theme-radius-lg: 16px;
+
+  --theme-navbar-bg: var(--cal-primary);
+  --theme-navbar-accent-line: 3px solid var(--theme-accent);
+  --theme-btn-press-width: 3px;
+  --theme-btn-radius: 10px;
+  /* 5 瓣梅花 inline SVG data URI（半透明 accent 紅） */
+  --theme-stat-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><g fill='%23C8102E' fill-opacity='0.35'><circle cx='12' cy='5' r='3'/><circle cx='19' cy='10' r='3'/><circle cx='16.5' cy='18' r='3'/><circle cx='7.5' cy='18' r='3'/><circle cx='5' cy='10' r='3'/><circle cx='12' cy='12' r='2.5' fill='%238F0A20' fill-opacity='0.5'/></g></svg>");
+}
+
+/* --- 4. Starlux（星宇航空）主題 Tokens ------------------- */
+
+:root[data-theme="starlux"] {
+  --jx-primary:        #0E1842;
+  --jx-primary-bright: #1A2C5A;
+  --jx-primary-deep:   #070D25;
+  --jx-accent:         #C8A96A;
+  --jx-accent-bright:  #D9BC7E;
+  --jx-accent-deep:    #A68848;
+  --jx-ink:            #111520;
+  --jx-ink-soft:       #252A3A;
+  --jx-slate:          #5A6078;
+  --jx-muted:          #9095A8;
+  --jx-canvas:         #F4F1EA;
+  --jx-surface:        #FBF8F1;
+  --jx-line:           #E3DDCC;
+  --jx-success:        #6B8E5A;
+  --jx-danger:         #8C2E2A;
+  --jx-warn:           #B8893A;
+  --jx-info:           #3A5B8A;
+
+  --theme-primary:        var(--jx-primary);
+  --theme-primary-bright: var(--jx-primary-bright);
+  --theme-primary-deep:   var(--jx-primary-deep);
+  --theme-accent:         var(--jx-accent);
+  --theme-accent-deep:    var(--jx-accent-deep);
+  --theme-ink:            var(--jx-ink);
+  --theme-ink-soft:       var(--jx-ink-soft);
+  --theme-slate:          var(--jx-slate);
+  --theme-muted:          var(--jx-muted);
+  --theme-canvas:         var(--jx-canvas);
+  --theme-surface:        var(--jx-surface);
+  --theme-line:           var(--jx-line);
+  --theme-success:        var(--jx-success);
+  --theme-danger:         var(--jx-danger);
+  --theme-warn:           var(--jx-warn);
+  --theme-info:           var(--jx-info);
+
+  --theme-font-display: "Cormorant Garamond", "EB Garamond", "Noto Serif TC",
+                        "Playfair Display", serif;
+  --theme-font-body:    "Inter Tight", "Noto Sans TC", "PingFang TC",
+                        -apple-system, BlinkMacSystemFont, sans-serif;
+  --theme-font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  --theme-radius-sm: 4px;
+  --theme-radius:    6px;
+  --theme-radius-lg: 8px;
+
+  --theme-navbar-bg: var(--jx-primary);
+  --theme-navbar-accent-line: 1px solid var(--theme-accent);
+  --theme-btn-press-width: 0px;
+  --theme-btn-radius: 4px;
+  /* 6pt 星形 inline SVG data URI（半透明香檳金） */
+  --theme-stat-motif: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23C8A96A' fill-opacity='0.45' d='M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z'/></svg>");
+}
+
+/* --- 5. 全域排版（使用中性 tokens） --------------------- */
 
 body {
-  background-color: var(--scoot-canvas);
-  color: var(--scoot-ink);
-  font-family: var(--font-body);
+  background-color: var(--theme-canvas);
+  color: var(--theme-ink);
+  font-family: var(--theme-font-body);
   font-weight: 400;
 }
 
 h1, h2, h3,
-.navbar-scoot .navbar-brand {
-  font-family: var(--font-display);
+.navbar-scoot .navbar-brand,
+.navbar-theme .navbar-brand {
+  font-family: var(--theme-font-display);
   font-weight: 800;
-  color: var(--scoot-ink);
+  color: var(--theme-ink);
   letter-spacing: 0.01em;
 }
 
@@ -64,83 +330,180 @@ h2 {
   padding-bottom: 2rem;
 }
 
-/* --- 3. 導航列（.navbar-scoot） --------------------------- */
+/* --- 6. 導航列（.navbar-scoot / .navbar-theme 共用） ----- */
 
-.navbar-scoot {
-  background: var(--scoot-yellow);
-  border-bottom: 4px solid var(--scoot-ink);
+.navbar-scoot,
+.navbar-theme {
+  background: var(--theme-navbar-bg);
+  border-bottom: var(--theme-navbar-accent-line);
   padding: 0.75rem 0;
 }
 
-.navbar-scoot .navbar-brand {
-  font-family: var(--font-display);
+.navbar-scoot .navbar-brand,
+.navbar-theme .navbar-brand {
+  font-family: var(--theme-font-display);
   font-weight: 800;
   font-size: 1.25rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--scoot-ink);
+  color: var(--theme-ink);
 }
 
 .navbar-scoot .navbar-brand:hover,
-.navbar-scoot .navbar-brand:focus {
-  color: var(--scoot-ink);
+.navbar-scoot .navbar-brand:focus,
+.navbar-theme .navbar-brand:hover,
+.navbar-theme .navbar-brand:focus {
+  color: var(--theme-ink);
 }
 
-.navbar-scoot .nav-link {
-  color: var(--scoot-ink);
+.navbar-scoot .nav-link,
+.navbar-theme .nav-link {
+  color: var(--theme-ink);
   font-weight: 600;
   padding: 0.4rem 1rem;
   border-radius: 999px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.navbar-scoot .nav-link:hover {
-  color: var(--scoot-ink);
+.navbar-scoot .nav-link:hover,
+.navbar-theme .nav-link:hover {
+  color: var(--theme-ink);
   background-color: rgba(14, 14, 16, 0.08);
 }
 
-.navbar-scoot .nav-link.active {
+.navbar-scoot .nav-link.active,
+.navbar-theme .nav-link.active {
   color: #ffffff;
-  background-color: var(--scoot-ink);
+  background-color: var(--theme-ink);
 }
 
-.navbar-scoot .navbar-toggler {
+.navbar-scoot .navbar-toggler,
+.navbar-theme .navbar-toggler {
   border-color: rgba(14, 14, 16, 0.4);
 }
 
-.navbar-scoot .navbar-toggler-icon {
+.navbar-scoot .navbar-toggler-icon,
+.navbar-theme .navbar-toggler-icon {
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%230E0E10' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
-/* --- 4. 卡片 ---------------------------------------------- */
+/* EVA / China Airlines / Starlux 下 navbar 文字改為白色（深色品牌底） */
+:root[data-theme="eva"] .navbar-scoot .navbar-brand,
+:root[data-theme="eva"] .navbar-theme .navbar-brand,
+:root[data-theme="china-airlines"] .navbar-scoot .navbar-brand,
+:root[data-theme="china-airlines"] .navbar-theme .navbar-brand {
+  color: #FFFFFF;
+}
+
+:root[data-theme="eva"] .navbar-scoot .navbar-brand:hover,
+:root[data-theme="eva"] .navbar-scoot .navbar-brand:focus,
+:root[data-theme="eva"] .navbar-theme .navbar-brand:hover,
+:root[data-theme="eva"] .navbar-theme .navbar-brand:focus,
+:root[data-theme="china-airlines"] .navbar-scoot .navbar-brand:hover,
+:root[data-theme="china-airlines"] .navbar-scoot .navbar-brand:focus,
+:root[data-theme="china-airlines"] .navbar-theme .navbar-brand:hover,
+:root[data-theme="china-airlines"] .navbar-theme .navbar-brand:focus {
+  color: #FFFFFF;
+}
+
+:root[data-theme="eva"] .navbar-scoot .nav-link,
+:root[data-theme="eva"] .navbar-theme .nav-link,
+:root[data-theme="china-airlines"] .navbar-scoot .nav-link,
+:root[data-theme="china-airlines"] .navbar-theme .nav-link {
+  color: #FFFFFF;
+}
+
+:root[data-theme="eva"] .navbar-scoot .nav-link:hover,
+:root[data-theme="eva"] .navbar-theme .nav-link:hover,
+:root[data-theme="china-airlines"] .navbar-scoot .nav-link:hover,
+:root[data-theme="china-airlines"] .navbar-theme .nav-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme="eva"] .navbar-scoot .nav-link.active,
+:root[data-theme="eva"] .navbar-theme .nav-link.active {
+  background-color: var(--theme-accent);
+  color: var(--theme-primary);
+}
+
+:root[data-theme="china-airlines"] .navbar-scoot .nav-link.active,
+:root[data-theme="china-airlines"] .navbar-theme .nav-link.active {
+  background-color: var(--theme-accent);
+  color: #FFFFFF;
+}
+
+/* Starlux navbar：金色襯線品牌字 + 下劃線 active */
+:root[data-theme="starlux"] .navbar-scoot .navbar-brand,
+:root[data-theme="starlux"] .navbar-theme .navbar-brand {
+  color: var(--theme-accent);
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+:root[data-theme="starlux"] .navbar-scoot .navbar-brand:hover,
+:root[data-theme="starlux"] .navbar-scoot .navbar-brand:focus,
+:root[data-theme="starlux"] .navbar-theme .navbar-brand:hover,
+:root[data-theme="starlux"] .navbar-theme .navbar-brand:focus {
+  color: var(--jx-accent-bright);
+}
+
+:root[data-theme="starlux"] .navbar-scoot .nav-link,
+:root[data-theme="starlux"] .navbar-theme .nav-link {
+  color: #FFFFFF;
+  border-radius: 0;
+}
+
+:root[data-theme="starlux"] .navbar-scoot .nav-link:hover,
+:root[data-theme="starlux"] .navbar-theme .nav-link:hover {
+  color: var(--theme-accent);
+  background-color: transparent;
+}
+
+:root[data-theme="starlux"] .navbar-scoot .nav-link.active,
+:root[data-theme="starlux"] .navbar-theme .nav-link.active {
+  background-color: transparent;
+  color: var(--theme-accent);
+  border-bottom: 2px solid var(--theme-accent);
+  border-radius: 0;
+}
+
+:root[data-theme="starlux"] .navbar-scoot .navbar-toggler,
+:root[data-theme="starlux"] .navbar-theme .navbar-toggler {
+  border-color: rgba(200, 169, 106, 0.5);
+}
+
+/* --- 7. 卡片 -------------------------------------------- */
 
 .card {
-  background: var(--scoot-surface);
-  border: 1.5px solid var(--scoot-line);
-  border-radius: var(--scoot-radius-lg);
-  box-shadow: 0 2px 0 var(--scoot-line);
+  background: var(--theme-surface);
+  border: 1.5px solid var(--theme-line);
+  border-radius: var(--theme-radius-lg);
+  box-shadow: 0 2px 0 var(--theme-line);
   transition: border-color 0.2s ease;
 }
 
 .card:hover {
-  border-color: var(--scoot-ink);
+  border-color: var(--theme-ink);
 }
 
 .card-header {
-  background: var(--scoot-surface);
-  border-bottom: 1.5px solid var(--scoot-line);
-  font-family: var(--font-display);
+  background: var(--theme-surface);
+  border-bottom: 1.5px solid var(--theme-line);
+  font-family: var(--theme-font-display);
   font-weight: 700;
-  color: var(--scoot-ink);
+  color: var(--theme-ink);
   padding: 0.875rem 1.25rem;
-  border-radius: var(--scoot-radius-lg) var(--scoot-radius-lg) 0 0 !important;
+  border-radius: var(--theme-radius-lg) var(--theme-radius-lg) 0 0 !important;
 }
 
-.card-header-scoot {
-  background: var(--scoot-yellow);
-  color: var(--scoot-ink);
-  border-bottom: 2px solid var(--scoot-ink);
-  font-family: var(--font-display);
+.card-header-scoot,
+.card-header-theme {
+  background: var(--theme-primary);
+  color: var(--theme-ink);
+  border-bottom: 2px solid var(--theme-ink);
+  font-family: var(--theme-font-display);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -150,114 +513,139 @@ h2 {
   padding: 1.25rem;
 }
 
-/* --- 5. 按鈕系統（.btn-scoot*） --------------------------- */
+/* --- 8. 按鈕系統（.btn-scoot* / .btn-theme* 共用） ------- */
 
 .btn-scoot,
+.btn-theme,
 .btn-scoot-secondary,
+.btn-theme-secondary,
 .btn-scoot-danger,
+.btn-theme-danger,
 .btn-scoot-success,
-.btn-scoot-warning {
-  font-family: var(--font-display);
+.btn-theme-success,
+.btn-scoot-warning,
+.btn-theme-warning {
+  font-family: var(--theme-font-display);
   font-weight: 700;
-  border-radius: var(--scoot-radius-sm);
+  border-radius: var(--theme-btn-radius);
   padding: 0.55rem 1.25rem;
   border: none;
   transition: transform 0.05s ease, background-color 0.15s ease, box-shadow 0.15s ease;
   position: relative;
 }
 
-/* 主按鈕：黃底黑字 + 深黃底按壓邊 */
-.btn-scoot {
-  background: var(--scoot-yellow);
-  color: var(--scoot-ink);
-  border-bottom: 3px solid var(--scoot-yellow-deep);
+/* 主按鈕：主色底 + 深色文字 + 底部按壓邊 */
+.btn-scoot,
+.btn-theme {
+  background: var(--theme-primary);
+  color: var(--theme-ink);
+  border-bottom: var(--theme-btn-press-width) solid var(--theme-primary-deep);
 }
 
 .btn-scoot:hover,
-.btn-scoot:focus {
-  background: var(--scoot-yellow-bright);
-  color: var(--scoot-ink);
+.btn-scoot:focus,
+.btn-theme:hover,
+.btn-theme:focus {
+  background: var(--theme-primary-bright);
+  color: var(--theme-ink);
 }
 
-.btn-scoot:active {
+.btn-scoot:active,
+.btn-theme:active {
   transform: translateY(1px);
   border-bottom-width: 1px;
   margin-bottom: 2px;
 }
 
 /* 次按鈕：透明底 + 深色邊 */
-.btn-scoot-secondary {
+.btn-scoot-secondary,
+.btn-theme-secondary {
   background: transparent;
-  color: var(--scoot-ink);
-  border: 2px solid var(--scoot-ink);
+  color: var(--theme-ink);
+  border: 2px solid var(--theme-ink);
   border-bottom-width: 3px;
   padding: calc(0.55rem - 2px) calc(1.25rem - 2px);
 }
 
 .btn-scoot-secondary:hover,
-.btn-scoot-secondary:focus {
-  background: var(--scoot-ink);
+.btn-scoot-secondary:focus,
+.btn-theme-secondary:hover,
+.btn-theme-secondary:focus {
+  background: var(--theme-ink);
   color: #ffffff;
 }
 
-.btn-scoot-secondary:active {
+.btn-scoot-secondary:active,
+.btn-theme-secondary:active {
   transform: translateY(1px);
   border-bottom-width: 1px;
   margin-bottom: 2px;
 }
 
 /* 危險按鈕：紅底白字 */
-.btn-scoot-danger {
-  background: var(--scoot-danger);
+.btn-scoot-danger,
+.btn-theme-danger {
+  background: var(--theme-danger);
   color: #ffffff;
-  border-bottom: 3px solid #b91c1c;
+  border-bottom: var(--theme-btn-press-width) solid #b91c1c;
 }
 
 .btn-scoot-danger:hover,
-.btn-scoot-danger:focus {
+.btn-scoot-danger:focus,
+.btn-theme-danger:hover,
+.btn-theme-danger:focus {
   background: #f04d46;
   color: #ffffff;
 }
 
-.btn-scoot-danger:active {
+.btn-scoot-danger:active,
+.btn-theme-danger:active {
   transform: translateY(1px);
   border-bottom-width: 1px;
   margin-bottom: 2px;
 }
 
 /* 成功按鈕：綠底白字 */
-.btn-scoot-success {
-  background: var(--scoot-success);
+.btn-scoot-success,
+.btn-theme-success {
+  background: var(--theme-success);
   color: #ffffff;
-  border-bottom: 3px solid #158A4F;
+  border-bottom: var(--theme-btn-press-width) solid #158A4F;
 }
 
 .btn-scoot-success:hover,
-.btn-scoot-success:focus {
+.btn-scoot-success:focus,
+.btn-theme-success:hover,
+.btn-theme-success:focus {
   background: #28c274;
   color: #ffffff;
 }
 
-.btn-scoot-success:active {
+.btn-scoot-success:active,
+.btn-theme-success:active {
   transform: translateY(1px);
   border-bottom-width: 1px;
   margin-bottom: 2px;
 }
 
 /* 警告按鈕：橘底黑字 */
-.btn-scoot-warning {
-  background: var(--scoot-warn);
-  color: var(--scoot-ink);
-  border-bottom: 3px solid #D9690F;
+.btn-scoot-warning,
+.btn-theme-warning {
+  background: var(--theme-warn);
+  color: var(--theme-ink);
+  border-bottom: var(--theme-btn-press-width) solid #D9690F;
 }
 
 .btn-scoot-warning:hover,
-.btn-scoot-warning:focus {
+.btn-scoot-warning:focus,
+.btn-theme-warning:hover,
+.btn-theme-warning:focus {
   background: #ff9d41;
-  color: var(--scoot-ink);
+  color: var(--theme-ink);
 }
 
-.btn-scoot-warning:active {
+.btn-scoot-warning:active,
+.btn-theme-warning:active {
   transform: translateY(1px);
   border-bottom-width: 1px;
   margin-bottom: 2px;
@@ -265,67 +653,199 @@ h2 {
 
 /* 共同 focus 樣式 */
 .btn-scoot:focus-visible,
+.btn-theme:focus-visible,
 .btn-scoot-secondary:focus-visible,
+.btn-theme-secondary:focus-visible,
 .btn-scoot-danger:focus-visible,
+.btn-theme-danger:focus-visible,
 .btn-scoot-success:focus-visible,
-.btn-scoot-warning:focus-visible {
-  outline: 2px solid var(--scoot-ink);
+.btn-theme-success:focus-visible,
+.btn-scoot-warning:focus-visible,
+.btn-theme-warning:focus-visible {
+  outline: 2px solid var(--theme-ink);
   outline-offset: 2px;
 }
 
-/* --- 6. 表單（底邊強調風格） ---------------------------- */
+/* --- 8b. EVA 主按鈕覆寫（深綠底白字） ------------------- */
+
+:root[data-theme="eva"] .btn-scoot,
+:root[data-theme="eva"] .btn-theme {
+  background: var(--theme-primary);
+  color: #FFFFFF;
+}
+
+:root[data-theme="eva"] .btn-scoot:hover,
+:root[data-theme="eva"] .btn-scoot:focus,
+:root[data-theme="eva"] .btn-theme:hover,
+:root[data-theme="eva"] .btn-theme:focus {
+  background: var(--theme-primary-bright);
+  color: #FFFFFF;
+}
+
+:root[data-theme="eva"] .btn-scoot-secondary,
+:root[data-theme="eva"] .btn-theme-secondary {
+  color: var(--theme-primary);
+  border-color: var(--theme-primary);
+}
+
+:root[data-theme="eva"] .btn-scoot-secondary:hover,
+:root[data-theme="eva"] .btn-scoot-secondary:focus,
+:root[data-theme="eva"] .btn-theme-secondary:hover,
+:root[data-theme="eva"] .btn-theme-secondary:focus {
+  background: var(--theme-primary);
+  color: #FFFFFF;
+}
+
+/* --- 8c. China Airlines 主按鈕覆寫 ----------------------- */
+
+:root[data-theme="china-airlines"] .btn-scoot,
+:root[data-theme="china-airlines"] .btn-theme {
+  background: var(--theme-primary);
+  color: #FFFFFF;
+}
+
+:root[data-theme="china-airlines"] .btn-scoot:hover,
+:root[data-theme="china-airlines"] .btn-scoot:focus,
+:root[data-theme="china-airlines"] .btn-theme:hover,
+:root[data-theme="china-airlines"] .btn-theme:focus {
+  background: var(--theme-primary-bright);
+  color: #FFFFFF;
+}
+
+:root[data-theme="china-airlines"] .btn-scoot-secondary,
+:root[data-theme="china-airlines"] .btn-theme-secondary {
+  color: var(--theme-primary);
+  border-color: var(--theme-primary);
+}
+
+:root[data-theme="china-airlines"] .btn-scoot-secondary:hover,
+:root[data-theme="china-airlines"] .btn-scoot-secondary:focus,
+:root[data-theme="china-airlines"] .btn-theme-secondary:hover,
+:root[data-theme="china-airlines"] .btn-theme-secondary:focus {
+  background: var(--theme-primary);
+  color: #FFFFFF;
+}
+
+:root[data-theme="china-airlines"] .btn-scoot-danger,
+:root[data-theme="china-airlines"] .btn-theme-danger {
+  background: var(--theme-accent);
+  color: #FFFFFF;
+  border-bottom-color: var(--theme-accent-deep);
+}
+
+/* --- 8d. Starlux 按鈕差異化（無底邊 + 金字午夜藍） ------- */
+
+:root[data-theme="starlux"] .btn-scoot,
+:root[data-theme="starlux"] .btn-theme {
+  background: var(--theme-primary);
+  color: var(--theme-accent);
+  border: 1px solid var(--theme-accent);
+  border-radius: var(--theme-btn-radius);
+}
+
+:root[data-theme="starlux"] .btn-scoot:hover,
+:root[data-theme="starlux"] .btn-scoot:focus,
+:root[data-theme="starlux"] .btn-theme:hover,
+:root[data-theme="starlux"] .btn-theme:focus {
+  background: var(--theme-accent);
+  color: var(--theme-primary);
+}
+
+:root[data-theme="starlux"] .btn-scoot:active,
+:root[data-theme="starlux"] .btn-theme:active {
+  transform: translateY(0.5px);
+  border-bottom-width: 1px;
+  margin-bottom: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme="starlux"] .btn-scoot-secondary,
+:root[data-theme="starlux"] .btn-theme-secondary {
+  background: transparent;
+  color: var(--theme-accent);
+  border: 1px solid var(--theme-accent);
+  border-bottom-width: 1px;
+  padding: calc(0.55rem - 1px) calc(1.25rem - 1px);
+}
+
+:root[data-theme="starlux"] .btn-scoot-secondary:hover,
+:root[data-theme="starlux"] .btn-scoot-secondary:focus,
+:root[data-theme="starlux"] .btn-theme-secondary:hover,
+:root[data-theme="starlux"] .btn-theme-secondary:focus {
+  background: var(--theme-accent);
+  color: var(--theme-primary);
+}
+
+:root[data-theme="starlux"] .btn-scoot-danger,
+:root[data-theme="starlux"] .btn-theme-danger {
+  background: var(--theme-danger);
+  color: #FFFFFF;
+  border: 1px solid var(--theme-danger);
+}
+
+:root[data-theme="starlux"] .btn-scoot-warning,
+:root[data-theme="starlux"] .btn-theme-warning {
+  background: var(--theme-warn);
+  color: var(--theme-ink);
+  border: 1px solid var(--theme-warn);
+}
+
+/* --- 9. 表單（底邊強調風格） -------------------------- */
 
 .form-control,
 .form-select {
-  border-top:    1px solid var(--scoot-line);
-  border-left:   1px solid var(--scoot-line);
-  border-right:  1px solid var(--scoot-line);
-  border-bottom: 2px solid var(--scoot-line);
-  border-radius: var(--scoot-radius-sm);
-  color: var(--scoot-ink);
-  background: var(--scoot-surface);
-  font-family: var(--font-body);
+  border-top:    1px solid var(--theme-line);
+  border-left:   1px solid var(--theme-line);
+  border-right:  1px solid var(--theme-line);
+  border-bottom: 2px solid var(--theme-line);
+  border-radius: var(--theme-radius-sm);
+  color: var(--theme-ink);
+  background: var(--theme-surface);
+  font-family: var(--theme-font-body);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .form-control::placeholder {
-  color: var(--scoot-muted);
+  color: var(--theme-muted);
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--scoot-line);
-  border-bottom-color: var(--scoot-yellow);
+  border-color: var(--theme-line);
+  border-bottom-color: var(--theme-primary);
   box-shadow: 0 3px 0 -1px rgba(255, 218, 0, 0.35),
               0 0 0 3px rgba(255, 218, 0, 0.25);
   outline: none;
 }
 
 .form-label {
-  font-family: var(--font-body);
+  font-family: var(--theme-font-body);
   font-weight: 600;
   font-size: 0.875rem;
-  color: var(--scoot-ink);
+  color: var(--theme-ink);
   margin-bottom: 0.375rem;
 }
 
-/* --- 7. 表格（.table-scoot-wrap / .table-scoot） ---------- */
+/* --- 10. 表格（.table-scoot-wrap / .table-theme-wrap） --- */
 
-.table-scoot-wrap {
-  border-radius: var(--scoot-radius);
+.table-scoot-wrap,
+.table-theme-wrap {
+  border-radius: var(--theme-radius);
   overflow: hidden;
-  border: 1.5px solid var(--scoot-line);
+  border: 1.5px solid var(--theme-line);
 }
 
-.table-scoot {
+.table-scoot,
+.table-theme {
   margin-bottom: 0;
-  color: var(--scoot-ink);
+  color: var(--theme-ink);
 }
 
-.table-scoot thead th {
-  background: var(--scoot-ink);
+.table-scoot thead th,
+.table-theme thead th {
+  background: var(--theme-ink);
   color: #ffffff;
-  font-family: var(--font-display);
+  font-family: var(--theme-font-display);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -335,22 +855,26 @@ h2 {
   white-space: nowrap;
 }
 
-.table-scoot tbody tr {
-  background-color: var(--scoot-surface);
+.table-scoot tbody tr,
+.table-theme tbody tr {
+  background-color: var(--theme-surface);
   transition: background-color 0.15s ease;
 }
 
-.table-scoot tbody tr:nth-child(even) {
+.table-scoot tbody tr:nth-child(even),
+.table-theme tbody tr:nth-child(even) {
   background-color: rgba(255, 218, 0, 0.08);
 }
 
-.table-scoot tbody tr:hover {
+.table-scoot tbody tr:hover,
+.table-theme tbody tr:hover {
   background-color: rgba(255, 218, 0, 0.16);
 }
 
-.table-scoot tbody td {
+.table-scoot tbody td,
+.table-theme tbody td {
   padding: 0.75rem 1rem;
-  border-color: var(--scoot-line);
+  border-color: var(--theme-line);
   vertical-align: middle;
   white-space: nowrap;
 }
@@ -360,28 +884,93 @@ h2 {
 .table-scoot td.num,
 .table-scoot td.price,
 .table-scoot .num,
-.table-scoot .price {
-  font-family: var(--font-mono);
+.table-scoot .price,
+.table-theme td.text-end,
+.table-theme td.num,
+.table-theme td.price,
+.table-theme .num,
+.table-theme .price {
+  font-family: var(--theme-font-mono);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 
-/* --- 8. 統計卡片（.stat-scoot*） -------------------------- */
+/* EVA / China Airlines 表頭覆寫：品牌主色底白字 */
+:root[data-theme="eva"] .table-scoot thead th,
+:root[data-theme="eva"] .table-theme thead th {
+  background: var(--theme-primary);
+  color: #FFFFFF;
+}
 
-.stat-scoot {
+:root[data-theme="eva"] .table-scoot tbody tr:nth-child(even),
+:root[data-theme="eva"] .table-theme tbody tr:nth-child(even) {
+  background-color: rgba(212, 168, 75, 0.10);
+}
+
+:root[data-theme="eva"] .table-scoot tbody tr:hover,
+:root[data-theme="eva"] .table-theme tbody tr:hover {
+  background-color: rgba(212, 168, 75, 0.16);
+}
+
+:root[data-theme="china-airlines"] .table-scoot thead th,
+:root[data-theme="china-airlines"] .table-theme thead th {
+  background: var(--theme-primary);
+  color: #FFFFFF;
+}
+
+:root[data-theme="china-airlines"] .table-scoot tbody tr:nth-child(even),
+:root[data-theme="china-airlines"] .table-theme tbody tr:nth-child(even) {
+  background-color: rgba(0, 63, 135, 0.06);
+}
+
+:root[data-theme="china-airlines"] .table-scoot tbody tr:hover,
+:root[data-theme="china-airlines"] .table-theme tbody tr:hover {
+  background-color: rgba(0, 63, 135, 0.10);
+}
+
+/* Starlux 表格：午夜藍底金字襯線 + 淡金偶數列 + 象牙卡底 */
+:root[data-theme="starlux"] .table-scoot thead th,
+:root[data-theme="starlux"] .table-theme thead th {
+  background: var(--theme-primary);
+  color: var(--theme-accent);
+  font-family: var(--theme-font-display);
+  text-transform: none;
+  letter-spacing: 0.06em;
+}
+
+:root[data-theme="starlux"] .table-scoot tbody tr:nth-child(even),
+:root[data-theme="starlux"] .table-theme tbody tr:nth-child(even) {
+  background-color: rgba(200, 169, 106, 0.06);
+}
+
+:root[data-theme="starlux"] .table-scoot tbody tr:hover,
+:root[data-theme="starlux"] .table-theme tbody tr:hover {
+  background-color: rgba(200, 169, 106, 0.12);
+}
+
+:root[data-theme="starlux"] .card {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-line);
+}
+
+/* --- 11. 統計卡片（.stat-scoot* / .stat-theme*） --------- */
+
+.stat-scoot,
+.stat-theme {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   padding: 1.25rem 1.5rem;
-  border-radius: var(--scoot-radius-lg);
+  border-radius: var(--theme-radius-lg);
   border: 1.5px solid transparent;
   box-shadow: 0 2px 0 rgba(14, 14, 16, 0.06);
   overflow: hidden;
 }
 
-.stat-scoot::after {
-  /* 登機證打孔裝飾（右下角半透明圓點） */
+.stat-scoot::after,
+.stat-theme::after {
+  /* 主題裝飾圖（依 --theme-stat-motif 變化） */
   content: '';
   position: absolute;
   right: 1rem;
@@ -389,12 +978,14 @@ h2 {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--theme-stat-motif) center/contain no-repeat,
+              rgba(255, 255, 255, 0.2);
   pointer-events: none;
 }
 
-.stat-scoot-label {
-  font-family: var(--font-body);
+.stat-scoot-label,
+.stat-theme-label {
+  font-family: var(--theme-font-body);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -402,8 +993,9 @@ h2 {
   opacity: 0.85;
 }
 
-.stat-scoot-value {
-  font-family: var(--font-mono);
+.stat-scoot-value,
+.stat-theme-value {
+  font-family: var(--theme-font-mono);
   font-size: 2.25rem;
   font-weight: 800;
   line-height: 1.1;
@@ -411,44 +1003,67 @@ h2 {
 }
 
 /* 塊面變體 */
-.stat-scoot--ink {
-  background: var(--scoot-ink);
+.stat-scoot--ink,
+.stat-theme--ink {
+  background: var(--theme-ink);
   color: #ffffff;
 }
 
-.stat-scoot--yellow {
-  background: var(--scoot-yellow);
-  color: var(--scoot-ink);   /* 黃底禁白字：強制深色 */
-  border-color: var(--scoot-yellow-deep);
+.stat-scoot--yellow,
+.stat-theme--primary {
+  background: var(--theme-primary);
+  color: var(--theme-ink);   /* 主色底禁白字：強制深色 */
+  border-color: var(--theme-primary-deep);
 }
 
-.stat-scoot--yellow::after {
-  background: rgba(14, 14, 16, 0.12);
+.stat-scoot--yellow::after,
+.stat-theme--primary::after {
+  background: var(--theme-stat-motif) center/contain no-repeat,
+              rgba(14, 14, 16, 0.12);
 }
 
-.stat-scoot--success {
-  background: var(--scoot-success);
+.stat-scoot--success,
+.stat-theme--success {
+  background: var(--theme-success);
   color: #ffffff;
 }
 
-.stat-scoot--danger {
-  background: var(--scoot-danger);
+.stat-scoot--danger,
+.stat-theme--danger {
+  background: var(--theme-danger);
   color: #ffffff;
 }
 
-.stat-scoot--slate {
-  background: var(--scoot-slate);
+.stat-scoot--slate,
+.stat-theme--slate {
+  background: var(--theme-slate);
   color: #ffffff;
 }
 
-/* --- 9. Badge（圓角 pill） -------------------------------- */
+.stat-theme--accent {
+  background: var(--theme-accent);
+  color: var(--theme-ink); /* accent 通常為金色，禁白字 */
+}
+
+/* Starlux primary 變體：金底深字 */
+:root[data-theme="starlux"] .stat-scoot--yellow,
+:root[data-theme="starlux"] .stat-theme--primary {
+  background: var(--theme-primary);
+  color: var(--theme-accent);
+  border-color: var(--theme-accent-deep);
+}
+
+/* --- 12. Badge（圓角 pill） ----------------------------- */
 
 .badge-scoot-success,
+.badge-theme-success,
 .badge-scoot-danger,
-.badge-scoot-muted {
+.badge-theme-danger,
+.badge-scoot-muted,
+.badge-theme-muted {
   display: inline-block;
   white-space: nowrap;
-  font-family: var(--font-display);
+  font-family: var(--theme-font-display);
   font-weight: 700;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -457,69 +1072,120 @@ h2 {
   border-radius: 999px;
 }
 
-.badge-scoot-success {
+.badge-scoot-success,
+.badge-theme-success {
   background: rgba(31, 173, 102, 0.12);
-  color: var(--scoot-success);
+  color: var(--theme-success);
 }
 
-.badge-scoot-danger {
+.badge-scoot-danger,
+.badge-theme-danger {
   background: rgba(228, 50, 43, 0.12);
-  color: var(--scoot-danger);
+  color: var(--theme-danger);
 }
 
-.badge-scoot-muted {
+.badge-scoot-muted,
+.badge-theme-muted {
   background: rgba(138, 138, 149, 0.12);
-  color: var(--scoot-slate);
+  color: var(--theme-slate);
 }
 
-/* --- 10. Alert ------------------------------------------- */
+/* --- 13. Alert ------------------------------------------ */
 
 .alert {
-  background: var(--scoot-surface);
-  color: var(--scoot-ink);
-  border: 1.5px solid var(--scoot-line);
-  border-left: 6px solid var(--scoot-info);
-  border-radius: var(--scoot-radius);
+  background: var(--theme-surface);
+  color: var(--theme-ink);
+  border: 1.5px solid var(--theme-line);
+  border-left: 6px solid var(--theme-info);
+  border-radius: var(--theme-radius);
   padding: 0.875rem 1.125rem;
   font-weight: 500;
 }
 
 .alert-info {
-  border-left-color: var(--scoot-info);
+  border-left-color: var(--theme-info);
 }
 
 .alert-success {
-  border-left-color: var(--scoot-success);
+  border-left-color: var(--theme-success);
 }
 
 .alert-warning {
-  border-left-color: var(--scoot-warn);
+  border-left-color: var(--theme-warn);
 }
 
 .alert-danger {
-  border-left-color: var(--scoot-danger);
+  border-left-color: var(--theme-danger);
 }
 
-/* --- 11. 減少動畫偏好 ------------------------------------ */
+/* --- 14. 主題切換器（dropdown） ------------------------- */
+
+.theme-switcher .dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.theme-switcher .dropdown-menu {
+  min-width: 12rem;
+}
+
+.theme-switcher .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--theme-font-body);
+  font-weight: 500;
+}
+
+.theme-switcher .dropdown-item[aria-current="true"] {
+  font-weight: 700;
+  color: var(--theme-ink);
+}
+
+.theme-switcher .dropdown-item .theme-check {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  color: var(--theme-primary);
+}
+
+.theme-switcher .dropdown-item:not([aria-current="true"]) .theme-check {
+  visibility: hidden;
+}
+
+/* --- 15. 減少動畫偏好 ----------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   .btn-scoot,
+  .btn-theme,
   .btn-scoot-secondary,
+  .btn-theme-secondary,
   .btn-scoot-danger,
+  .btn-theme-danger,
   .btn-scoot-success,
+  .btn-theme-success,
   .btn-scoot-warning,
+  .btn-theme-warning,
   .btn-scoot:active,
+  .btn-theme:active,
   .btn-scoot-secondary:active,
+  .btn-theme-secondary:active,
   .btn-scoot-danger:active,
+  .btn-theme-danger:active,
   .btn-scoot-success:active,
-  .btn-scoot-warning:active {
+  .btn-theme-success:active,
+  .btn-scoot-warning:active,
+  .btn-theme-warning:active {
     transform: none !important;
     transition: none !important;
+    box-shadow: none !important;
   }
 
   .card,
   .card:hover,
   .table-scoot tbody tr,
+  .table-theme tbody tr,
   .alert {
     transition: none !important;
   }
