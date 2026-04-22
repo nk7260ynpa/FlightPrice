@@ -2,11 +2,11 @@
 
 ## 1. 程式碼調整
 
-- [ ] 1.1 修改 `app/scheduler.py`：將 `scheduler.add_job(..., 'interval', hours=3, ...)` 的 `hours=3` 改為 `hours=1`。
-- [ ] 1.2 同步更新 `app/scheduler.py` 的模組 docstring（第 1 行「每 3 小時」→「每 1 小時」）。
-- [ ] 1.3 同步更新 `init_scheduler` 的 docstring（「每 3 小時定時抓取任務」→「每 1 小時定時抓取任務」）。
-- [ ] 1.4 同步更新 `init_scheduler` 結尾的 `logger.info` 訊息（「每 3 小時」→「每 1 小時」）及 job 註解（第 30 行「# 每 3 小時執行一次」→「# 每 1 小時執行一次」）。
-- [ ] 1.5 檔案範圍限制：本組僅允許修改 `app/scheduler.py`，不得修改其他程式碼檔案。
+- [x] 1.1 修改 `app/scheduler.py`：將 `scheduler.add_job(..., 'interval', hours=3, ...)` 的 `hours=3` 改為 `hours=1`。
+- [x] 1.2 同步更新 `app/scheduler.py` 的模組 docstring（第 1 行「每 3 小時」→「每 1 小時」）。
+- [x] 1.3 同步更新 `init_scheduler` 的 docstring（「每 3 小時定時抓取任務」→「每 1 小時定時抓取任務」）。
+- [x] 1.4 同步更新 `init_scheduler` 結尾的 `logger.info` 訊息（「每 3 小時」→「每 1 小時」）及 job 註解（第 30 行「# 每 3 小時執行一次」→「# 每 1 小時執行一次」）。
+- [x] 1.5 檔案範圍限制：本組僅允許修改 `app/scheduler.py`，不得修改其他程式碼檔案。
 
 ## 2. 測試
 
