@@ -1,4 +1,4 @@
-"""APScheduler 排程設定，每 3 小時檢查並擷取航班價格。"""
+"""APScheduler 排程設定，每 1 小時檢查並擷取航班價格。"""
 
 import logging
 
@@ -10,7 +10,7 @@ scheduler = BackgroundScheduler()
 
 
 def init_scheduler(app):
-    """初始化排程器，設定每 3 小時定時抓取任務。
+    """初始化排程器，設定每 1 小時定時抓取任務。
 
     Args:
         app: Flask 應用實例。
@@ -27,14 +27,14 @@ def init_scheduler(app):
                 results['skipped'],
             )
 
-    # 每 3 小時執行一次
+    # 每 1 小時執行一次
     scheduler.add_job(
         scheduled_scrape,
         'interval',
-        hours=3,
+        hours=1,
         id='periodic_scrape',
         replace_existing=True,
     )
 
     scheduler.start()
-    logger.info('排程器已啟動，每 3 小時執行價格擷取檢查')
+    logger.info('排程器已啟動，每 1 小時執行價格擷取檢查')
