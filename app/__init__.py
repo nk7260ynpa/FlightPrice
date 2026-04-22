@@ -57,10 +57,11 @@ def create_app(test_config=None):
     # 設定 logging
     _setup_logging(app)
 
-    # 啟動排程器（測試模式下不啟動）
+    # 啟動排程器（測試模式下不啟動；debug 模式下僅於 Werkzeug reloader child 啟動）
     if not app.config.get('TESTING'):
-        from app.scheduler import init_scheduler
-        init_scheduler(app)
+        if (not app.debug) or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+            from app.scheduler import init_scheduler
+            init_scheduler(app)
 
     return app
 
