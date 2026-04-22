@@ -10,24 +10,24 @@
 
 ## 2. 測試
 
-- [ ] 2.1 於 `tests/` 新增測試檔 `tests/test_scheduler_interval.py`，涵蓋 `openspec/changes/adjust-fetch-interval-1h/specs/scheduler/spec.md` 中的三個 Scenario：
-  - [ ] 2.1.1 Scenario「periodic_scrape job 間隔為 1 小時」：呼叫 `init_scheduler(app)` 後，`scheduler.get_job('periodic_scrape').trigger.interval == datetime.timedelta(hours=1)`。
-  - [ ] 2.1.2 Scenario「periodic_scrape job 使用 interval trigger」：`trigger` 為 `apscheduler.triggers.interval.IntervalTrigger` 的實例。
-  - [ ] 2.1.3 Scenario「間隔並非 3 小時或其他非預期值」：`trigger.interval` 不等於 `timedelta(hours=3)` 且不等於 `timedelta(minutes=0)`。
-- [ ] 2.2 測試中以 `monkeypatch` 將 `apscheduler.schedulers.background.BackgroundScheduler.start` 替換為 no-op，並於 teardown（或 fixture finalizer）呼叫 `app.scheduler.scheduler.remove_all_jobs()`，避免污染其他測試。
-- [ ] 2.3 確認 `tests/test_app_factory.py` 既有 5 個 scenarios 全部仍通過（不得修改該檔案內容）。
-- [ ] 2.4 於 Docker container 中執行 `pytest tests/ -v`（例如 `docker compose run --rm app pytest tests/ -v` 或 `./run.sh pytest`），全部通過。
-- [ ] 2.5 檔案範圍限制：本組僅允許新增 `tests/test_scheduler_interval.py`；不得修改既有測試檔。
+- [x] 2.1 於 `tests/` 新增測試檔 `tests/test_scheduler_interval.py`，涵蓋 `openspec/changes/adjust-fetch-interval-1h/specs/scheduler/spec.md` 中的三個 Scenario：
+  - [x] 2.1.1 Scenario「periodic_scrape job 間隔為 1 小時」：呼叫 `init_scheduler(app)` 後，`scheduler.get_job('periodic_scrape').trigger.interval == datetime.timedelta(hours=1)`。
+  - [x] 2.1.2 Scenario「periodic_scrape job 使用 interval trigger」：`trigger` 為 `apscheduler.triggers.interval.IntervalTrigger` 的實例。
+  - [x] 2.1.3 Scenario「間隔並非 3 小時或其他非預期值」：`trigger.interval` 不等於 `timedelta(hours=3)` 且不等於 `timedelta(minutes=0)`。
+- [x] 2.2 測試中以 `monkeypatch` 將 `apscheduler.schedulers.background.BackgroundScheduler.start` 替換為 no-op，並於 teardown（或 fixture finalizer）呼叫 `app.scheduler.scheduler.remove_all_jobs()`，避免污染其他測試。
+- [x] 2.3 確認 `tests/test_app_factory.py` 既有 5 個 scenarios 全部仍通過（不得修改該檔案內容）。
+- [x] 2.4 於 Docker container 中執行 `pytest tests/ -v`（例如 `docker compose run --rm app pytest tests/ -v` 或 `./run.sh pytest`），全部通過。
+- [x] 2.5 檔案範圍限制：本組僅允許新增 `tests/test_scheduler_interval.py`；不得修改既有測試檔。
 
 ## 3. 文件與 spec 同步
 
-- [ ] 3.1 確認 `README.md` 無需修改（目前僅敘述「每日定時從 Skyscanner 擷取」，並未寫出 3 小時週期）。若確有必要再更新，需於 `issues.md` 先記錄並回報 Coordinator。
-- [ ] 3.2 檔案範圍限制：本組不得修改 `openspec/specs/scheduler/spec.md`（該檔於 `/opsx:archive` 階段自動由 delta 同步）。
-- [ ] 3.3 檔案範圍限制：不得修改 `CLAUDE.md`；如有必要請寫入 `issues.md`。
+- [x] 3.1 確認 `README.md` 無需修改（目前僅敘述「每日定時從 Skyscanner 擷取」，並未寫出 3 小時週期）。若確有必要再更新，需於 `issues.md` 先記錄並回報 Coordinator。
+- [x] 3.2 檔案範圍限制：本組不得修改 `openspec/specs/scheduler/spec.md`（該檔於 `/opsx:archive` 階段自動由 delta 同步）。
+- [x] 3.3 檔案範圍限制：不得修改 `CLAUDE.md`；如有必要請寫入 `issues.md`。
 
 ## 4. 驗收
 
-- [ ] 4.1 `grep -n "hours=3" app/scheduler.py` 應無輸出。
-- [ ] 4.2 `grep -n "3 小時" app/scheduler.py` 應無輸出。
-- [ ] 4.3 `openspec validate adjust-fetch-interval-1h` 通過。
-- [ ] 4.4 所有測試通過；新增測試覆蓋 spec 中全部 3 個 scenario。
+- [x] 4.1 `grep -n "hours=3" app/scheduler.py` 應無輸出。
+- [x] 4.2 `grep -n "3 小時" app/scheduler.py` 應無輸出。
+- [x] 4.3 `openspec validate adjust-fetch-interval-1h` 通過。
+- [x] 4.4 所有測試通過；新增測試覆蓋 spec 中全部 3 個 scenario。
