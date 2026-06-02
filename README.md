@@ -28,6 +28,11 @@ FlightPrice/
 │   ├── Dockerfile
 │   ├── build.sh
 │   └── docker-compose.yaml
+├── k8s/                    # Kubernetes 部署（Kustomize + 腳本）
+│   ├── base/
+│   ├── overlays/docker-desktop/
+│   ├── scripts/
+│   └── README.md
 ├── tests/                  # 單元測試
 ├── logs/                   # 日誌檔案
 ├── run.sh                  # 啟動腳本
@@ -69,6 +74,28 @@ cp .env.example .env
 ```bash
 ./docker/build.sh
 ```
+
+### 4. 使用 Kubernetes 部署（選用）
+
+若想以 Kubernetes 部署（適合本機練習或為將來上雲鋪墊），需先啟用 Docker
+Desktop 的內建 Kubernetes，然後：
+
+```bash
+./docker/build.sh                  # 建立本機 image
+./k8s/scripts/deploy.sh            # 部署到 K8s
+./k8s/scripts/port-forward.sh      # 將 svc:5000 轉發到 localhost:5003
+```
+
+常用操作：
+
+| 動作 | 指令 |
+|---|---|
+| 看 log | `./k8s/scripts/logs.sh` |
+| 拆除但保留資料 | `./k8s/scripts/teardown.sh` |
+| 全部清掉（含 PVC） | `./k8s/scripts/purge.sh` |
+
+詳細說明請參考 [`k8s/README.md`](k8s/README.md)。日常開發仍建議使用
+`run.sh`，K8s 與 Docker Compose 兩種部署方式並存。
 
 ## 測試
 

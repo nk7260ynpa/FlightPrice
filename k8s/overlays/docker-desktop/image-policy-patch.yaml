@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flightprice-app
+spec:
+  template:
+    spec:
+      containers:
+        - name: flightprice-app
+          imagePullPolicy: Never

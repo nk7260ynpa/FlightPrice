@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flightprice-app
+  labels:
+    app: flightprice-app
+spec:
+  # 注意：必須維持 replicas: 1。
+  # app/scheduler.py 的 APScheduler BackgroundScheduler 為 in-process singleton，
+  # 多個 replica 會導致 periodic_scrape 重複觸發，污染資料。
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: flightprice-app
+  template:
+    metadata:
+      labels:
+        app: flightprice-app
+    spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: mysql:8.0
+          command:
+            - sh
+            - -c
+            - |
+              until mysqladmin ping -h mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" --silent; do
+                echo "等待 MySQL 就緒..."
+                sleep 2
+              done
+              echo "MySQL 已就緒"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flightprice-secret
+                  key: MYSQL_ROOT_PASSWORD
+      containers:
+        - name: flightprice-app
+          image: flightprice-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: flightprice-app-config
+          env:
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: flightprice-secret
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: flightprice-secret
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: flightprice-secret
+                  key: MYSQL_DATABASE
+            - name: SKYSCANNER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: flightprice-secret
+                  key: SKYSCANNER_API_KEY
+                  optional: true
+          volumeMounts:
+            - name: logs
+              mountPath: /app/logs
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: flightprice-logs
