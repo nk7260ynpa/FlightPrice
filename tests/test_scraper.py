@@ -120,12 +120,12 @@ class TestScrapeAllActiveFlights:
         active = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT', is_active=True,
-            departure_date=date(2026, 5, 1),
+            departure_date=date.today() + timedelta(days=30),
         )
         inactive = TrackedFlight(
             flight_number='BR-001', airline='長榮航空',
             origin='TPE', destination='LAX', is_active=False,
-            departure_date=date(2026, 5, 1),
+            departure_date=date.today() + timedelta(days=30),
         )
         db_session.add_all([active, inactive])
         db_session.commit()
@@ -157,7 +157,7 @@ class TestScrapeAllActiveFlights:
         flight = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT', is_active=True,
-            departure_date=date(2026, 5, 1),
+            departure_date=date.today() + timedelta(days=30),
         )
         db_session.add(flight)
         db_session.commit()
@@ -184,7 +184,7 @@ class TestScrapeAllActiveFlights:
         flight = TrackedFlight(
             flight_number='CI-100', airline='中華航空',
             origin='TPE', destination='NRT', is_active=True,
-            departure_date=date(2026, 5, 1),
+            departure_date=date.today() + timedelta(days=30),
         )
         db_session.add(flight)
         db_session.commit()
