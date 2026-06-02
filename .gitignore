@@ -10,9 +10,6 @@ logs/*.log
 # Environment
 .env
 
-# Kubernetes 中間檔（如 deploy.sh 產生的暫存 Secret YAML）
-k8s/generated-*.yaml
-
 # Plan
 PLAN.md
 
